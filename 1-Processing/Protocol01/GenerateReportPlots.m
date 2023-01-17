@@ -5,7 +5,7 @@
 % AJOUTER LES TACHES FONCTIONNELLES : amplitude (?), EMG, et remplacer SHR
 % par angle d'élévation (?)
 
-function [] = GenerateReportPlots(Session,Report,Normal)
+function [] = GenerateReportPlots(Folder,Session,Report,Normal)
 
 % -------------------------------------------------------------------------
 % Amplitude and EMG /Analytic motions
@@ -48,7 +48,7 @@ for imotion = 1:4
 
         for nmotion = 1:size(motion,2)
 
-            clearvars -except Session Report Normal imotion nmotion ieuler Pain motion;
+            clearvars -except Folder Session Report Normal imotion nmotion ieuler Pain motion;
 
             % MOTION PART i | Upper part
             % -----------------------------------------------------------------
@@ -416,7 +416,7 @@ for imotion = 1:4
                 ha = gca;
                 haPos = get(ha,'position');
                 ha2 = axes('position',[0.49,0.34,0.22,0.29]);
-                [I,~,alphachannel] = imread('C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_UpperLimb_toolbox\Protocol01\Report\Skeleton_top.png');
+                [I,~,alphachannel] = imread([Folder.toolbox,'Report\Skeleton_top.png']);
                 test = image(I,'AlphaData',alphachannel);
                 axis off;
                 text(-180,50,'0°','FontSize',24);
@@ -464,7 +464,7 @@ for imotion = 1:4
                 ha = gca;
                 haPos = get(ha,'position');
                 ha2 = axes('position',[0.32,0.34,0.22,0.29]);
-                [I,~,alphachannel] = imread('C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_UpperLimb_toolbox\Protocol01\Report\Skeleton_top.png');
+                [I,~,alphachannel] = imread([Folder.toolbox,'Report\Skeleton_top.png']);
                 test = image(I,'AlphaData',alphachannel);
                 axis off;
                 text(360,50,'0°','FontSize',24);

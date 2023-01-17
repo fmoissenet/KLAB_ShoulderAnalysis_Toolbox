@@ -38,10 +38,10 @@ disp(' ');
 % SET FOLDERS
 % -------------------------------------------------------------------------
 disp('Définition des répertoires de travail');
-Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_Preprocessing_toolbox\';
-Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_UpperLimb_toolbox\Protocol01\';
+Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
+Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
 Folder.data          = uigetdir();
-Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_UpperLimb_toolbox\dependencies\';
+Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
 addpath(genpath(Folder.dependencies));
 disp(' ');
 
@@ -187,7 +187,7 @@ if isempty(dir('*.docx'))
 end
 Report = GenerateReportData(Trial);
 Normal = LoadNormativeData(Folder,Session,Patient);
-GenerateReportPlots(Session,Report,Normal);
+GenerateReportPlots(Folder,Session,Report,Normal);
 save([Folder.data,'\Report\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-Backup.mat']);
 
 % -------------------------------------------------------------------------
