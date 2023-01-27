@@ -58,4 +58,5 @@ Session.patientBodyMass      = cell2mat(tSession(6,2)); % kg
 Session.patientHeight        = cell2mat(tSession(7,2))*1e-2; % m
 Session.comments             = cell2mat(tSession(51,1));
 Session.Pain.label           = tSession(31:43,1);
-Session.Pain.value           = cell2mat(tSession(35:47,2));
+Session.Pain.Rvalue          = cell2mat(tSession(35:47,2));
+Session.Pain.Lvalue          = cell2mat(tSession(35:47,3));

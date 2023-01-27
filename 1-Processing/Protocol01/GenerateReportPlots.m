@@ -26,29 +26,33 @@ for imotion = 1:4
             motion(2).ititle = 'Elévation sagittale (descente | excentrique)';
             motion(1).ifile  = 'Analytic1_part1';
             motion(2).ifile  = 'Analytic1_part2';
-            Pain             = Session.Pain.value(4);
+            PainR            = Session.Pain.Rvalue(4);
+            PainL            = Session.Pain.Lvalue(4);
         elseif imotion == 2
             ieuler = 1;
             motion(1).ititle = 'Elévation coronale (montée | concentrique)';
             motion(2).ititle = 'Elévation coronale (descente | excentrique)';
             motion(1).ifile  = 'Analytic2_part1';
             motion(2).ifile  = 'Analytic2_part2';
-            Pain             = Session.Pain.value(5);
+            PainR            = Session.Pain.Rvalue(5);
+            PainL            = Session.Pain.Lvalue(5);
         elseif imotion == 3
             ieuler = 2;
             motion(1).ititle = 'Rotation externe';
             motion(1).ifile  = 'Analytic3_part1';
-            Pain             = Session.Pain.value(6);
+            PainR            = Session.Pain.Rvalue(6);
+            PainL            = Session.Pain.Lvalue(6);
         elseif imotion == 4
             ieuler = 2;
             motion(1).ititle = 'Rotation interne';
             motion(1).ifile  = 'Analytic4_part1';
-            Pain             = Session.Pain.value(7);
+            PainR            = Session.Pain.Rvalue(7);
+            PainL            = Session.Pain.Lvalue(7);
         end
 
         for nmotion = 1:size(motion,2)
 
-            clearvars -except Folder Session Report Normal imotion nmotion ieuler Pain motion;
+            clearvars -except Folder Session Report Normal imotion nmotion ieuler PainR PainL motion;
 
             % MOTION PART i | Upper part
             % -----------------------------------------------------------------
@@ -521,7 +525,7 @@ for imotion = 1:4
                 close all;
             end
     
-            % MOTION PART i | Lower part, pain
+            % MOTION PART i | Lower part, right pain
             img = figure('Position',[50 20 900 400],'Color','white');
             hold on;
             axis off;
@@ -538,34 +542,74 @@ for imotion = 1:4
             r9 = rectangle('Position',[9,0,1,1]); text(9.4,0.5,'9','FontSize',24);
             r10 = rectangle('Position',[10,0,1,1]); text(10.2,0.5,'10','FontSize',24);
             fcolor = [0.7 0.7 0.7];
-            if fix(Pain) == 0
+            if fix(PainR) == 0
                 set(r0,'FaceColor',fcolor);
-            elseif fix(Pain) == 1
+            elseif fix(PainR) == 1
                 set(r1,'FaceColor',fcolor);
-            elseif fix(Pain) == 2
+            elseif fix(PainR) == 2
                 set(r2,'FaceColor',fcolor);
-            elseif fix(Pain) == 3
+            elseif fix(PainR) == 3
                 set(r3,'FaceColor',fcolor);
-            elseif fix(Pain) == 4
+            elseif fix(PainR) == 4
                 set(r4,'FaceColor',fcolor);
-            elseif fix(Pain) == 5
+            elseif fix(PainR) == 5
                 set(r5,'FaceColor',fcolor);
-            elseif fix(Pain) == 6
+            elseif fix(PainR) == 6
                 set(r6,'FaceColor',fcolor);
-            elseif fix(Pain) == 7
+            elseif fix(PainR) == 7
                 set(r7,'FaceColor',fcolor);
-            elseif fix(Pain) == 8
+            elseif fix(PainR) == 8
                 set(r8,'FaceColor',fcolor);
-            elseif fix(Pain) == 9
+            elseif fix(PainR) == 9
                 set(r9,'FaceColor',fcolor);
-            elseif fix(Pain) == 10
+            elseif fix(PainR) == 10
                 set(r10,'FaceColor',fcolor);
             end
             exportgraphics(img,[motion(nmotion).ifile,'_painR.png'],'BackgroundColor','none','Resolution',600);
+            close all;
+    
+            % MOTION PART i | Lower part, left pain
+            img = figure('Position',[50 20 900 400],'Color','white');
+            hold on;
+            axis off;
+            axis equal;
+            r0 = rectangle('Position',[0,0,1,1]); text(0.4,0.5,'0','FontSize',24);
+            r1 = rectangle('Position',[1,0,1,1]); text(1.4,0.5,'1','FontSize',24);
+            r2 = rectangle('Position',[2,0,1,1]); text(2.4,0.5,'2','FontSize',24);
+            r3 = rectangle('Position',[3,0,1,1]); text(3.4,0.5,'3','FontSize',24);
+            r4 = rectangle('Position',[4,0,1,1]); text(4.4,0.5,'4','FontSize',24);
+            r5 = rectangle('Position',[5,0,1,1]); text(5.4,0.5,'5','FontSize',24);
+            r6 = rectangle('Position',[6,0,1,1]); text(6.4,0.5,'6','FontSize',24);
+            r7 = rectangle('Position',[7,0,1,1]); text(7.4,0.5,'7','FontSize',24);
+            r8 = rectangle('Position',[8,0,1,1]); text(8.4,0.5,'8','FontSize',24);
+            r9 = rectangle('Position',[9,0,1,1]); text(9.4,0.5,'9','FontSize',24);
+            r10 = rectangle('Position',[10,0,1,1]); text(10.2,0.5,'10','FontSize',24);
+            fcolor = [0.7 0.7 0.7];
+            if fix(PainL) == 0
+                set(r0,'FaceColor',fcolor);
+            elseif fix(PainL) == 1
+                set(r1,'FaceColor',fcolor);
+            elseif fix(PainL) == 2
+                set(r2,'FaceColor',fcolor);
+            elseif fix(PainL) == 3
+                set(r3,'FaceColor',fcolor);
+            elseif fix(PainL) == 4
+                set(r4,'FaceColor',fcolor);
+            elseif fix(PainL) == 5
+                set(r5,'FaceColor',fcolor);
+            elseif fix(PainL) == 6
+                set(r6,'FaceColor',fcolor);
+            elseif fix(PainL) == 7
+                set(r7,'FaceColor',fcolor);
+            elseif fix(PainL) == 8
+                set(r8,'FaceColor',fcolor);
+            elseif fix(PainL) == 9
+                set(r9,'FaceColor',fcolor);
+            elseif fix(PainL) == 10
+                set(r10,'FaceColor',fcolor);
+            end
             exportgraphics(img,[motion(nmotion).ifile,'_painL.png'],'BackgroundColor','none','Resolution',600);
             close all;
-            % WARNING SAME PAIN CURRENTLY, MUST BE SELECTED MANUALLY
-            % TO BE UPDATED : ASK AND STORE RIGHT AND LEFT PAIN
         end
 
     end
