@@ -20,7 +20,7 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function ExportC3D(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,Trial,Processing,Units,event,marker,emg,force,grf)
+function ExportC3D(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,Trial,Processing,Units,staticTypes,trialTypes,event,marker,emg,force,grf)
 
 % Set new C3D file
 btkFile = btkNewAcquisition();
@@ -110,55 +110,39 @@ end
 
 % Export C3D file
 temp = regexprep(Trial.file,'.c3d','');
-% Export // STATICS
-if contains(Trial.file,'Static_reference1')
-    task = 'STATIC1';
-    num = str2num(regexprep(temp,'Static_reference1 ',''));
-elseif contains(Trial.file,'Static_reference2')
-    task = 'STATIC2';
-    num = str2num(regexprep(temp,'Static_reference2 ',''));
-elseif contains(Trial.file,'Pointing_SXS')
-    task = 'STATIC3';
-    num = str2num(regexprep(temp,'Pointing_SXS ',''));
-% Export // CALIBRATIONS
-elseif contains(Trial.file,'Calibration_force')
-    task = 'CALIBRATION1';
-    num = str2num(regexprep(temp,'Calibration_force ',''));
-% Export // ANALYTIC MOTIONS    
-elseif contains(Trial.file,'Elevation_sagittal')
-    task = 'ANALYTIC1';
-    num = str2num(regexprep(temp,'Elevation_sagittal ',''));
-elseif contains(Trial.file,'Elevation_coronal')
-    task = 'ANALYTIC2';
-    num = str2num(regexprep(temp,'Elevation_coronal ',''));
-elseif contains(Trial.file,'Rotation_external')
-    task = 'ANALYTIC3';
-    num = str2num(regexprep(temp,'Rotation_external ',''));
-elseif contains(Trial.file,'Rotation_internal')
-    task = 'ANALYTIC4';
-    num = str2num(regexprep(temp,'Rotation_internal ',''));
-% Export // FUNCTIONAL MOTIONS   
-elseif contains(Trial.file,'Arm_mouth')
-    task = 'FUNCTIONAL1';
-    num = str2num(regexprep(temp,'Arm_mouth ',''));
-elseif contains(Trial.file,'Arm_head')
-    task = 'FUNCTIONAL2';
-    num = str2num(regexprep(temp,'Arm_head ',''));
-elseif contains(Trial.file,'Arm_top')
-    task = 'FUNCTIONAL3';
-    num = str2num(regexprep(temp,'Arm_top ',''));    
-elseif contains(Trial.file,'Arm_back')
-    task = 'FUNCTIONAL4';
-    num = str2num(regexprep(temp,'Arm_back ','')); 
-% Export // ISOMETRIC TASKS   
-elseif contains(Trial.file,'Isometric_right')
-    task = 'ISOMETRIC1';
-    num = str2num(regexprep(temp,'Isometric_right ',''));
-elseif contains(Trial.file,'Isometric_left')
-    task = 'ISOMETRIC2';
-    num = str2num(regexprep(temp,'Isometric_left ',''));
+
+for itype = 1:size(staticTypes,1)
+    if contains(Trial.file,staticTypes{itype,1})
+        task = staticTypes{itype,2};
+        num  = str2num(regexprep(temp,[staticTypes{itype,1},' '],''));
+    end
 end
-% Finalise exportation
+for itype = 1:size(trialTypes,1)
+    if contains(Trial.file,trialTypes{itype,1})
+        task = trialTypes{itype,2};
+        num  = str2num(regexprep(temp,[trialTypes{itype,1},' '],''));
+    end
+end
+
+% Export
+for itype = 1:size(staticTypes,1)
+    if contains(Trial.file,staticTypes{itype,1})
+        task  = staticTypes{itype,2};
+        temp1 = regexprep(Trial.file,[staticTypes{itype,1},' '],'');
+        temp2 = regexprep(temp1,'.c3d','');
+        num   = str2num(temp2);
+        clear temp1 temp2;
+    end
+end  
+for itype = 1:size(trialTypes,1)
+    if contains(Trial.file,trialTypes{itype,1})
+        task  = trialTypes{itype,2};
+        temp1 = regexprep(Trial.file,[trialTypes{itype,1},' '],'');
+        temp2 = regexprep(temp1,'.c3d','');
+        num   = str2num(temp2);
+        clear temp1 temp2;
+    end
+end   
 if num < 10
     num = ['0',num2str(num)];
 else

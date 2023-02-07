@@ -46,9 +46,9 @@ c3dFiles = dir('*.c3d');
 k1       = 1;
 k2       = 1;
 for i = 1:size(c3dFiles,1)
-    for j = 1:size(staticTypes,2)
-        if contains(c3dFiles(i).name,staticTypes{j})
-            Static(k1).type    = staticTypes{j};
+    for j = 1:size(staticTypes,1)
+        if contains(c3dFiles(i).name,staticTypes{j,1})
+            Static(k1).type    = staticTypes{j,1};
             Static(k1).file    = c3dFiles(i).name;
             Static(k1).btk     = btkReadAcquisition(c3dFiles(i).name);
             Static(k1).n0      = btkGetFirstFrame(Static(k1).btk);
@@ -58,9 +58,9 @@ for i = 1:size(c3dFiles,1)
             k1                 = k1+1;
         end
     end
-    for j = 1:size(trialTypes,2)
-        if contains(c3dFiles(i).name,trialTypes{j})
-            Trial(k2).type    = trialTypes{j};
+    for j = 1:size(trialTypes,1)
+        if contains(c3dFiles(i).name,trialTypes{j,1})
+            Trial(k2).type    = trialTypes{j,1};
             Trial(k2).file    = c3dFiles(i).name;
             Trial(k2).btk     = btkReadAcquisition(c3dFiles(i).name);
             Trial(k2).n0      = btkGetFirstFrame(Trial(k2).btk);
@@ -71,7 +71,7 @@ for i = 1:size(c3dFiles,1)
         end
     end
 end
-clear i j k1 k2 c3dFiles staticTypes trialTypes;
+clear i j k1 k2 c3dFiles;
 
 % -------------------------------------------------------------------------
 % SET UNITS
@@ -98,6 +98,9 @@ end
 % -------------------------------------------------------------------------
 % PRE-PROCESS DATA
 % -------------------------------------------------------------------------
+% % Video files
+% ProcessVideos(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,staticTypes,trialTypes,videoTypes);
+
 % Static data
 for i = 1:size(Static,2)
     disp(['  - ',Static(i).file]);    
@@ -129,7 +132,7 @@ for i = 1:size(Static,2)
         Static(i).GRF = [];   
     end
     % Export preprocessed C3D
-    ExportC3D(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,Static(i),Processing,Units,event,marker,emg,force,grf);
+    ExportC3D(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,Static(i),Processing,Units,staticTypes,trialTypes,event,marker,emg,force,grf);
 end
 
 % Trial data
@@ -184,5 +187,6 @@ for i = 1:size(Trial,2)
         clear GRF;
     end
     % Export preprocessed C3D
-    ExportC3D(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,Trial(i),Processing,Units,event,marker,emg,force,grf);
+    ExportC3D(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,Trial(i),Processing,Units,staticTypes,trialTypes,event,marker,emg,force,grf);
 end
+clear staticTypes trialTypes;

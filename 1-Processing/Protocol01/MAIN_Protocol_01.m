@@ -112,7 +112,7 @@ cd([Folder.data,'\Processed\']);
 c3dFiles   = dir('*.c3d');
 trialTypes = {'STATIC','ANALYTIC','FUNCTIONAL','ISOMETRIC'};
 k          = 1;
-for i = 1:size(c3dFiles,1)
+for i = 3:size(c3dFiles,1)
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             % Extract data from C3D files 
