@@ -34,9 +34,9 @@ if ~isempty(temp)
     clear temp; 
     % Get calibration values 
     weight            = mass*9.81; % (N)
-    if isfield(Analog,'CH16_1')
-        force.zero        = mean(Analog.CH16_1(fix(Event.Remote(3)*f):fix(Event.Remote(4)*f),1));
-        force.calibration = weight/(mean(Analog.CH16_1(fix(Event.Remote(1)*f):fix(Event.Remote(2)*f),1))-force.zero);
+    if isfield(Analog,'CH16_FORCE')
+        force.zero        = mean(Analog.CH16_FORCE(fix(Event.Remote(3)*f):fix(Event.Remote(4)*f),1));
+        force.calibration = weight/(mean(Analog.CH16_FORCE(fix(Event.Remote(1)*f):fix(Event.Remote(2)*f),1))-force.zero);
     else
         force.zero        = 0;
         force.calibration = 0;
