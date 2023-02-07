@@ -48,7 +48,7 @@ for j2 = 1:size(trialsubTypes,2)
 %             figure; hold on;
 %             plot(squeeze(Trial.Joint(1).Euler.full(:,2,:)),'blue')
 %             plot(unwrap(squeeze(Trial.Joint(6).Euler.full(:,2,:)))+360,'red')
-            if max(abs(squeeze(Trial.Joint(1).Euler.full(:,2,:))')) > max(abs(squeeze(Trial.Joint(6).Euler.full(:,2,:))'))
+            if max(-(squeeze(Trial.Joint(1).Euler.full(:,2,:))')) > max(-(squeeze(Trial.Joint(6).Euler.full(:,2,:))'))
                 value = -squeeze(Trial.Joint(1).Euler.full(:,2,:))';
             else
                 value = -squeeze(Trial.Joint(6).Euler.full(:,2,:))';
