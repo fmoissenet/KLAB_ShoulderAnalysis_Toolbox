@@ -96,7 +96,7 @@ for ifile = 1:size(aviFiles,1)
     folder = pwd;
     cd(regexprep(Folder.data,'"',''));
 %     movefile(['temp\',aviFiles(ifile).name],regexprep(Folder.data,'"',''));
-    movefile(['temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',Session_protocol,'-',task,'-',num,'-',video,'.avi'],[folder,'\']);
+    movefile(['temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi'],[folder,'\']);
 end
 
 % Clear temporary folder
