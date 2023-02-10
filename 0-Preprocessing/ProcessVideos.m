@@ -70,7 +70,7 @@ for ifile = 1:size(aviFiles,1)
         num = num2str(num);
     end
 %     outputFile1 = ['"',Folder.data,'temp\',aviFiles(ifile).name,'"']; % Stored as raw file after low compression
-    outputFile2 = ['"',Folder.data,'\temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',Session_protocol,'-',task,'-',num,'-',video,'.avi"']; % Stored as processed file after high compression
+    outputFile2 = ['"',Folder.data,'\temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi"']; % Stored as processed file after high compression
 
     % Apply video compression and rotation (only for high compression)
     cd(Folder.dependencies);

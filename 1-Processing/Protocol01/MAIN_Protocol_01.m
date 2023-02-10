@@ -63,11 +63,11 @@ disp(' ');
 % PRE-PROCESS DATA
 % -------------------------------------------------------------------------
 disp('Pré-traitement des données');
-if ~isfolder('Processed')
+% if ~isfolder('Processed')
     addpath(Folder.preprocessing);
     MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'yyyyMMdd'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
     rmpath(Folder.preprocessing);
-end
+% end
 disp(' ');
 
 % -------------------------------------------------------------------------
