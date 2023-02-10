@@ -1,3 +1,22 @@
+% Author     :   F. Moissenet
+%                Kinesiology Laboratory (K-LAB)
+%                University of Geneva
+%                https://www.unige.ch/medecine/kinesiology
+% License    :   Creative Commons Attribution-NonCommercial 4.0 International License 
+%                https://creativecommons.org/licenses/by-nc/4.0/legalcode
+% Source code:   To be defined
+% Reference  :   To be defined
+% Date       :   June 2022
+% -------------------------------------------------------------------------
+% Description:   To be defined
+% -------------------------------------------------------------------------
+% Dependencies : To be defined
+% -------------------------------------------------------------------------
+% This work is licensed under the Creative Commons Attribution - 
+% NonCommercial 4.0 International License. To view a copy of this license, 
+% visit http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to 
+% Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+% -------------------------------------------------------------------------
 
 function Trial = OnsetDetection(Trial,Cycles)
 
@@ -9,18 +28,27 @@ for iemg = 1:14 % All EMG (right and left)
 
     % Get full EMG signal
     emgfull = squeeze(Trial.Emg(iemg).Signal.full);
-
-    % Remove first and last 5% of the recording
-    subemg = emgfull(1+length(emgfull)*0.05:end-length(emgfull)*0.05,1);
+    
+    % Acceptability threshold
+    acceptability_threshold = 1e-5;
+    if max(emgfull)-min(emgfull) <= acceptability_threshold
+        emgfull2 = zeros(size(emgfull));
+    else
+        emgfull2 = emgfull;
+    end
 
     % Define onsets (x % of signal amplitude)
-    threshold = (max(subemg)-min(subemg))*0.3; % 30% of the signal amplitude (doi: 10.1016/j.proeng.2016.06.208)
+    if emgfull2 == zeros(size(emgfull2))
+        threshold = 1;
+    else
+        threshold = (max(emgfull2)-min(emgfull2))*0.3; % 30% of the signal amplitude (doi: 10.1016/j.proeng.2016.06.208)
+    end
 
     % Ininialise onset
-    onset = zeros(length(emgfull),1);
+    onset = zeros(length(emgfull2),1);
 
     % Define onsets
-    onset(find(emgfull>threshold+min(subemg))) = 1;
+    onset(find(emgfull2>threshold+min(emgfull2))) = 1;
 
     % Remove small sample of onset time    
     finder = nan(length(onset),1);
@@ -45,14 +73,14 @@ for iemg = 1:14 % All EMG (right and left)
                 onset(t2) = 0;
             end
         end
-    end    
-    
+    end  
+
     % Manual validation
     fig = figure; hold on;
     title(Trial.Emg(iemg).label);
-    plot(emgfull-min(subemg),'red');
+    plot(emgfull-min(emgfull),'red');
     plot(onset*5e-5,'black','LineWidth',1);
-    line([0 length(emgfull)],[1e-5 1e-5],'Linestyle','--','Color','black'); % Threshold of signal acceptability
+    line([0 length(emgfull)],[acceptability_threshold acceptability_threshold],'Linestyle','--','Color','black'); % Threshold of signal acceptability
     ylim([0 1e-4]);
 %     plot(onset*0.05,'black','LineWidth',1); % If records performed at Klab
 %     line([0 length(emgfull)],[0.01 0.01],'Linestyle','--','Color','black'); % Threshold of signal acceptability
