@@ -18,25 +18,59 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function [] = UpdateC3DFile(Trial)
+function [] = UpdateC3DFile(Trial,c3dFiles)
 
-for ivmarker = 1:4
+% Markers
+if ~contains(c3dFiles.name,'CALIBRATION3')
+    btkRemovePoint(Trial.btk,'STY01');
+    btkRemovePoint(Trial.btk,'STY02');
+    btkRemovePoint(Trial.btk,'STY03');
+    btkRemovePoint(Trial.btk,'STY04');
+    btkRemovePoint(Trial.btk,'STY05');
+end
+% Virtual markers
+for ivmarker = 1:length(Trial.Vmarker)
     try
         btkAppendPoint(Trial.btk,'marker',Trial.Vmarker(ivmarker).label,permute(Trial.Vmarker(ivmarker).Trajectory.full,[3,2,1]),zeros(size(permute(Trial.Vmarker(ivmarker).Trajectory.full,[3,2,1]),1),1),['Units: ',Trial.Vmarker(ivmarker).Trajectory.units]);
     catch ME
-        btkSetPoint(Trial.btk,Trial.Vmarker(ivmarker).label,permute(Trial.Vmarker(ivmarker).Trajectory.full,[3,2,1]),zeros(size(permute(Trial.Vmarker(ivmarker).Trajectory.full,[3,2,1]),1),1),['Units: ',Trial.Vmarker(ivmarker).Trajectory.units]);            
-    end
-end
-for ijoint = [1,2,3,6,7,8]
-    try
-        btkAppendPoint(Trial.btk,'angle',Trial.Joint(ijoint).label,permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),zeros(size(permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),1),1),['Units: ',Trial.Joint(ijoint).Euler.units,', Euler sequence: ',Trial.Joint(ijoint).sequence]);
-    catch ME
-        if ~isempty(Trial.Joint(ijoint).Euler.full)
-            btkSetPoint(Trial.btk,Trial.Joint(ijoint).label,permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),zeros(size(permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),1),1),['Units: ',Trial.Joint(ijoint).Euler.units,', Euler sequence: ',Trial.Joint(ijoint).sequence]);
+        if ~isempty(Trial.Vmarker(ivmarker).Trajectory.full)
+            btkSetPoint(Trial.btk,Trial.Vmarker(ivmarker).label,permute(Trial.Vmarker(ivmarker).Trajectory.full,[3,2,1]),zeros(size(permute(Trial.Vmarker(ivmarker).Trajectory.full,[3,2,1]),1),1),['Units: ',Trial.Vmarker(ivmarker).Trajectory.units]);            
         end
     end
 end
-for icycle = 1:size(Trial.Cycle,2)
+% Joints
+if contains(c3dFiles.name,'ANALYTIC')
+    for ijoint = [1,2,3,6,7,8]
+        try
+            btkAppendPoint(Trial.btk,'angle',Trial.Joint(ijoint).label,permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),zeros(size(permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),1),1),['Units: ',Trial.Joint(ijoint).Euler.units,', Euler sequence: ',Trial.Joint(ijoint).sequence]);
+        catch ME
+            if ~isempty(Trial.Joint(ijoint).Euler.full)
+                btkSetPoint(Trial.btk,Trial.Joint(ijoint).label,permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),zeros(size(permute(Trial.Joint(ijoint).Euler.full,[3,2,1]),1),1),['Units: ',Trial.Joint(ijoint).Euler.units,', Euler sequence: ',Trial.Joint(ijoint).sequence]);
+            end
+        end
+    end
+end
+% Emgs
+if ~isempty(Trial.Emg)
+    for iemg = 1:14
+        if ~isempty(Trial.Emg(iemg).Signal.full)
+            btkRemoveAnalog(Trial.btk,Trial.Emg(iemg).label);
+            btkAppendAnalog(Trial.btk,Trial.Emg(iemg).label,permute(Trial.Emg(iemg).Signal.full,[3,2,1]));
+            if ~isempty(Trial.Emg(iemg).Signal.envelop)
+                btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_envelop'],permute(Trial.Emg(iemg).Signal.envelop,[3,2,1]));
+                btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_onset'],permute(Trial.Emg(iemg).Signal.onset,[3,2,1])*max(Trial.Emg(iemg).Signal.envelop));
+            end
+        end
+    end
+end
+% Force
+if ~isempty(Trial.Fsensor.Force.value)
+    btkRemoveAnalog(Trial.btk,'FORCE');
+    btkAppendAnalog(Trial.btk,'FORCE',permute(Trial.Fsensor.Force.value,[3,2,1]),'');
+    btkSetAnalogUnit(Trial.btk,'FORCE',Trial.Fsensor.Force.units);
+end
+% Events
+for icycle = 1:size(Trial.Rcycle,2)
     if contains(Trial.task,'ANALYTIC1')
         ieuler = 3;
         sign   = 1; 
@@ -50,13 +84,31 @@ for icycle = 1:size(Trial.Cycle,2)
         ieuler = 2;
         sign   = 1; 
     end    
-    btkAppendEvent(Trial.btk,'Start',Trial.Cycle(icycle).range(1)/Trial.fmarker,''); % Start frame
-    [~,ind]  = max(sign*Trial.Joint(1).Euler.full(1,ieuler,Trial.Cycle(icycle).range));
-    maxAngle = ind+Trial.Cycle(icycle).range(1)-1;
+    btkAppendEvent(Trial.btk,'Start',Trial.Rcycle(icycle).range(1)/Trial.fmarker,''); % Start frame
+    [~,ind]  = max(sign*Trial.Joint(1).Euler.full(1,ieuler,Trial.Rcycle(icycle).range));
+    maxAngle = ind+Trial.Rcycle(icycle).range(1)-1;
     btkAppendEvent(Trial.btk,'Max right',maxAngle/Trial.fmarker,''); % Max right angle frame
-    [~,ind]  = max(sign*Trial.Joint(6).Euler.full(1,ieuler,Trial.Cycle(icycle).range));
-    maxAngle = ind+Trial.Cycle(icycle).range(1)-1;
-    btkAppendEvent(Trial.btk,'Max left',maxAngle/Trial.fmarker,''); % Max left angle frame
-    btkAppendEvent(Trial.btk,'Stop',Trial.Cycle(icycle).range(end)/Trial.fmarker,''); % Stop frame
+    btkAppendEvent(Trial.btk,'Stop',Trial.Rcycle(icycle).range(end)/Trial.fmarker,''); % Stop frame
 end
+for icycle = 1:size(Trial.Lcycle,2)
+    if contains(Trial.task,'ANALYTIC1')
+        ieuler = 3;
+        sign   = 1; 
+    elseif contains(Trial.task,'ANALYTIC2')
+        ieuler = 1;
+        sign   = -1; 
+    elseif contains(Trial.task,'ANALYTIC3')
+        ieuler = 2;
+        sign   = -1; 
+    elseif contains(Trial.task,'ANALYTIC4')
+        ieuler = 2;
+        sign   = 1; 
+    end    
+    btkAppendEvent(Trial.btk,'Start',Trial.Lcycle(icycle).range(1)/Trial.fmarker,''); % Start frame
+    [~,ind]  = max(sign*Trial.Joint(6).Euler.full(1,ieuler,Trial.Lcycle(icycle).range));
+    maxAngle = ind+Trial.Lcycle(icycle).range(1)-1;
+    btkAppendEvent(Trial.btk,'Max right',maxAngle/Trial.fmarker,''); % Max right angle frame
+    btkAppendEvent(Trial.btk,'Stop',Trial.Lcycle(icycle).range(end)/Trial.fmarker,''); % Stop frame
+end
+% Write file
 btkWriteAcquisition(Trial.btk,Trial.file);   

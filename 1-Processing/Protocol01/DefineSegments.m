@@ -69,17 +69,17 @@ else
     RUSP = [];
 end
 % Define elbow joint centre
-REJC                             = (RHME+RHLE)/2;
-Trial.Vmarker(1).Trajectory.full = REJC;
+REJC                              = (RHME+RHLE)/2;
+Trial.Vmarker(10).Trajectory.full = REJC;
 % Define glenohumeral joint centre
 % Method 1: Rab's regression (Rab et al. 2002)
-referenceMarker                  = RCAJ;
-referenceLength                  = mean(sqrt(sum(abs(RCAJ-LCAJ).^2,1)),3);
-offset                           = -0.17*referenceLength; % -17%
-thoraxSIaxis                     = (CV7+SJN)/2-(TV8+SXS)/2;
-thoraxSIaxis                     = thoraxSIaxis./sqrt(sum(abs(thoraxSIaxis).^2,1));
-RGJC                             = referenceMarker+(offset+Session.markerHeight1)*thoraxSIaxis;
-Trial.Vmarker(2).Trajectory.full = RGJC;
+referenceMarker                   = RCAJ;
+referenceLength                   = mean(sqrt(sum(abs(RCAJ-LCAJ).^2,1)),3);
+offset                            = -0.17*referenceLength; % -17%
+thoraxSIaxis                      = (CV7+SJN)/2-(TV8+SXS)/2;
+thoraxSIaxis                      = thoraxSIaxis./sqrt(sum(abs(thoraxSIaxis).^2,1));
+RGJC                              = referenceMarker+(offset+Session.markerHeight1)*thoraxSIaxis;
+Trial.Vmarker(11).Trajectory.full = RGJC;
 % Segment axes (Wu et al. 2005)
 O1 = RGJC;
 Y1 = Vnorm_array3(RGJC-REJC);
@@ -106,11 +106,11 @@ end
 % Right scapula parameters
 % -------------------------------------------------------------------------
 % Extract marker trajectories
-RCAJ = Trial.Marker(14).Trajectory.full;
-RSIA2 = Trial.Marker(19).Trajectory.full;
-RSRS2 = Trial.Marker(20).Trajectory.full;
-RSAA2 = Trial.Marker(21).Trajectory.full;
-RSCT2 = Trial.Marker(22).Trajectory.full;
+RCAJ  = Trial.Marker(14).Trajectory.full;
+RSIA2 = Trial.Vmarker(2).Trajectory.full;
+RSRS2 = Trial.Vmarker(3).Trajectory.full;
+RSAA2 = Trial.Vmarker(4).Trajectory.full;
+RSCT2 = Trial.Vmarker(5).Trajectory.full;
 % Segment axes (Wu et al. 2005)
 O2 = RSAA2;
 Z2 = Vnorm_array3(RSAA2-RSRS2);
@@ -155,17 +155,17 @@ else
     LUSP = [];
 end
 % Define elbow joint centre
-LEJC                             = (LHME+LHLE)/2;
-Trial.Vmarker(3).Trajectory.full = LEJC;
+LEJC                              = (LHME+LHLE)/2;
+Trial.Vmarker(12).Trajectory.full = LEJC;
 % Define glenohumeral joint centre
 % Method 1: Rab's regression (Rab et al. 2002)
-referenceMarker                  = LCAJ;
-referenceLength                  = mean(sqrt(sum(abs(RCAJ-LCAJ).^2,1)),3);
-offset                           = -0.17*referenceLength; % -17%
-thoraxSIaxis                     = (CV7+SJN)/2-(TV8+SXS)/2;
-thoraxSIaxis                     = thoraxSIaxis./sqrt(sum(abs(thoraxSIaxis).^2,1));
-LGJC                             = referenceMarker+(offset+Session.markerHeight1)*thoraxSIaxis;
-Trial.Vmarker(4).Trajectory.full = LGJC;
+referenceMarker                   = LCAJ;
+referenceLength                   = mean(sqrt(sum(abs(RCAJ-LCAJ).^2,1)),3);
+offset                            = -0.17*referenceLength; % -17%
+thoraxSIaxis                      = (CV7+SJN)/2-(TV8+SXS)/2;
+thoraxSIaxis                      = thoraxSIaxis./sqrt(sum(abs(thoraxSIaxis).^2,1));
+LGJC                              = referenceMarker+(offset+Session.markerHeight1)*thoraxSIaxis;
+Trial.Vmarker(13).Trajectory.full = LGJC;
 % Segment axes (Wu et al. 2005)
 O5 = LGJC;
 Y5 = Vnorm_array3(LGJC-LEJC);
@@ -193,10 +193,10 @@ end
 % -------------------------------------------------------------------------
 % Extract marker trajectories
 LCAJ = Trial.Marker(37).Trajectory.full;
-LSIA2 = Trial.Marker(42).Trajectory.full;
-LSRS2 = Trial.Marker(43).Trajectory.full;
-LSAA2 = Trial.Marker(44).Trajectory.full;
-LSCT2 = Trial.Marker(45).Trajectory.full;
+LSIA2 = Trial.Vmarker(6).Trajectory.full;
+LSRS2 = Trial.Vmarker(7).Trajectory.full;
+LSAA2 = Trial.Vmarker(8).Trajectory.full;
+LSCT2 = Trial.Vmarker(9).Trajectory.full;
 % Segment axes (Wu et al. 2005)
 O6 = LSAA2;
 Z6 = Vnorm_array3(LSAA2-LSRS2);

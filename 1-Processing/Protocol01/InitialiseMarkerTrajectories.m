@@ -39,12 +39,14 @@ if ~strcmp(trajectorySet{1},'') % Empty list
         Trial.Marker(i).Body.Curve.index      = curveList{i*2};
         if isfield(Marker,trajectorySet{i})
             Trial.Marker(i).Trajectory.full   = permute(Marker.(trajectorySet{i}),[2,3,1])*Units.ratio;
-            Trial.Marker(i).Trajectory.cycle  = [];
+            Trial.Marker(i).Trajectory.rcycle = [];
+            Trial.Marker(i).Trajectory.lcycle = [];
             Trial.Marker(i).Trajectory.units  = Units.output;
             Trial.Marker(i).Trajectory.Gap    = [];
         else
             Trial.Marker(i).Trajectory.full   = [];
-            Trial.Marker(i).Trajectory.cycle  = [];
+            Trial.Marker(i).Trajectory.rcycle = [];
+            Trial.Marker(i).Trajectory.lcycle = [];
             Trial.Marker(i).Trajectory.units  = Units.output;
             Trial.Marker(i).Trajectory.Gap    = [];
         end

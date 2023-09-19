@@ -20,55 +20,32 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function Trial = InitialiseForceSignals(c3dFiles,Trial)
+function Trial = InitialiseForceSignals(c3dFiles,Trial,Analog,Event,mass,calibration)
 
-if contains(c3dFiles.name,'ISOMETRIC1') || contains(c3dFiles.name,'ISOMETRIC2') % Isometric tasks only
-    Scalar = btkGetScalars(Trial.btk);
-    Event  = btkGetEvents(Trial.btk);
-    subForce = [];
-    subAngle = []; 
-    if isfield(Scalar,'Force') % Force field may be missing if the force sensor was not available or not working
-        for icycle = 1:length(Event.Remote)
-            if icycle < 4
-                Event.Remote(icycle) = fix(Event.Remote(icycle)*Trial.fmarker);
-                if Event.Remote(icycle)+Trial.fmarker-1 < size(Scalar.Force,1)
-                    subForce = [subForce mean(Scalar.Force(Event.Remote(icycle):Event.Remote(icycle)+Trial.fmarker-1,1))]; % Mean value during 1s analog acquisition 
-                else
-                    subForce = [subForce mean(Scalar.Force(Event.Remote(icycle):end,1))];
-                    endubForce = [];
-                end
-                if contains(c3dFiles.name,'ISOMETRIC1') % Right
-                    if Event.Remote(icycle)+Trial.fmarker-1 < size(Scalar.Force,1)
-                        subAngle = [subAngle mean(abs(Trial.Joint(1).Euler.full(:,1,Event.Remote(icycle):Event.Remote(icycle)+Trial.fmarker-1)),3)]; % Mean value during 1s analog acquisition 
-                    else
-                        subAngle = [subAngle mean(abs(Trial.Joint(1).Euler.full(:,1,Event.Remote(icycle):end)),3)];
-                    end
-                elseif contains(c3dFiles.name,'ISOMETRIC2') % Left
-                    if Event.Remote(icycle)+Trial.fmarker-1 < size(Scalar.Force,1)
-                        subAngle = [subAngle mean(abs(Trial.Joint(6).Euler.full(:,1,Event.Remote(icycle):Event.Remote(icycle)+Trial.fmarker-1)),3)]; % Mean value during 1s analog acquisition 
-                    else
-                        subAngle = [subAngle mean(abs(Trial.Joint(6).Euler.full(:,1,Event.Remote(icycle):end)),3)];
-                    end
-                end
-            end
-        end
-        Trial.Fsensor.label = 'Force sensor';
-        Trial.Fsensor.Force.value = subForce; % (N)
-        Trial.Fsensor.Force.units = 'N';
-        Trial.Fsensor.Angle.value = subAngle; % (°deg)
-        Trial.Fsensor.Angle.units = '°deg';
-        clear temp;
-    else
-        Trial.Fsensor.label = 'Force sensor';
-        Trial.Fsensor.Force.value = []; % (N)
-        Trial.Fsensor.Force.units = 'N';
-        Trial.Fsensor.Angle.value = []; % (°deg)
-        Trial.Fsensor.Angle.units = '°deg';
-    end
+if contains(Trial.file,'CALIBRATION4')
+    disp('  - Calibrage des données du capteur de force');
+    % Get calibration values 
+    weight = mass*9.81; % (N)
+    famplitude = mean(Analog.FORCE(fix(Event.Remote(1)*Trial.fanalog):fix(Event.Remote(2)*Trial.fanalog))) - ...
+                 mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog)));
+    Trial.Fsensor.label = 'Force sensor';
+    Trial.Fsensor.calibration = weight/famplitude;
+    Trial.Fsensor.Force.value = permute((Analog.FORCE-mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog))))*Trial.Fsensor.calibration,[2,3,1]); % N
+    Trial.Fsensor.Force.units = 'N';
+elseif contains(c3dFiles.name,'CALIBRATION5') || contains(c3dFiles.name,'CALIBRATION6') % Isometric tasks only
+    disp('  - Calibrage des données du capteur de force');
+    figure;
+    plot(Analog.FORCE);
+    title('Sélectionner le début et la fin de la ligne de base');
+    baseline = ginput(2);
+    close gcf;
+    Trial.Fsensor.label = 'Force sensor';
+    Trial.Fsensor.calibration = calibration;
+    Trial.Fsensor.Force.value = permute((Analog.FORCE-mean(Analog.FORCE(baseline(1):baseline(2))))*calibration,[2,3,1]); % N
+    Trial.Fsensor.Force.units = 'N';
 else
     Trial.Fsensor.label = 'Force sensor';
-    Trial.Fsensor.Force.value = []; % (N)
+    Trial.Fsensor.calibration = calibration;
+    Trial.Fsensor.Force.value = []; % N
     Trial.Fsensor.Force.units = 'N';
-    Trial.Fsensor.Angle.value = []; % (°deg)
-    Trial.Fsensor.Angle.units = '°deg';
 end  

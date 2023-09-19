@@ -25,9 +25,6 @@ function Trial = ProcessEMGSignals(Trial,Processing)
 for i = 1:size(Trial.EMG,2)
     if ~isempty(Trial.EMG(i).Signal.raw)
               
-        % Remove spikes
-        Trial.EMG(i).Signal.raw = deleteoutliers(Trial.EMG(i).Signal.raw,0.08,1);
-
         % -----------------------------------------------------------------
         % REPLACE NANs BY ZEROs
         % -----------------------------------------------------------------   

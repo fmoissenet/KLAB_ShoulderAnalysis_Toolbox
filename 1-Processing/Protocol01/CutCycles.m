@@ -18,196 +18,290 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function Trial = CutCycles(Session,c3dFiles,Trial)
+function Trial = CutCycles(c3dFiles,Trial)
 
 % Initialisation
-Cycles = [];
+Rcycles = [];
 Lcycles = [];
-trialsubTypes = {'ANALYTIC1','ANALYTIC2','ANALYTIC3','ANALYTIC4', ...
-                 'FUNCTIONAL1','FUNCTIONAL2','FUNCTIONAL3','FUNCTIONAL4'}; % Only during cyclic movements
 
-% Use the side with highest amplitude to cut cycles
-for j2 = 1:size(trialsubTypes,2)
-    if contains(c3dFiles.name,trialsubTypes{j2})
-        start = [];
-        stop = [];
-        value = [];
-        if contains(c3dFiles.name,'ANALYTIC2')
-            if max(abs(squeeze(Trial.Joint(1).Euler.full(:,1,:))')) > max(abs(squeeze(Trial.Joint(6).Euler.full(:,1,:))'))
-                value = abs(squeeze(Trial.Joint(1).Euler.full(:,1,:))');
-            else
-                value = abs(squeeze(Trial.Joint(6).Euler.full(:,1,:))');
-            end
-        elseif contains(c3dFiles.name,'ANALYTIC1')
-            if max(abs(squeeze(Trial.Joint(1).Euler.full(:,3,:))')) > max(abs(squeeze(Trial.Joint(6).Euler.full(:,3,:))'))
-                value = abs(squeeze(Trial.Joint(1).Euler.full(:,3,:))');
-            else
-                value = abs(squeeze(Trial.Joint(6).Euler.full(:,3,:))');
-            end
-        elseif contains(c3dFiles.name,'ANALYTIC3')
-%             figure; hold on;
-%             plot(squeeze(Trial.Joint(1).Euler.full(:,2,:)),'blue')
-%             plot(unwrap(squeeze(Trial.Joint(6).Euler.full(:,2,:)))+360,'red')
-            if max(-(squeeze(Trial.Joint(1).Euler.full(:,2,:))')) > max(-(squeeze(Trial.Joint(6).Euler.full(:,2,:))'))
-                value = -squeeze(Trial.Joint(1).Euler.full(:,2,:))';
-            else
-                value = -squeeze(Trial.Joint(6).Euler.full(:,2,:))';
-            end
-        elseif contains(c3dFiles.name,'ANALYTIC4')
-%             figure; hold on;
-%             plot(squeeze(Trial.Joint(1).Euler.full(:,2,:)),'blue')
-%             plot(squeeze(Trial.Joint(6).Euler.full(:,2,:)),'red')
-            if max(abs(squeeze(Trial.Joint(1).Euler.full(:,2,:))')) > max(abs(squeeze(Trial.Joint(6).Euler.full(:,2,:))'))
-                value = squeeze(Trial.Joint(1).Euler.full(:,2,:))';
-            else
-                value = squeeze(Trial.Joint(6).Euler.full(:,2,:))';
+if contains(c3dFiles.name,'ANALYTIC')
+    % Set cycles
+    start = [];
+    stop = [];
+    value = [];
+    % Right side
+    if contains(c3dFiles.name,'ANALYTIC2')
+        value = abs(squeeze(Trial.Joint(1).Euler.full(:,1,:))');
+    elseif contains(c3dFiles.name,'ANALYTIC1')
+        value = abs(squeeze(Trial.Joint(1).Euler.full(:,3,:))');
+    elseif contains(c3dFiles.name,'ANALYTIC3')
+        value = -squeeze(Trial.Joint(1).Euler.full(:,2,:))';
+    elseif contains(c3dFiles.name,'ANALYTIC4')
+        value = squeeze(Trial.Joint(1).Euler.full(:,2,:))';
+    end
+    if ~isempty(value)
+        figure; hold on; title(c3dFiles.name);
+        value = unwrap(value);
+        plot(1:size(value,2),value,'red');
+        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
+        localmin = ginput(6); % If nothing to select, click in the red rectangle
+        index = [];
+        for imin = 1:2:size(localmin,1)
+            if localmin(imin,2) > 0
+                index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
             end
         end
-        if ~isempty(value)
-            figure; hold on; title(c3dFiles.name);
-            value = unwrap(value);
-            plot(1:size(value,2),value,'red');
-            rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-            localmin = ginput(6); % If nothing to select, click in the red rectangle
-            index = [];
-            for imin = 1:2:size(localmin,1)
-                if localmin(imin,2) > 0
-                    index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
+        plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
+        icycle = 1;
+        for iindex = 1:2:size(index,2)-1
+            Rcycles(icycle).range = (index(iindex):index(iindex+1))';
+            icycle = icycle+1;
+        end 
+        close gcf;
+    end
+    % Left side
+    if contains(c3dFiles.name,'ANALYTIC2')
+        value = abs(squeeze(Trial.Joint(6).Euler.full(:,1,:))');
+    elseif contains(c3dFiles.name,'ANALYTIC1')
+        value = abs(squeeze(Trial.Joint(6).Euler.full(:,3,:))');
+    elseif contains(c3dFiles.name,'ANALYTIC3')
+        value = -squeeze(Trial.Joint(6).Euler.full(:,2,:))';
+    elseif contains(c3dFiles.name,'ANALYTIC4')
+        value = squeeze(Trial.Joint(6).Euler.full(:,2,:))';
+    end
+    if ~isempty(value)
+        figure; hold on; title(c3dFiles.name);
+        value = unwrap(value);
+        plot(1:size(value,2),value,'red');
+        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
+        localmin = ginput(6); % If nothing to select, click in the red rectangle
+        index = [];
+        for imin = 1:2:size(localmin,1)
+            if localmin(imin,2) > 0
+                index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
+            end
+        end
+        plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
+        icycle = 1;
+        for iindex = 1:2:size(index,2)-1
+            Lcycles(icycle).range = (index(iindex):index(iindex+1))';
+            icycle = icycle+1;
+        end 
+        close gcf;
+    end
+
+    % Cut cycles
+    % Cycle
+    Trial.Rcycle = Rcycles;
+    Trial.Lcycle = Lcycles;
+    % Markers
+    for imarker = 1:size(Trial.Marker,2)
+        % Right side
+        if ~isempty(Rcycles)
+            for icycle = 1:size(Rcycles,2)
+                n  = size(Rcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                if ~isnan(sum(Trial.Marker(imarker).Trajectory.full(1,1,:)))
+                    Trial.Marker(imarker).Trajectory.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Marker(imarker).Trajectory.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                    
+                else
+                    Trial.Marker(imarker).Trajectory.rcycle(:,:,:,icycle) = nan(3,1,101,1);
                 end
             end
-            plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
-            icycle = 1;
-            for iindex = 1:2:size(index,2)-1
-                Cycles(icycle).range = (index(iindex):index(iindex+1))';
-                icycle = icycle+1;
-            end 
         end
-    end
-end
-% Cut cycles
-% Markers
-for imarker = 1:size(Trial.Marker,2)
-    if ~isempty(Cycles)
-        for icycle = 1:size(Cycles,2)
-            n  = size(Cycles(icycle).range,1);
-            k0 = (1:n)';
-            k1 = (linspace(1,n,101))';
-            if ~isnan(sum(Trial.Marker(imarker).Trajectory.full(1,1,:)))
-                Trial.Marker(imarker).Trajectory.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Marker(imarker).Trajectory.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Marker(imarker).Trajectory.cycle(:,:,:,icycle) = nan(3,1,101,1);
-            end
-        end
-    end
-end
-% Vmarkers
-for ivmarker = 1:size(Trial.Vmarker,2)
-    if ~isempty(Cycles)
-        for icycle = 1:size(Cycles,2)
-            n  = size(Cycles(icycle).range,1);
-            k0 = (1:n)';
-            k1 = (linspace(1,n,101))';
-            Trial.Vmarker(ivmarker).Trajectory.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-        end
-    end
-end
-% Segments
-for isegment = 1:size(Trial.Segment,2)
-    if ~isempty(Cycles)
-        for icycle = 1:size(Cycles,2)
-            n  = size(Cycles(icycle).range,1);
-            k0 = (1:n)';
-            k1 = (linspace(1,n,101))';
-            if ~isempty(Trial.Segment(isegment).rM.full)
-                Trial.Segment(isegment).rM.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).rM.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Segment(isegment).rM.cycle = [];
-            end
-            if ~isempty(Trial.Segment(isegment).Q.full)
-                Trial.Segment(isegment).Q.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).Q.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Segment(isegment).Q.cycle = [];
-            end
-            if ~isempty(Trial.Segment(isegment).T.full)
-                Trial.Segment(isegment).T.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).T.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Segment(isegment).T.cycle = [];
-            end
-            if ~isempty(Trial.Segment(isegment).Euler.full)
-                Trial.Segment(isegment).Euler.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).Euler.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Segment(isegment).Euler.cycle = [];
-            end
-            if ~isempty(Trial.Segment(isegment).dj.full)
-                Trial.Segment(isegment).dj.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).dj.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Segment(isegment).dj.cycle = [];
-            end
-        end
-    end
-end
-% Joints
-for ijoint = 1:size(Trial.Joint,2)
-    if ~isempty(Cycles)
-        for icycle = 1:size(Cycles,2)
-            n  = size(Cycles(icycle).range,1);
-            k0 = (1:n)';
-            k1 = (linspace(1,n,101))';
-            if ~isempty(Trial.Joint(ijoint).T.full)
-                Trial.Joint(ijoint).T.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).T.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Joint(ijoint).T.cycle = [];
-            end
-            if ~isempty(Trial.Joint(ijoint).Euler.full)
-                Trial.Joint(ijoint).Euler.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).Euler.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-                if ijoint == 1 || ijoint == 6
-                    if ~isempty(Trial.Joint(ijoint).ElevationPlane.full)
-                        Trial.Joint(ijoint).ElevationPlane.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).ElevationPlane.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-                    else
-                        Trial.Joint(ijoint).ElevationPlane.cycle = [];
-                    end
+        % Left side
+        if ~isempty(Lcycles)
+            for icycle = 1:size(Lcycles,2)
+                n  = size(Lcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                if ~isnan(sum(Trial.Marker(imarker).Trajectory.full(1,1,:)))
+                    Trial.Marker(imarker).Trajectory.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Marker(imarker).Trajectory.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Marker(imarker).Trajectory.lcycle(:,:,:,icycle) = nan(3,1,101,1);
                 end
-            else
-                Trial.Joint(ijoint).Euler.cycle = [];
-                Trial.Joint(ijoint).ElevationPlane.cycle = [];
-            end
-            if ~isempty(Trial.Joint(ijoint).dj.full)
-                Trial.Joint(ijoint).dj.cycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).dj.full(:,:,Cycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
-            else
-                Trial.Joint(ijoint).dj.cycle = [];
             end
         end
     end
-end
-% Emg
-fratio = Trial.fanalog/Trial.fmarker;
-if ~isempty(Cycles)
-    Trial = OnsetDetection(Session,Trial,Cycles);
-end
-if ~isempty(Trial.Emg)
-    for iemg = 1:size(Trial.Emg,2)
-        if ~isempty(Cycles)
-            if ~isempty(Trial.Emg(iemg).Signal.full)
-                for icycle = 1:size(Cycles,2)
-                    n  = size(Cycles(icycle).range,1);
-                    k0 = (1:n)';
-                    k1 = (linspace(1,n,101))';
-                    Trial.Emg(iemg).Signal.cycle(:,:,:,icycle) = nan(1,1,101,1);
-                    if length(find(isnan(Trial.Emg(iemg).Signal.full(:,:,Cycles(icycle).range*fratio)))) < length(Trial.Emg(iemg).Signal.full(:,:,Cycles(icycle).range*fratio))
-                        Trial.Emg(iemg).Signal.cycle1(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.full(:,:,Cycles(icycle).range*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
-                        Trial.Emg(iemg).Signal.cycle2(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Cycles(icycle).range*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
-                        for iframe = 1:size(Trial.Emg(iemg).Signal.cycle2,3)
-                            if Trial.Emg(iemg).Signal.cycle2(:,:,iframe,icycle) < 0.5 % Correct interpolation issues
-                               Trial.Emg(iemg).Signal.cycle2(:,:,iframe,icycle) = 0;
-                            elseif Trial.Emg(iemg).Signal.cycle2(:,:,iframe,icycle) > 0.5 % Correct interpolation issues
-                               Trial.Emg(iemg).Signal.cycle2(:,:,iframe,icycle) = 1; 
-                            end
+    % Vmarkers
+    for ivmarker = 1:size(Trial.Vmarker,2)
+        % Right side
+        if ~isempty(Rcycles)
+            for icycle = 1:size(Rcycles,2)
+                n  = size(Rcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                Trial.Vmarker(ivmarker).Trajectory.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+            end
+        end
+        % Left side
+        if ~isempty(Lcycles)
+            for icycle = 1:size(Lcycles,2)
+                n  = size(Lcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                Trial.Vmarker(ivmarker).Trajectory.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+            end
+        end
+    end
+    % Segments
+    for isegment = 1:size(Trial.Segment,2)
+        % Right side
+        if ~isempty(Rcycles)
+            for icycle = 1:size(Rcycles,2)
+                n  = size(Rcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                if ~isempty(Trial.Segment(isegment).rM.full)
+                    Trial.Segment(isegment).rM.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).rM.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).rM.rcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).Q.full)
+                    Trial.Segment(isegment).Q.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).Q.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).Q.rcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).T.full)
+                    Trial.Segment(isegment).T.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).T.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).T.rcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).Euler.full)
+                    Trial.Segment(isegment).Euler.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).Euler.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).Euler.rcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).dj.full)
+                    Trial.Segment(isegment).dj.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).dj.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).dj.rcycle = [];
+                end
+            end
+        end
+        % Left side
+        if ~isempty(Lcycles)
+            for icycle = 1:size(Lcycles,2)
+                n  = size(Lcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                if ~isempty(Trial.Segment(isegment).rM.full)
+                    Trial.Segment(isegment).rM.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).rM.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).rM.lcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).Q.full)
+                    Trial.Segment(isegment).Q.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).Q.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).Q.lcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).T.full)
+                    Trial.Segment(isegment).T.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).T.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).T.lcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).Euler.full)
+                    Trial.Segment(isegment).Euler.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).Euler.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).Euler.lcycle = [];
+                end
+                if ~isempty(Trial.Segment(isegment).dj.full)
+                    Trial.Segment(isegment).dj.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Segment(isegment).dj.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Segment(isegment).dj.lcycle = [];
+                end
+            end
+        end
+    end
+    % Joints
+    for ijoint = 1:size(Trial.Joint,2)
+        % Right side
+        if ~isempty(Rcycles)
+            for icycle = 1:size(Rcycles,2)
+                n  = size(Rcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                if ~isempty(Trial.Joint(ijoint).T.full)
+                    Trial.Joint(ijoint).T.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).T.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Joint(ijoint).T.rcycle = [];
+                end
+                if ~isempty(Trial.Joint(ijoint).Euler.full)
+                    Trial.Joint(ijoint).Euler.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).Euler.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                    if ijoint == 1 || ijoint == 6
+                        if ~isempty(Trial.Joint(ijoint).ElevationPlane.full)
+                            Trial.Joint(ijoint).ElevationPlane.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).ElevationPlane.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                        else
+                            Trial.Joint(ijoint).ElevationPlane.rcycle = [];
                         end
                     end
+                else
+                    Trial.Joint(ijoint).Euler.rcycle = [];
+                    Trial.Joint(ijoint).ElevationPlane.rcycle = [];
+                end
+                if ~isempty(Trial.Joint(ijoint).dj.full)
+                    Trial.Joint(ijoint).dj.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).dj.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Joint(ijoint).dj.rcycle = [];
+                end
+            end
+        end
+        % Left side
+        if ~isempty(Lcycles)
+            for icycle = 1:size(Lcycles,2)
+                n  = size(Lcycles(icycle).range,1);
+                k0 = (1:n)';
+                k1 = (linspace(1,n,101))';
+                if ~isempty(Trial.Joint(ijoint).T.full)
+                    Trial.Joint(ijoint).T.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).T.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Joint(ijoint).T.lcycle = [];
+                end
+                if ~isempty(Trial.Joint(ijoint).Euler.full)
+                    Trial.Joint(ijoint).Euler.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).Euler.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                    if ijoint == 1 || ijoint == 6
+                        if ~isempty(Trial.Joint(ijoint).ElevationPlane.full)
+                            Trial.Joint(ijoint).ElevationPlane.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).ElevationPlane.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                        else
+                            Trial.Joint(ijoint).ElevationPlane.lcycle = [];
+                        end
+                    end
+                else
+                    Trial.Joint(ijoint).Euler.lcycle = [];
+                    Trial.Joint(ijoint).ElevationPlane.lcycle = [];
+                end
+                if ~isempty(Trial.Joint(ijoint).dj.full)
+                    Trial.Joint(ijoint).dj.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Joint(ijoint).dj.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                else
+                    Trial.Joint(ijoint).dj.lcycle = [];
                 end
             end
         end
     end
+    % Emg
+    fratio = Trial.fanalog/Trial.fmarker;
+    iplot  = 1; % 1: plot signal for manual check, 0: no check (automatic)
+    Trial  = OnsetDetection(Trial,Rcycles,Lcycles,iplot);
+    if ~isempty(Trial.Emg)
+        for iemg = 1:size(Trial.Emg,2)
+            % Right side
+            if ~isempty(Rcycles)
+                if ~isempty(Trial.Emg(iemg).Signal.full)
+                    for icycle = 1:size(Rcycles,2)
+                        n  = length(Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio);
+                        k0 = (1:n)';
+                        k1 = (linspace(1,n,101))';
+                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)   = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
+                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
+                    end
+                end
+            end
+        end
+    end
+
+    % Export cycles
+    Trial.Rcycle = Rcycles; 
+    Trial.Lcycle = Lcycles;     
 end
-% Export cycles
-Trial.Cycle = Cycles;

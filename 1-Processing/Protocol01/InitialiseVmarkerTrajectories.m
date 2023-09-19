@@ -20,11 +20,17 @@
 
 function Trial = InitialiseVmarkerTrajectories(Trial)
 
-vmarkerLabels = {'REJC','RGJC','LEJC','LGJC'};
+vmarkerLabels = {'SXS','RSIA2','RSRS2','RSAA2','RSCT2','LSIA2','LSRS2','LSAA2','LSCT2','REJC','RGJC','LEJC','LGJC'};
              
 for i = 1:length(vmarkerLabels)
-    Trial.Vmarker(i).label             = vmarkerLabels{i};
-    Trial.Vmarker(i).Trajectory.full   = [];
-    Trial.Vmarker(i).Trajectory.cycle  = [];
-    Trial.Vmarker(i).Trajectory.units  = 'm';
+    Trial.Vmarker(i).label              = vmarkerLabels{i};
+    Trial.Vmarker(i).type               = '';
+    Trial.Vmarker(i).Body.Segment.label = '';
+    Trial.Vmarker(i).Body.Curve.label   = 'none';
+    Trial.Vmarker(i).Body.Curve.index   = 'none';
+    Trial.Vmarker(i).Trajectory.full    = [];
+    Trial.Vmarker(i).Trajectory.rcycle  = [];
+    Trial.Vmarker(i).Trajectory.lcycle  = [];
+    Trial.Vmarker(i).Trajectory.units   = 'm';
+    Trial.Vmarker(i).Trajectory.Gap     = [];
 end

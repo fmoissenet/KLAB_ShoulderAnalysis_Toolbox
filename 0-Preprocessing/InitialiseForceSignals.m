@@ -24,10 +24,15 @@ function Trial = InitialiseForceSignals(forceSet,Trial,Analog)
          
 % Initialise force signals
 if ~strcmp(cell2mat(forceSet(1,1)),'') % Empty list
-    for i = 1:size(forceSet,1)
+    for i = 1:size(forceSet,1)/2
         Trial.Force(i).label              = cell2mat(forceSet(i,2));
         if isfield(Analog,forceSet(i,1))
             Trial.Force(i).Signal.raw     = permute(Analog.(cell2mat(forceSet(i,1))),[2,3,1]);
+            Trial.Force(i).Signal.filt    = [];
+            Trial.Force(i).Signal.smooth  = [];
+            Trial.Force(i).Signal.units   = 'V';
+        elseif isfield(Analog,forceSet(i+size(forceSet,1)/2,1)) % Alternative name
+            Trial.Force(i).Signal.raw     = permute(Analog.(cell2mat(forceSet(i+size(forceSet,1)/2,1))),[2,3,1]);
             Trial.Force(i).Signal.filt    = [];
             Trial.Force(i).Signal.smooth  = [];
             Trial.Force(i).Signal.units   = 'V';
