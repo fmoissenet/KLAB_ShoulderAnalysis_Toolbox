@@ -18,7 +18,7 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function Trial = CutCycles(c3dFiles,Trial)
+function Trial = CutCycles(c3dFiles,Trial,btype)
 
 % Initialisation
 Rcycles = [];
@@ -40,17 +40,46 @@ if contains(c3dFiles.name,'ANALYTIC')
         value = squeeze(Trial.Joint(1).Euler.full(:,2,:))';
     end
     if ~isempty(value)
-        figure; hold on; title(c3dFiles.name);
+        figure('Position',[200 300 1200 400]);
+        hold on; title(c3dFiles.name);
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
         rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-        localmin = ginput(6); % If nothing to select, click in the red rectangle
-        index = [];
-        for imin = 1:2:size(localmin,1)
-            if localmin(imin,2) > 0
-                index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
-            end
+        %% NEW
+        localmin = ginput(12); % If nothing to select, click in the red rectangle
+        iindex = 1;
+        if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
+            [~,temp] = min(value(localmin(1):localmin(2)));
+            index(iindex) = fix(temp+localmin(1)-1);
+            iindex = iindex + 1;
+            [~,temp] = min(value(localmin(3):localmin(4)));
+            index(iindex) = fix(temp+localmin(3)-1);
+            iindex = iindex + 1;
         end
+        if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
+            [~,temp] = min(value(localmin(5):localmin(6)));
+            index(iindex) = fix(temp+localmin(5)-1);
+            iindex = iindex + 1;
+            [~,temp] = min(value(localmin(7):localmin(8)));
+            index(iindex) = fix(temp+localmin(7)-1);
+            iindex = iindex + 1;
+        end
+        if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
+            [~,temp] = min(value(localmin(9):localmin(10)));
+            index(iindex) = fix(temp+localmin(9)-1);
+            iindex = iindex + 1;
+            [~,temp] = min(value(localmin(11):localmin(12)));
+            index(iindex) = fix(temp+localmin(11)-1);
+            iindex = iindex + 1;
+        end
+        %% END NEW
+%         localmin = ginput(6); % If nothing to select, click in the red rectangle
+%         index = [];
+%         for imin = 1:2:size(localmin,1)
+%             if localmin(imin,2) > 0
+%                 index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
+%             end
+%         end
         plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
         icycle = 1;
         for iindex = 1:2:size(index,2)-1
@@ -70,17 +99,46 @@ if contains(c3dFiles.name,'ANALYTIC')
         value = squeeze(Trial.Joint(6).Euler.full(:,2,:))';
     end
     if ~isempty(value)
-        figure; hold on; title(c3dFiles.name);
+        figure('Position',[200 300 1200 400]);
+        hold on; title(c3dFiles.name);
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
         rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-        localmin = ginput(6); % If nothing to select, click in the red rectangle
-        index = [];
-        for imin = 1:2:size(localmin,1)
-            if localmin(imin,2) > 0
-                index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
-            end
+        %% NEW
+        localmin = ginput(12); % If nothing to select, click in the red rectangle
+        iindex = 1;
+        if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
+            [~,temp] = min(value(localmin(1):localmin(2)));
+            index(iindex) = fix(temp+localmin(1)-1);
+            iindex = iindex + 1;
+            [~,temp] = min(value(localmin(3):localmin(4)));
+            index(iindex) = fix(temp+localmin(3)-1);
+            iindex = iindex + 1;
         end
+        if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
+            [~,temp] = min(value(localmin(5):localmin(6)));
+            index(iindex) = fix(temp+localmin(5)-1);
+            iindex = iindex + 1;
+            [~,temp] = min(value(localmin(7):localmin(8)));
+            index(iindex) = fix(temp+localmin(7)-1);
+            iindex = iindex + 1;
+        end
+        if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
+            [~,temp] = min(value(localmin(9):localmin(10)));
+            index(iindex) = fix(temp+localmin(9)-1);
+            iindex = iindex + 1;
+            [~,temp] = min(value(localmin(11):localmin(12)));
+            index(iindex) = fix(temp+localmin(11)-1);
+            iindex = iindex + 1;
+        end
+        %% END NEW        
+%         localmin = ginput(6); % If nothing to select, click in the red rectangle
+%         index = [];
+%         for imin = 1:2:size(localmin,1)
+%             if localmin(imin,2) > 0
+%                 index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
+%             end
+%         end
         plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
         icycle = 1;
         for iindex = 1:2:size(index,2)-1
@@ -281,8 +339,7 @@ if contains(c3dFiles.name,'ANALYTIC')
     end
     % Emg
     fratio = Trial.fanalog/Trial.fmarker;
-    iplot  = 1; % 1: plot signal for manual check, 0: no check (automatic)
-    Trial  = OnsetDetection(Trial,Rcycles,Lcycles,iplot);
+    Trial  = OnsetDetection(Trial,Rcycles,Lcycles,btype);
     if ~isempty(Trial.Emg)
         for iemg = 1:size(Trial.Emg,2)
             % Right side

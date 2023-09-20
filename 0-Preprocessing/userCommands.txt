@@ -252,8 +252,8 @@ emgSet = { ... % Convertion table between QTM file names and toolbox file names
 };
 Processing.EMG.zmethod.type      = 'mean';
 Processing.EMG.zmethod.parameter = [];
-Processing.EMG.fmethod.type      = 'butterBand4';
-Processing.EMG.fmethod.parameter = [30 450];
+Processing.EMG.fmethod.type      = 'none';
+Processing.EMG.fmethod.parameter = [];
 Processing.EMG.rmethod.type      = 'none';
 Processing.EMG.smethod.type      = 'none';
 Processing.EMG.smethod.parameter = [];

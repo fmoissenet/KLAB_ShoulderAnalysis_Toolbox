@@ -29,7 +29,7 @@ if contains(Trial.file,'CALIBRATION3') % Patient asked to relax arms during this
         Trial.Emg(iemg).type  = '';
         if isfield(Emg,EmgSet{iemg,2})
             if ~isnan(sum(sum(Emg.(EmgSet{iemg,2}))))
-                Trial.Emg(iemg).baseline = std(Emg.(EmgSet{iemg,2}));
+                Trial.Emg(iemg).baseline = Emg.(EmgSet{iemg,2});
                 Trial.Emg(iemg).Signal.full = permute(filloutliers(Emg.(EmgSet{iemg,2}),"nearest","mean"),[2,3,1]); % Replace outliers (more than three standard deviations from the mean) by previous value
                 Trial.Emg(iemg).Signal.envelop = [];
                 Trial.Emg(iemg).Signal.onset = [];

@@ -33,18 +33,6 @@ nEmg    = fieldnames(Analog);
 Event   = btkGetEvents(btkFile);
 clear temp;
 
-% Compute mean and SD of the EMG signals
-% for iemg = 1:14 % All EMG (right and left)
-%     EMG.(nEmg{iemg}).Calibration.mean = mean(Analog.(nEmg{iemg}));
-%     EMG.(nEmg{iemg}).Calibration.std  = std(Analog.(nEmg{iemg}));
-% end
-% % Right / use serratus anterior as reference
-% EMG.RCalibration.mean = mean(Analog.(nEmg{6}));
-% EMG.RCalibration.std  = std(Analog.(nEmg{6}));
-% % Left / use serratus anterior as reference
-% EMG.LCalibration.mean = mean(Analog.(nEmg{13}));
-% EMG.LCalibration.std  = std(Analog.(nEmg{13}));
-
 % Load C3D files
 cd([Folder.data,'\Processed\']);
 c3dFiles   = dir('*.c3d');
