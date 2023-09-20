@@ -40,7 +40,6 @@ while iemg < 15 % All EMG (right and left)
     smax = max(signal);
     [~,signal] = energyop(signal);
     signal = abs(signal*smax/max(signal));
-    % 0- Plot
     fig = figure('Position',[200 300 1200 400]);
     hold on;
     plot(signal0,'Color','blue');
@@ -143,7 +142,8 @@ while iemg < 15 % All EMG (right and left)
     MT  = rms(abs(envelop(find(onset==1))));
     MN  = rms(abs(envelop(find(onset==0))));
     SNR = abs(20*log(MT/MN));
-    % Complete plot        
+    Trial.Emg(iemg).SNR = SNR;
+    % Complete plot    
     title([Trial.Emg(iemg).label,', SNR: ',num2str(SNR),' dB']);    
     line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
     plot(onset*max(signal),'Color','black','Linewidth',1);
@@ -151,28 +151,28 @@ while iemg < 15 % All EMG (right and left)
     if iemg < 8 % Right side EMG
         Trial.Emg(iemg).Signal.envelop(:,:,:) = permute(signal,[2,3,1]);
         Trial.Emg(iemg).Signal.onset(:,:,:)   = permute(onset,[2,3,1]);
-%         for icycle = 1:size(Rcycles,2)
-%             [vmax,imax] = max(signal(Rcycles(icycle).range*fratio));
-%             plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
-%             rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
-%             [~,y] = ginput(1);
-%             if y < 0 % Signal not usable = NaN
-%                 Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
-%             end
-%         end
+        for icycle = 1:size(Rcycles,2)
+            [vmax,imax] = max(signal(Rcycles(icycle).range*fratio));
+            plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
+            rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
+            [~,y] = ginput(1);
+            if y < 0 % Signal not usable = NaN
+                Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
+            end
+        end
         close(fig);
     elseif iemg > 7 % Left side EMG
         Trial.Emg(iemg).Signal.envelop(:,:,:) = permute(signal,[2,3,1]);
         Trial.Emg(iemg).Signal.onset(:,:,:)   = permute(onset,[2,3,1]);
-%         for icycle = 1:size(Lcycles,2)
-%             [vmax,imax] = max(signal(Lcycles(icycle).range*fratio));
-%             plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
-%             rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
-%             [~,y] = ginput(1);
-%             if y < 0 % Signal not usable = NaN
-%                 Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
-%             end
-%         end
+        for icycle = 1:size(Lcycles,2)
+            [vmax,imax] = max(signal(Lcycles(icycle).range*fratio));
+            plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
+            rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
+            [~,y] = ginput(1);
+            if y < 0 % Signal not usable = NaN
+                Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
+            end
+        end
         close(fig);
     end
     iemg = iemg+1;

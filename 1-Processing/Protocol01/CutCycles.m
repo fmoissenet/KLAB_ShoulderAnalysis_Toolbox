@@ -45,41 +45,41 @@ if contains(c3dFiles.name,'ANALYTIC')
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
         rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-        %% NEW
-        localmin = ginput(12); % If nothing to select, click in the red rectangle
-        iindex = 1;
-        if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
-            [~,temp] = min(value(localmin(1):localmin(2)));
-            index(iindex) = fix(temp+localmin(1)-1);
-            iindex = iindex + 1;
-            [~,temp] = min(value(localmin(3):localmin(4)));
-            index(iindex) = fix(temp+localmin(3)-1);
-            iindex = iindex + 1;
-        end
-        if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
-            [~,temp] = min(value(localmin(5):localmin(6)));
-            index(iindex) = fix(temp+localmin(5)-1);
-            iindex = iindex + 1;
-            [~,temp] = min(value(localmin(7):localmin(8)));
-            index(iindex) = fix(temp+localmin(7)-1);
-            iindex = iindex + 1;
-        end
-        if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
-            [~,temp] = min(value(localmin(9):localmin(10)));
-            index(iindex) = fix(temp+localmin(9)-1);
-            iindex = iindex + 1;
-            [~,temp] = min(value(localmin(11):localmin(12)));
-            index(iindex) = fix(temp+localmin(11)-1);
-            iindex = iindex + 1;
-        end
-        %% END NEW
-%         localmin = ginput(6); % If nothing to select, click in the red rectangle
-%         index = [];
-%         for imin = 1:2:size(localmin,1)
-%             if localmin(imin,2) > 0
-%                 index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
-%             end
+%         %% NEW
+%         localmin = ginput(12); % If nothing to select, click in the red rectangle
+%         iindex = 1;
+%         if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
+%             [~,temp] = min(value(localmin(1):localmin(2)));
+%             index(iindex) = fix(temp+localmin(1)-1);
+%             iindex = iindex + 1;
+%             [~,temp] = min(value(localmin(3):localmin(4)));
+%             index(iindex) = fix(temp+localmin(3)-1);
+%             iindex = iindex + 1;
 %         end
+%         if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
+%             [~,temp] = min(value(localmin(5):localmin(6)));
+%             index(iindex) = fix(temp+localmin(5)-1);
+%             iindex = iindex + 1;
+%             [~,temp] = min(value(localmin(7):localmin(8)));
+%             index(iindex) = fix(temp+localmin(7)-1);
+%             iindex = iindex + 1;
+%         end
+%         if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
+%             [~,temp] = min(value(localmin(9):localmin(10)));
+%             index(iindex) = fix(temp+localmin(9)-1);
+%             iindex = iindex + 1;
+%             [~,temp] = min(value(localmin(11):localmin(12)));
+%             index(iindex) = fix(temp+localmin(11)-1);
+%             iindex = iindex + 1;
+%         end
+%         %% END NEW
+        localmin = ginput(6); % If nothing to select, click in the red rectangle
+        index = [];
+        for imin = 1:2:size(localmin,1)
+            if localmin(imin,2) > 0
+                index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
+            end
+        end
         plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
         icycle = 1;
         for iindex = 1:2:size(index,2)-1
@@ -104,41 +104,41 @@ if contains(c3dFiles.name,'ANALYTIC')
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
         rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-        %% NEW
-        localmin = ginput(12); % If nothing to select, click in the red rectangle
-        iindex = 1;
-        if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
-            [~,temp] = min(value(localmin(1):localmin(2)));
-            index(iindex) = fix(temp+localmin(1)-1);
-            iindex = iindex + 1;
-            [~,temp] = min(value(localmin(3):localmin(4)));
-            index(iindex) = fix(temp+localmin(3)-1);
-            iindex = iindex + 1;
-        end
-        if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
-            [~,temp] = min(value(localmin(5):localmin(6)));
-            index(iindex) = fix(temp+localmin(5)-1);
-            iindex = iindex + 1;
-            [~,temp] = min(value(localmin(7):localmin(8)));
-            index(iindex) = fix(temp+localmin(7)-1);
-            iindex = iindex + 1;
-        end
-        if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
-            [~,temp] = min(value(localmin(9):localmin(10)));
-            index(iindex) = fix(temp+localmin(9)-1);
-            iindex = iindex + 1;
-            [~,temp] = min(value(localmin(11):localmin(12)));
-            index(iindex) = fix(temp+localmin(11)-1);
-            iindex = iindex + 1;
-        end
-        %% END NEW        
-%         localmin = ginput(6); % If nothing to select, click in the red rectangle
-%         index = [];
-%         for imin = 1:2:size(localmin,1)
-%             if localmin(imin,2) > 0
-%                 index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
-%             end
+%         %% NEW
+%         localmin = ginput(12); % If nothing to select, click in the red rectangle
+%         iindex = 1;
+%         if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
+%             [~,temp] = min(value(localmin(1):localmin(2)));
+%             index(iindex) = fix(temp+localmin(1)-1);
+%             iindex = iindex + 1;
+%             [~,temp] = min(value(localmin(3):localmin(4)));
+%             index(iindex) = fix(temp+localmin(3)-1);
+%             iindex = iindex + 1;
 %         end
+%         if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
+%             [~,temp] = min(value(localmin(5):localmin(6)));
+%             index(iindex) = fix(temp+localmin(5)-1);
+%             iindex = iindex + 1;
+%             [~,temp] = min(value(localmin(7):localmin(8)));
+%             index(iindex) = fix(temp+localmin(7)-1);
+%             iindex = iindex + 1;
+%         end
+%         if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
+%             [~,temp] = min(value(localmin(9):localmin(10)));
+%             index(iindex) = fix(temp+localmin(9)-1);
+%             iindex = iindex + 1;
+%             [~,temp] = min(value(localmin(11):localmin(12)));
+%             index(iindex) = fix(temp+localmin(11)-1);
+%             iindex = iindex + 1;
+%         end
+%         %% END NEW        
+        localmin = ginput(6); % If nothing to select, click in the red rectangle
+        index = [];
+        for imin = 1:2:size(localmin,1)
+            if localmin(imin,2) > 0
+                index = [index fix(localmin(imin,1)) fix(localmin(imin+1,1))]; % Store current and next mins
+            end
+        end
         plot(index,value(index),'Marker','+','Linestyle','none','Color','green');
         icycle = 1;
         for iindex = 1:2:size(index,2)-1

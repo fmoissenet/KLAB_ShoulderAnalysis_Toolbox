@@ -22,11 +22,16 @@ function [] = UpdateC3DFile(Trial,c3dFiles)
 
 % Markers
 if ~contains(c3dFiles.name,'CALIBRATION3')
-    btkRemovePoint(Trial.btk,'STY01');
-    btkRemovePoint(Trial.btk,'STY02');
-    btkRemovePoint(Trial.btk,'STY03');
-    btkRemovePoint(Trial.btk,'STY04');
-    btkRemovePoint(Trial.btk,'STY05');
+    Marker = btkGetMarkers(Trial.btk);
+    markerNames = fieldnames(Marker);
+    if isfield(markerNames,'STY01')
+        btkRemovePoint(Trial.btk,'STY01');
+        btkRemovePoint(Trial.btk,'STY02');
+        btkRemovePoint(Trial.btk,'STY03');
+        btkRemovePoint(Trial.btk,'STY04');
+        btkRemovePoint(Trial.btk,'STY05');
+    end
+    clear Marker markerNames;
 end
 % Virtual markers
 for ivmarker = 1:length(Trial.Vmarker)

@@ -73,7 +73,7 @@ end
 addpath(Folder.toolbox);
 cd(Folder.toolbox);
 
-% --------------------------------- ----------------------------------------
+% -------------------------------------------------------------------------
 % PROCESS DATA
 % -------------------------------------------------------------------------
 % Get user commands
@@ -159,36 +159,11 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
                 % Define and cut movement cycles
                 % Based on humerothoracic kinematics
                 figure;       
-                btype = 1;
+                btype = 1; % Automatic baseline selection
                 Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
-                for iemg = 1:14
-                    subplot(2,7,iemg); hold on;
-                    temp = squeeze(Trial(k).Emg(iemg).Signal.onset);
-                    temp(find(temp<1)) = NaN;
-                    plot(btype*temp,'Linewidth',5);
-                    clear temp;
-                end    
-                btype = 2;
-                Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
-                for iemg = 1:14
-                    subplot(2,7,iemg); hold on;
-                    temp = squeeze(Trial(k).Emg(iemg).Signal.onset);
-                    temp(find(temp<1)) = NaN;
-                    plot(btype*temp,'Linewidth',5);
-                    clear temp;
-                end    
-                btype = 3;
-                Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
-                for iemg = 1:14
-                    subplot(2,7,iemg); hold on;
-                    temp = squeeze(Trial(k).Emg(iemg).Signal.onset);
-                    temp(find(temp<1)) = NaN;
-                    plot(btype*temp,'Linewidth',5);
-                    clear temp;
-                end
-
                 % Compute SHR
                 Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k));
+                close all;
             end
             % Update C3D files
             UpdateC3DFile(Trial(k),c3dFiles(i));
