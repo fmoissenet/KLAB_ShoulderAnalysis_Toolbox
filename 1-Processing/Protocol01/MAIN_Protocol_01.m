@@ -36,18 +36,18 @@ disp(' ');
 % -------------------------------------------------------------------------
 % SET FOLDERS
 % -------------------------------------------------------------------------
-disp('Définition des répertoires de travail');
-Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox_main\0-Preprocessing\';
-Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox_main\1-Processing\Protocol01\';
+disp('DÃ©finition des rÃ©pertoires de travail');
+Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
+Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
 Folder.data          = uigetdir();
-Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox_main\1-Processing\dependencies\';
+Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
 addpath(genpath(Folder.dependencies));
 disp(' ');
 
 % -------------------------------------------------------------------------
 % GET SESSION DATA
 % -------------------------------------------------------------------------
-disp('Récupération des informations de la session');
+disp('RÃ©cupÃ©ration des informations de la session');
 addpath(Folder.toolbox);
 cd([Folder.data,'\']);
 [Patient,Session,Pathology] = ImportSessionData();
@@ -61,7 +61,7 @@ disp(' ');
 % -------------------------------------------------------------------------
 % PRE-PROCESS DATA
 % -------------------------------------------------------------------------
-disp('Pré-traitement des données');
+disp('PrÃ©-traitement des donnÃ©es');
 if ~isfolder('Processed')
     addpath(Folder.preprocessing);
     MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'YYYYmmDD'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
@@ -72,7 +72,7 @@ disp(' ');
 % -------------------------------------------------------------------------
 % ADD 3D MARKER TRAJECTORIES BASED ON POINTING TASKS (SXS)
 % -------------------------------------------------------------------------
-disp('Ajout des marqueurs pointés');
+disp('Ajout des marqueurs pointÃ©s');
 addpath(Folder.toolbox);
 STY06                   = CalibrateStylus(Folder);
 Session.LocalPoints.SXS = DefineLocalSXS(Folder,STY06);
@@ -176,13 +176,13 @@ end
 % -------------------------------------------------------------------------
 % GENERATE REPORT
 % -------------------------------------------------------------------------
-disp('Génération du rapport');
+disp('GÃ©nÃ©ration du rapport');
 cd(Folder.data);
 mkdir('Report');
 cd('Report');
 close all;
 if isempty(dir('*.docx'))
-    copyfile([Folder.toolbox,'Report\KLAB - Analyse quantifiée du membre supérieur - Rapport - Template.docx'],[Folder.data,'\Report\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-Rapport.docx']);
+    copyfile([Folder.toolbox,'Report\KLAB - Analyse quantifiÃ©e du membre supÃ©rieur - Rapport - Template.docx'],[Folder.data,'\Report\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-Rapport.docx']);
     copyfile([Folder.toolbox,'Report\Skeleton_left_shoulder.png'],[Folder.data,'\Report\Skeleton_left_shoulder.png']);
     copyfile([Folder.toolbox,'Report\Skeleton_right_shoulder.png'],[Folder.data,'\Report\Skeleton_right_shoulder.png']);
     copyfile([Folder.toolbox,'Report\Skeleton_top.png'],[Folder.data,'\Report\Skeleton_top.png']);
