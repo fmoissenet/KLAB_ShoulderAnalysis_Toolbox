@@ -195,7 +195,8 @@ end
 % STORE RESULTS
 % -------------------------------------------------------------------------
 clearvars -except Folder Patient Session Pathology Processing Trial;
-save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
+% save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
+save([Folder.data,'\P',num2str(Patient.ID),'.mat']);
 
 % % -------------------------------------------------------------------------
 % % STOP ALL PROCESSES

@@ -21,6 +21,7 @@
 function Trial = CutCycles(c3dFiles,Trial,btype)
 
 % Initialisation
+disp('  - Découpage des cycles de mouvement');
 Rcycles = [];
 Lcycles = [];
 
@@ -45,34 +46,6 @@ if contains(c3dFiles.name,'ANALYTIC')
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
         rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-%         %% NEW
-%         localmin = ginput(12); % If nothing to select, click in the red rectangle
-%         iindex = 1;
-%         if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
-%             [~,temp] = min(value(localmin(1):localmin(2)));
-%             index(iindex) = fix(temp+localmin(1)-1);
-%             iindex = iindex + 1;
-%             [~,temp] = min(value(localmin(3):localmin(4)));
-%             index(iindex) = fix(temp+localmin(3)-1);
-%             iindex = iindex + 1;
-%         end
-%         if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
-%             [~,temp] = min(value(localmin(5):localmin(6)));
-%             index(iindex) = fix(temp+localmin(5)-1);
-%             iindex = iindex + 1;
-%             [~,temp] = min(value(localmin(7):localmin(8)));
-%             index(iindex) = fix(temp+localmin(7)-1);
-%             iindex = iindex + 1;
-%         end
-%         if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
-%             [~,temp] = min(value(localmin(9):localmin(10)));
-%             index(iindex) = fix(temp+localmin(9)-1);
-%             iindex = iindex + 1;
-%             [~,temp] = min(value(localmin(11):localmin(12)));
-%             index(iindex) = fix(temp+localmin(11)-1);
-%             iindex = iindex + 1;
-%         end
-%         %% END NEW
         localmin = ginput(6); % If nothing to select, click in the red rectangle
         index = [];
         for imin = 1:2:size(localmin,1)
@@ -103,35 +76,7 @@ if contains(c3dFiles.name,'ANALYTIC')
         hold on; title(c3dFiles.name);
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
-        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
-%         %% NEW
-%         localmin = ginput(12); % If nothing to select, click in the red rectangle
-%         iindex = 1;
-%         if localmin(1) > 0 && localmin(2) > 0 && localmin(3) > 0 && localmin(4) > 0 
-%             [~,temp] = min(value(localmin(1):localmin(2)));
-%             index(iindex) = fix(temp+localmin(1)-1);
-%             iindex = iindex + 1;
-%             [~,temp] = min(value(localmin(3):localmin(4)));
-%             index(iindex) = fix(temp+localmin(3)-1);
-%             iindex = iindex + 1;
-%         end
-%         if localmin(5) > 0 && localmin(6) > 0 && localmin(7) > 0 && localmin(8) > 0 
-%             [~,temp] = min(value(localmin(5):localmin(6)));
-%             index(iindex) = fix(temp+localmin(5)-1);
-%             iindex = iindex + 1;
-%             [~,temp] = min(value(localmin(7):localmin(8)));
-%             index(iindex) = fix(temp+localmin(7)-1);
-%             iindex = iindex + 1;
-%         end
-%         if localmin(9) > 0 && localmin(10) > 0 && localmin(11) > 0 && localmin(12) > 0 
-%             [~,temp] = min(value(localmin(9):localmin(10)));
-%             index(iindex) = fix(temp+localmin(9)-1);
-%             iindex = iindex + 1;
-%             [~,temp] = min(value(localmin(11):localmin(12)));
-%             index(iindex) = fix(temp+localmin(11)-1);
-%             iindex = iindex + 1;
-%         end
-%         %% END NEW        
+        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');       
         localmin = ginput(6); % If nothing to select, click in the red rectangle
         index = [];
         for imin = 1:2:size(localmin,1)
@@ -349,9 +294,24 @@ if contains(c3dFiles.name,'ANALYTIC')
                         n  = length(Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio);
                         k0 = (1:n)';
                         k1 = (linspace(1,n,101))';
-                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)   = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                        Trial.Emg(iemg).Signal.rcycle.envelop(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
                         Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
                         Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
+                    end
+                end
+            end
+            % Left side
+            if ~isempty(Lcycles)
+                if ~isempty(Trial.Emg(iemg).Signal.full)
+                    for icycle = 1:size(Lcycles,2)
+                        n  = length(Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio);
+                        k0 = (1:n)';
+                        k1 = (linspace(1,n,101))';
+                        Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                        Trial.Emg(iemg).Signal.lcycle.envelop(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                        Trial.Emg(iemg).Signal.lcycle.onset(:,:,find(Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
+                        Trial.Emg(iemg).Signal.lcycle.onset(:,:,find(Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
                     end
                 end
             end

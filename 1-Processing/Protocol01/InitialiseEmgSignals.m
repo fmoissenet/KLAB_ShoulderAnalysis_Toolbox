@@ -22,15 +22,14 @@
 
 function Trial = InitialiseEmgSignals(EmgSet,Trial,Trial2,Emg)
 
-if contains(Trial.file,'CALIBRATION3') % Patient asked to relax arms during this task
-    disp('  - Nettoyage de la ligne de base des EMG');
+if contains(Trial.file,'CALIBRATION3') % May be used to defined EMG baselines
     for iemg = 1:length(EmgSet)/2
         Trial.Emg(iemg).label = EmgSet{iemg,2};
         Trial.Emg(iemg).type  = '';
         if isfield(Emg,EmgSet{iemg,2})
             if ~isnan(sum(sum(Emg.(EmgSet{iemg,2}))))
                 Trial.Emg(iemg).baseline = Emg.(EmgSet{iemg,2});
-                Trial.Emg(iemg).Signal.full = permute(filloutliers(Emg.(EmgSet{iemg,2}),"nearest","mean"),[2,3,1]); % Replace outliers (more than three standard deviations from the mean) by previous value
+                Trial.Emg(iemg).Signal.full = permute(Emg.(EmgSet{iemg,2}),[2,3,1]);
                 Trial.Emg(iemg).Signal.envelop = [];
                 Trial.Emg(iemg).Signal.onset = [];
             else
@@ -45,14 +44,13 @@ if contains(Trial.file,'CALIBRATION3') % Patient asked to relax arms during this
         end
     end
 elseif contains(Trial.file,'ANALYTIC')
-    disp('  - Nettoyage de la ligne de base des EMG');
     for iemg = 1:length(EmgSet)/2
         Trial.Emg(iemg).label = EmgSet{iemg,2};
         Trial.Emg(iemg).type  = '';
         if isfield(Emg,EmgSet{iemg,2})
             if ~isnan(sum(sum(Emg.(EmgSet{iemg,2}))))
                 Trial.Emg(iemg).baseline = Trial2.Emg(iemg).baseline;
-                Trial.Emg(iemg).Signal.full = permute(filloutliers(Emg.(EmgSet{iemg,2}),"nearest","mean"),[2,3,1]); % Replace outliers (more than three standard deviations from the mean) by previous value
+                Trial.Emg(iemg).Signal.full = permute(Emg.(EmgSet{iemg,2}),[2,3,1]);
                 Trial.Emg(iemg).Signal.envelop = [];
                 Trial.Emg(iemg).Signal.onset = [];
             else

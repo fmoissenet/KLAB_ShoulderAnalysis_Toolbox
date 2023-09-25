@@ -20,6 +20,8 @@
 
 function Trial = ComputeSHR(c3dFiles,Trial)
 
+disp('  - Calcul du rythme scapulaire');
+
 if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % Only applied on elevation tasks only
     % Right scapulo humeral rhythm computation (mean across cycles)
     tSHR = [];                

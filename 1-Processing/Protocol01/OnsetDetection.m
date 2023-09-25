@@ -20,72 +20,74 @@
 
 function Trial = OnsetDetection(Trial,Rcycles,Lcycles,btype)
 
+disp('  - Détection des onsets/offsets des signaux EMG');
+
 % Frequency ratio between analogs and markers
 fratio = Trial.fanalog/Trial.fmarker;
+
+% Plot ylim
+ylimit = 8e-4;
 
 % Manual validation of EMG signal
 iemg = 1;
 while iemg < 15 % All EMG (right and left)
-
-    % Rashid et al. 2019
     % 0- Load EMG signal and baseline
-    signal = squeeze(Trial.Emg(iemg).Signal.full);  
-    signal0 = signal;
+    signal0 = squeeze(Trial.Emg(iemg).Signal.full);
     % 0- Signal preprocessing
-    %    Zero-phase bandpass filter 10-100 Hz using a 2th order Butterworth filter
-    [B,A]  = butter(3,[30 300]./(Trial.fanalog/2),'bandpass');
-    signal = filtfilt(B,A,signal);
-    [B,A]  = butter(1,50./(Trial.fanalog/2),'low');
-    envelop = filtfilt(B,A,abs(signal)); % Only used for SNR computation
-    smax = max(signal);
-    [~,signal] = energyop(signal);
-    signal = abs(signal*smax/max(signal));
-    fig = figure('Position',[200 300 1200 400]);
+    % https://doi.org/10.1371/journal.pone.0237727 
+    [B,A]  = butter(1,[10 500]./(Trial.fanalog/2),'bandpass');
+    signal = filtfilt(B,A,signal0);  
+    signal = abs(signal);
+    envelop = interpft(rms2(signal,0.02*Trial.fanalog,0.01*Trial.fanalog,1),length(signal)); % Used to compute SNR
+    [B,A]  = butter(1,2./(Trial.fanalog/2),'low');
+    envelop2 = smoothdata(envelop,'gaussian',3*Trial.fanalog)'; % Used to compute signal peak
+    fig = figure('units','normalized','outerposition',[0 0 1 1]);
+%     ylim([-ylimit ylimit]);
+    ylimit = max(signal);
     hold on;
-    plot(signal0,'Color','blue');
+    plot(signal0,'Color',[0.5 0.5 0.5]);
+    plot(signal,'Color','blue');
+    plot(envelop,'Color','green');
+    plot(envelop2,'Color','magenta','LineWidth',2);
+    % Extended double thresholding algorithm
+    % https://doi.org/10.1016/j.jelekin.2019.06.010
     % 1- Baseline selection
     % a- Automatic selection
     if btype == 1
-        Lb = 0.15*Trial.fanalog; % 0.15 s expressed in frames
+        Lb = 1*Trial.fanalog; % Generic: 1s
         Kb = 5; % Rank 5
         for iframe = 1:fix(size(signal,1)*0.80) % 80% of the signal is analysed to avoid issue related to bad signal stop time
-            mrect(iframe) = mean(abs(signal(iframe:iframe+Lb-1)));
+            mrect(iframe) = mean(signal(iframe:iframe+Lb-1));
         end
         srect = unique(mrect);
         fframe = 0;
         for iframe = 1:size(signal,1)-Lb
-            if mean(abs(signal(iframe:iframe+Lb-1))) == srect(Kb)
+            if mean(signal(iframe:iframe+Lb-1)) == srect(Kb)
                 fframe = iframe;
-                baseline = abs(signal(iframe:iframe+Lb-1));
+                baseline = signal(iframe:iframe+Lb-1);
             end
         end
+        plot(fframe:fframe+Lb-1,baseline,'red');
     end
     % b- Manual selection
     if btype == 2
         [x,~] = ginput(2);
-        baseline = rmoutliers(abs(signal(x(1):x(2))));
+        baseline = signal(x(1):x(2));
     end
     % c- Baseline based on reference record
     if btype == 3
+        % Same process as for the signal preprocessing
         baseline = squeeze(Trial.Emg(iemg).baseline); 
-        [B,A]  = butter(3,[30 300]./(Trial.fanalog/2),'bandpass');
+        [B,A]  = butter(1,[10 500]./(Trial.fanalog/2),'bandpass'); % Same as for the signal preprocessing
         baseline = filtfilt(B,A,baseline);
-        [B,A]  = butter(1,50./(Trial.fanalog/2),'low');
-        baseline = filtfilt(B,A,abs(baseline));
-        smax = max(baseline);
-        [~,baseline] = energyop(baseline);
-        baseline = baseline*smax/max(baseline);
+        baseline = abs(baseline);
     end
     % 2- First threshold using baseline parameters
-    if btype == 3
-        nsd = 10;
-    else
-        nsd = 40;
-    end
+    nsd = 3; % Generic: 3 sd
     onset = zeros(size(signal));
     onset(abs(signal)>(mean(baseline)+nsd*std(baseline))) = 1;
     % 3- Second threshold using on time
-    Ton = 0.01*0.5*Trial.fanalog; % 0.01 s expressed in frames
+    Ton = 0.005*Trial.fanalog; % Generic: 0.005*Trial.fanalog
     ifinder = 0;
     finder = 0;
     for iframe = 1:size(onset,1)
@@ -103,7 +105,7 @@ while iemg < 15 % All EMG (right and left)
         end
     end
     % 4- Third threshold using off time
-    Toff = 1*0.5*Trial.fanalog; % 1 s expressed in frames
+    Toff = 0.25*Trial.fanalog; % Generic: 0.25s
     ifinder = 0;
     finder = 0;
     for iframe = 1:size(onset,1)
@@ -121,7 +123,7 @@ while iemg < 15 % All EMG (right and left)
         end
     end
     % 5- Prune short events
-    Ts = 0.01*20*Trial.fanalog; % 0.01 s expressed in frames
+    Ts = 1*Trial.fanalog; % Generic: 1s
     ifinder = 0;
     finder = 0;
     for iframe = 1:size(onset,1)
@@ -139,38 +141,55 @@ while iemg < 15 % All EMG (right and left)
         end
     end
     % Signal-to-noise ratio
-    MT  = rms(abs(envelop(find(onset==1))));
-    MN  = rms(abs(envelop(find(onset==0))));
+    % https://doi.org/10.1109/TLA.2018.8528223
+    snrThreshold = 12; % dB % Generic: 12 dB
+    MT  = rms(envelop(find(onset==1)));
+    MN  = rms(envelop(find(onset==0)));
     SNR = abs(20*log(MT/MN));
     Trial.Emg(iemg).SNR = SNR;
+    if SNR < snrThreshold
+        onset = zeros(size(onset));
+    end
+    % Signal amplitude threshold
+    % https://doi.org/10.1523/JNEUROSCI.1327-05.2005
+    amplitudeThreshold = 0.2*1e-6; % uv, 1e-6 v % Generic: 0.2*1e-6 uV
+    meansignal = mean(signal);
+    Trial.Emg(iemg).signalMean = meansignal;
+    if meansignal < amplitudeThreshold
+        onset = zeros(size(onset));
+    end
     % Complete plot    
-    title([Trial.Emg(iemg).label,', SNR: ',num2str(SNR),' dB']);    
+    title([Trial.Emg(iemg).label,', SNR: ',num2str(SNR),' dB',', Mean: ',num2str(meansignal),' uv']);    
     line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
-    plot(onset*max(signal),'Color','black','Linewidth',1);
+    plot(onset*ylimit/2,'Color','black','Linewidth',2);
     % Manual validation
     if iemg < 8 % Right side EMG
-        Trial.Emg(iemg).Signal.envelop(:,:,:) = permute(signal,[2,3,1]);
-        Trial.Emg(iemg).Signal.onset(:,:,:)   = permute(onset,[2,3,1]);
+        Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
+        Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
+        Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
         for icycle = 1:size(Rcycles,2)
-            [vmax,imax] = max(signal(Rcycles(icycle).range*fratio));
+            [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
             plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
             rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
             [~,y] = ginput(1);
             if y < 0 % Signal not usable = NaN
                 Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
+                Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range) = NaN;
             end
         end
         close(fig);
     elseif iemg > 7 % Left side EMG
-        Trial.Emg(iemg).Signal.envelop(:,:,:) = permute(signal,[2,3,1]);
-        Trial.Emg(iemg).Signal.onset(:,:,:)   = permute(onset,[2,3,1]);
+        Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
+        Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
+        Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
         for icycle = 1:size(Lcycles,2)
-            [vmax,imax] = max(signal(Lcycles(icycle).range*fratio));
+            [vmax,imax] = max(envelop2(Lcycles(icycle).range*fratio));
             plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
             rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
             [~,y] = ginput(1);
             if y < 0 % Signal not usable = NaN
                 Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
+                Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range) = NaN;
             end
         end
         close(fig);
@@ -178,5 +197,5 @@ while iemg < 15 % All EMG (right and left)
     iemg = iemg+1;
     
     % Clean workspace
-    clearvars -except Trial Rcycles Lcycles iplot fratio iemg btype;
+    clearvars -except Trial Rcycles Lcycles iplot fratio iemg btype ylimit;
 end
