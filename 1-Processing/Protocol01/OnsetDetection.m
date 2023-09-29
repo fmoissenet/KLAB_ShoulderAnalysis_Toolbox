@@ -32,7 +32,7 @@ ylimit = 8e-4;
 iemg = 1;
 while iemg < 15 % All EMG (right and left)
     % 0- Load EMG signal and baseline
-    signal0 = squeeze(Trial.Emg(iemg).Signal.full);
+    signal0 = filloutliers(squeeze(Trial.Emg(iemg).Signal.full),'nearest','mean',ThresholdFactor=5); % Remove outliers to avoid spikes
     % 0- Signal preprocessing
     % https://doi.org/10.1371/journal.pone.0237727 
     [B,A]  = butter(1,[10 500]./(Trial.fanalog/2),'bandpass');
@@ -50,11 +50,12 @@ while iemg < 15 % All EMG (right and left)
     plot(envelop,'Color','green');
     plot(envelop2,'Color','magenta','LineWidth',2);
     % Extended double thresholding algorithm
+    % (Onset parameters optimisation)
     % https://doi.org/10.1016/j.jelekin.2019.06.010
     % 1- Baseline selection
     % a- Automatic selection
     if btype == 1
-        Lb = 1*Trial.fanalog; % Generic: 1s
+        Lb = 1*Trial.fanalog; % Optimised: 1s
         Kb = 5; % Rank 5
         for iframe = 1:fix(size(signal,1)*0.80) % 80% of the signal is analysed to avoid issue related to bad signal stop time
             mrect(iframe) = mean(signal(iframe:iframe+Lb-1));
@@ -83,11 +84,11 @@ while iemg < 15 % All EMG (right and left)
         baseline = abs(baseline);
     end
     % 2- First threshold using baseline parameters
-    nsd = 3; % Generic: 3 sd
+    nsd = 3; % Optimised: 3 sd
     onset = zeros(size(signal));
     onset(abs(signal)>(mean(baseline)+nsd*std(baseline))) = 1;
     % 3- Second threshold using on time
-    Ton = 0.005*Trial.fanalog; % Generic: 0.005*Trial.fanalog
+    Ton = 0.004*Trial.fanalog; % Optimised: 0.004*Trial.fanalog
     ifinder = 0;
     finder = 0;
     for iframe = 1:size(onset,1)
@@ -105,7 +106,7 @@ while iemg < 15 % All EMG (right and left)
         end
     end
     % 4- Third threshold using off time
-    Toff = 0.25*Trial.fanalog; % Generic: 0.25s
+    Toff = 0.25*Trial.fanalog; % Optimised: 0.25s
     ifinder = 0;
     finder = 0;
     for iframe = 1:size(onset,1)
@@ -123,7 +124,7 @@ while iemg < 15 % All EMG (right and left)
         end
     end
     % 5- Prune short events
-    Ts = 1*Trial.fanalog; % Generic: 1s
+    Ts = 2*Trial.fanalog; % Optimised: 2s
     ifinder = 0;
     finder = 0;
     for iframe = 1:size(onset,1)
@@ -142,7 +143,7 @@ while iemg < 15 % All EMG (right and left)
     end
     % Signal-to-noise ratio
     % https://doi.org/10.1109/TLA.2018.8528223
-    snrThreshold = 12; % dB % Generic: 12 dB
+    snrThreshold = 12; % dB % Optimised: 12 dB
     MT  = rms(envelop(find(onset==1)));
     MN  = rms(envelop(find(onset==0)));
     SNR = abs(20*log(MT/MN));
@@ -152,7 +153,7 @@ while iemg < 15 % All EMG (right and left)
     end
     % Signal amplitude threshold
     % https://doi.org/10.1523/JNEUROSCI.1327-05.2005
-    amplitudeThreshold = 0.2*1e-6; % uv, 1e-6 v % Generic: 0.2*1e-6 uV
+    amplitudeThreshold = 0.2*1e-6; % uv, 1e-6 v % Optimised: 0.2*1e-6 uV
     meansignal = mean(signal);
     Trial.Emg(iemg).signalMean = meansignal;
     if meansignal < amplitudeThreshold
