@@ -85,7 +85,7 @@ for imotion = 1:4
             emgLabels = {'    < DELT. ANT.','    < DELT. MED.','    < DELT. POS.','    < TRAP. SUP.','    < TRAP. INF.','    < GD. DENTELE','    < GD. DORSAL', ...
                          '    DELT. ANT. >','    DELT. MED. >','    DELT. POS. >','    TRAP. SUP. >','    TRAP. INF. >','    GD. DENTELE >','    GD. DORSAL >'};
             for iemg = 1:7
-                if ~isempty(Report.Analytic(imotion).Emg.Envelop(iemg).value)
+                if ~isempty(Report.Analytic(imotion).Emg(iemg).onset)
                     text(-0.4,2*iemg,emgLabels{iemg},'HorizontalAlignment','center','FontSize',fontsize);
                 else
                     text(-0.4,2*iemg,emgLabels{iemg},'HorizontalAlignment','center','FontSize',fontsize,'Color',[0.8 0.8 0.8]);
@@ -93,7 +93,7 @@ for imotion = 1:4
             end
             text(-0.4,16,'    < \bf{ANGLE}','HorizontalAlignment','center','FontSize',fontsize);
             for iemg = 8:14
-                if ~isempty(Report.Analytic(imotion).Emg.Envelop(iemg).value)
+                if ~isempty(Report.Analytic(imotion).Emg(iemg).onset)
                     text(-0.4,-2*(iemg-7),emgLabels{iemg},'HorizontalAlignment','center','FontSize',fontsize);
                 else
                     text(-0.4,-2*(iemg-7),emgLabels{iemg},'HorizontalAlignment','center','FontSize',fontsize,'Color',[0.8 0.8 0.8]);
@@ -211,8 +211,8 @@ for imotion = 1:4
                 % EMG
                 for iemg = 1:7
                     r = iemg*2;
-                    if ~isempty(Report.Analytic(imotion).Emg.Envelop(iemg+7).value) % +7 for left sensors
-                        value = Report.Analytic(imotion).Emg.Envelop(iemg+7).value(:,1,icycle); % +7 for left sensors
+                    if ~isempty(Report.Analytic(imotion).Emg(iemg+7).onset) % +7 for left sensors
+                        value = Report.Analytic(imotion).Emg(iemg+7).onset(:,1,icycle); % +7 for left sensors
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
                         else
@@ -329,8 +329,8 @@ for imotion = 1:4
                 % EMG
                 for iemg = 1:7
                     r = iemg*2;
-                    if ~isempty(Report.Analytic(imotion).Emg.Envelop(iemg).value)
-                        value = Report.Analytic(imotion).Emg.Envelop(iemg).value(:,1,icycle);
+                    if ~isempty(Report.Analytic(imotion).Emg(iemg).onset)
+                        value = Report.Analytic(imotion).Emg(iemg).onset(:,1,icycle);
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
                         else
