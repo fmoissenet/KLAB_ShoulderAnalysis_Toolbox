@@ -169,12 +169,13 @@ while iemg < 15 % All EMG (right and left)
         line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
         ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
     end
+    % Store results
+    Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
+    Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
+    Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
     % Manual validation
     if manualCheck == 1
         if iemg < 8 % Right side EMG
-            Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
-            Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
-            Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
             for icycle = 1:size(Rcycles,2)
                 [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
                 plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
@@ -193,8 +194,8 @@ while iemg < 15 % All EMG (right and left)
                         title('Sélectionner le début et fin du nouvel onset');
                         [x,y] = ginput(2);
                         if y(1) > 0 % New detection
-                            Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % New onset
-                            onset(x(1):x(2)) = 1; % Clean onset
+                            Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % Update onset
+                            onset(x(1):x(2)) = 1; % Update onset
                             delete(ponset);
                             ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
                             drawnow;
@@ -211,22 +212,36 @@ while iemg < 15 % All EMG (right and left)
             end
             close(fig);
         elseif iemg > 7 % Left side EMG
-            Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
-            Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
-            Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
             for icycle = 1:size(Lcycles,2)
                 [vmax,imax] = max(envelop2(Lcycles(icycle).range*fratio));
                 plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
                 rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
                 [~,y] = ginput(1);
                 if y < 0 % Manual onset definition
-                    [x,y] = ginput(4);
+                    title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
+                    [x,y] = ginput(2);
                     if y(1) > 0 % New detection
                         Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
-                        Trial.Emg(iemg).Signal.onset(:,:,x(3):x(4)) = 1; % New onset
+                        onset(x(1):x(2)) = 0; % Clean onset
+                        delete(ponset);
+                        ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                        drawnow;
+                        title('Sélectionner le début et fin du nouvel onset');
+                        [x,y] = ginput(2);
+                        if y(1) > 0 % New detection
+                            Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % Update onset
+                            onset(x(1):x(2)) = 1; % Update onset
+                            delete(ponset);
+                            ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                            drawnow;
+                        end
                     else % No signal
                         Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
                         Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range) = NaN;
+                        onset(Lcycles(icycle).range) = NaN;
+                        delete(ponset);
+                        ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                        drawnow;
                     end
                 end
             end
