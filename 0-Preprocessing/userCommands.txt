@@ -177,6 +177,7 @@ markerSet = { ...
     'STY03','technical','Stylus','none',nan; ... % 67
     'STY04','technical','Stylus','none',nan; ... % 68
     'STY05','technical','Stylus','none',nan      % 69
+    'S1','landmark','Thorax','none',nan; ... % 70
 };
 Processing.Marker.fmethod.type      = 'intercor';
 Processing.Marker.fmethod.parameter = [];
