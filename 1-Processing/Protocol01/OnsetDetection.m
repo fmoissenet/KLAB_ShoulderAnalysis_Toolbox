@@ -162,7 +162,7 @@ while iemg < 15 % All EMG (right and left)
     % Complete plot    
     title([Trial.Emg(iemg).label,', SNR: ',num2str(SNR),' dB',', Mean: ',num2str(meansignal),' uv']);    
     line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
-    plot(onset*ylimit/2,'Color','black','Linewidth',2);
+    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
     % Manual validation
     if iemg < 8 % Right side EMG
         Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
@@ -173,9 +173,30 @@ while iemg < 15 % All EMG (right and left)
             plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
             rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
             [~,y] = ginput(1);
-            if y < 0 % Signal not usable = NaN
-                Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
-                Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range) = NaN;
+            if y < 0 % Manual onset definition
+                [x,y] = ginput(2);
+                if y(1) > 0 % New detection
+                    Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
+                    onset(x(1):x(2)) = 0; % Clean onset
+                    delete(ponset);
+                    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                    drawnow;
+                else % No signal
+                    Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
+                    Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range) = NaN;
+                    onset(Rcycles(icycle).range) = NaN;
+                    delete(ponset);
+                    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                    drawnow;
+                end
+                [x,y] = ginput(2);
+                if y(1) > 0 % New detection
+                    Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % New onset
+                    onset(x(1):x(2)) = 1; % Clean onset
+                    delete(ponset);
+                    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                    drawnow;
+                end
             end
         end
         close(fig);
@@ -188,9 +209,15 @@ while iemg < 15 % All EMG (right and left)
             plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
             rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
             [~,y] = ginput(1);
-            if y < 0 % Signal not usable = NaN
-                Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
-                Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range) = NaN;
+            if y < 0 % Manual onset definition
+                [x,y] = ginput(4);
+                if y(1) > 0 % New detection
+                    Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
+                    Trial.Emg(iemg).Signal.onset(:,:,x(3):x(4)) = 1; % New onset
+                else % No signal
+                    Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
+                    Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range) = NaN;
+                end
             end
         end
         close(fig);
