@@ -171,8 +171,8 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(6).sequence            = 'ZXY';
     Euler                              = R2mobileZXY_array3(Trial.Joint(6).T.full(1:3,1:3,:));
     Trial.Joint(6).Euler.full(1,1,:)   = rad2deg(Euler(:,2,:)); % X
-    Trial.Joint(6).Euler.full(1,2,:)   = rad2deg(Euler(:,3,:)); % Y
-    Trial.Joint(6).Euler.full(1,3,:)   = rad2deg(Euler(:,1,:)); % Z             
+    Trial.Joint(6).Euler.full(1,2,:)   = -rad2deg(Euler(:,3,:)); % Y
+    Trial.Joint(6).Euler.full(1,3,:)   = -rad2deg(Euler(:,1,:)); % Z             
     Trial.Joint(6).dj.full             = [];                           
     Trial.Joint(6).ElevationPlane.full = -rad2deg(unwrap(atan2(Trial.Joint(6).T.full(1,2,:),Trial.Joint(6).T.full(3,2,:))));
     clear Euler dj x y p x1 y1; 
@@ -229,22 +229,22 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(7).sequence          = 'ZXY';
     Euler                            = R2mobileZXY_array3(Trial.Joint(7).T.full(1:3,1:3,:));
     Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X
-    Trial.Joint(7).Euler.full(1,2,:) = rad2deg(Euler(:,3,:)); % Y
-    Trial.Joint(7).Euler.full(1,3,:) = rad2deg(Euler(:,1,:)); % Z              
+    Trial.Joint(7).Euler.full(1,2,:) = -rad2deg(Euler(:,3,:)); % Y
+    Trial.Joint(7).Euler.full(1,3,:) = -rad2deg(Euler(:,1,:)); % Z              
     Trial.Joint(7).dj.full           = [];        
     clear Euler dj x y p x1 y1; 
 elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(7).sequence          = 'XZY';
     Euler                            = R2mobileXZY_array3(Trial.Joint(7).T.full(1:3,1:3,:));
-    Trial.Joint(7).Euler.full(1,1,:) = -rad2deg(Euler(:,1,:)); % X % Sign adaptation to fullfill ISB convention  
-    Trial.Joint(7).Euler.full(1,2,:) = rad2deg(Euler(:,3,:)); % Y
-    Trial.Joint(7).Euler.full(1,3,:) = rad2deg(Euler(:,2,:)); % Z    
+    Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,1,:)); % X % Sign adaptation to fullfill ISB convention  
+    Trial.Joint(7).Euler.full(1,2,:) = -rad2deg(Euler(:,3,:)); % Y
+    Trial.Joint(7).Euler.full(1,3,:) = -rad2deg(Euler(:,2,:)); % Z    
     Trial.Joint(7).dj.full           = [];        
     clear Euler dj x y p x1 y1; 
 elseif contains(c3dFiles.name,'ANALYTIC3') % External rotation
     Trial.Joint(7).sequence          = 'YXZ';
     Euler                            = R2mobileYXZ_array3(Trial.Joint(7).T.full(1:3,1:3,:));
-    Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X
+    Trial.Joint(7).Euler.full(1,1,:) = -rad2deg(Euler(:,2,:)); % X
 %     Trial.Joint(7).Euler.full(1,2,:)   = rad2deg(Euler(:,1,:)); % Y
     if mean(unwrap(abs(rad2deg(Euler(:,1,:))))) > 120
         Trial.Joint(7).Euler.full(1,2,:) = -unwrap(squeeze(180+rad2deg(Euler(:,1,:)))); % Y % Sign adaptation to fullfill ISB convention 
@@ -258,7 +258,7 @@ elseif contains(c3dFiles.name,'ANALYTIC3') % External rotation
 elseif contains(c3dFiles.name,'ANALYTIC4') % Internal rotation
     Trial.Joint(7).sequence          = 'YXZ';
     Euler                            = R2mobileYXZ_array3(Trial.Joint(7).T.full(1:3,1:3,:));
-    Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X
+    Trial.Joint(7).Euler.full(1,1,:) = -rad2deg(Euler(:,2,:)); % X
 %     Trial.Joint(7).Euler.full(1,2,:) = rad2deg(Euler(:,1,:)); % Y
     if mean(unwrap(abs(rad2deg(Euler(:,1,:))))) > 120
         Trial.Joint(7).Euler.full(1,2,:) = -unwrap(squeeze(-180+rad2deg(Euler(:,1,:)))); % Y % Sign adaptation to fullfill ISB convention   
