@@ -18,7 +18,7 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function Trial = OnsetDetection(Trial,Rcycles,Lcycles,btype)
+function Trial = OnsetDetection(Trial,Rcycles,Lcycles,btype,manualCheck)
 
 disp('  - Détection des onsets/offsets des signaux EMG');
 
@@ -41,14 +41,16 @@ while iemg < 15 % All EMG (right and left)
     envelop = interpft(rms2(signal,0.02*Trial.fanalog,0.01*Trial.fanalog,1),length(signal)); % Used to compute SNR
     [B,A]  = butter(1,2./(Trial.fanalog/2),'low');
     envelop2 = smoothdata(envelop,'gaussian',3*Trial.fanalog)'; % Used to compute signal peak
-    fig = figure('units','normalized','outerposition',[0 0 1 1]);
-%     ylim([-ylimit ylimit]);
-    ylimit = max(signal);
-    hold on;
-    plot(signal0,'Color',[0.5 0.5 0.5]);
-    plot(signal,'Color','blue');
-    plot(envelop,'Color','green');
-    plot(envelop2,'Color','magenta','LineWidth',2);
+    if manualCheck == 1
+        fig = figure('units','normalized','outerposition',[0 0 1 1]);
+    %     ylim([-ylimit ylimit]);
+        ylimit = max(signal);
+        hold on;
+        plot(signal0,'Color',[0.5 0.5 0.5]);
+        plot(signal,'Color','blue');
+        plot(envelop,'Color','green');
+        plot(envelop2,'Color','magenta','LineWidth',2);
+    end
     % Extended double thresholding algorithm
     % (Onset parameters optimisation)
     % https://doi.org/10.1016/j.jelekin.2019.06.010
@@ -68,7 +70,9 @@ while iemg < 15 % All EMG (right and left)
                 baseline = signal(iframe:iframe+Lb-1);
             end
         end
-        plot(fframe:fframe+Lb-1,baseline,'red');
+        if manualCheck == 1
+            plot(fframe:fframe+Lb-1,baseline,'red');
+        end
     end
     % b- Manual selection
     if btype == 2
@@ -160,70 +164,77 @@ while iemg < 15 % All EMG (right and left)
         onset = zeros(size(onset));
     end
     % Complete plot    
-    title([Trial.Emg(iemg).label,', SNR: ',num2str(SNR),' dB',', Mean: ',num2str(meansignal),' uv']);    
-    line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
-    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+    if manualCheck == 1
+        title([Trial.Emg(iemg).label,', SNR: ',num2str(SNR),' dB',', Mean: ',num2str(meansignal),' uv']);    
+        line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
+        ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+    end
     % Manual validation
-    if iemg < 8 % Right side EMG
-        Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
-        Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
-        Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
-        for icycle = 1:size(Rcycles,2)
-            [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
-            plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
-            rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
-            [~,y] = ginput(1);
-            if y < 0 % Manual onset definition
-                [x,y] = ginput(2);
-                if y(1) > 0 % New detection
-                    Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
-                    onset(x(1):x(2)) = 0; % Clean onset
-                    delete(ponset);
-                    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
-                    drawnow;
-                else % No signal
-                    Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
-                    Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range) = NaN;
-                    onset(Rcycles(icycle).range) = NaN;
-                    delete(ponset);
-                    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
-                    drawnow;
-                end
-                [x,y] = ginput(2);
-                if y(1) > 0 % New detection
-                    Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % New onset
-                    onset(x(1):x(2)) = 1; % Clean onset
-                    delete(ponset);
-                    ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
-                    drawnow;
-                end
-            end
-        end
-        close(fig);
-    elseif iemg > 7 % Left side EMG
-        Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
-        Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
-        Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
-        for icycle = 1:size(Lcycles,2)
-            [vmax,imax] = max(envelop2(Lcycles(icycle).range*fratio));
-            plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
-            rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
-            [~,y] = ginput(1);
-            if y < 0 % Manual onset definition
-                [x,y] = ginput(4);
-                if y(1) > 0 % New detection
-                    Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
-                    Trial.Emg(iemg).Signal.onset(:,:,x(3):x(4)) = 1; % New onset
-                else % No signal
-                    Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
-                    Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range) = NaN;
+    if manualCheck == 1
+        if iemg < 8 % Right side EMG
+            Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
+            Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
+            Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
+            for icycle = 1:size(Rcycles,2)
+                [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
+                plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
+                rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
+                title('Y > 0 : Onset accepté, Y < 0 : Onset refusé');
+                [~,y] = ginput(1);
+                if y < 0 % Manual onset definition
+                    title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
+                    [x,y] = ginput(2);
+                    if y(1) > 0 % New detection
+                        Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
+                        onset(x(1):x(2)) = 0; % Clean onset
+                        delete(ponset);
+                        ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                        drawnow;
+                        title('Sélectionner le début et fin du nouvel onset');
+                        [x,y] = ginput(2);
+                        if y(1) > 0 % New detection
+                            Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % New onset
+                            onset(x(1):x(2)) = 1; % Clean onset
+                            delete(ponset);
+                            ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                            drawnow;
+                        end
+                    else % No signal
+                        Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range) = NaN;
+                        Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range) = NaN;
+                        onset(Rcycles(icycle).range) = NaN;
+                        delete(ponset);
+                        ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                        drawnow;
+                    end
                 end
             end
+            close(fig);
+        elseif iemg > 7 % Left side EMG
+            Trial.Emg(iemg).Signal.filtrect(:,:,:) = permute(signal,[2,3,1]);
+            Trial.Emg(iemg).Signal.envelop(:,:,:)  = permute(envelop2,[2,3,1]);
+            Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
+            for icycle = 1:size(Lcycles,2)
+                [vmax,imax] = max(envelop2(Lcycles(icycle).range*fratio));
+                plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
+                rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
+                [~,y] = ginput(1);
+                if y < 0 % Manual onset definition
+                    [x,y] = ginput(4);
+                    if y(1) > 0 % New detection
+                        Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
+                        Trial.Emg(iemg).Signal.onset(:,:,x(3):x(4)) = 1; % New onset
+                    else % No signal
+                        Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range) = NaN;
+                        Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range) = NaN;
+                    end
+                end
+            end
+            close(fig);
         end
-        close(fig);
     end
     iemg = iemg+1;
     
     % Clean workspace
-    clearvars -except Trial Rcycles Lcycles iplot fratio iemg btype ylimit;
+    clearvars -except Trial Rcycles Lcycles iplot fratio iemg btype ylimit manualCheck;
 end
