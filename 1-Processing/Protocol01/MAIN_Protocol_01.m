@@ -173,34 +173,34 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
     end
 end
 
-% % -------------------------------------------------------------------------
-% % GENERATE REPORT
-% % -------------------------------------------------------------------------
-% disp('Génération du rapport');
-% cd(Folder.data);
-% mkdir('Report');
-% cd('Report');
-% close all;
-% if isempty(dir('*.docx'))
-%     copyfile([Folder.toolbox,'Report\KLAB - Analyse quantifiée du membre supérieur - Rapport - Template.docx'],[Folder.data,'\Report\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-Rapport.docx']);
-%     copyfile([Folder.toolbox,'Report\Skeleton_left_shoulder.png'],[Folder.data,'\Report\Skeleton_left_shoulder.png']);
-%     copyfile([Folder.toolbox,'Report\Skeleton_right_shoulder.png'],[Folder.data,'\Report\Skeleton_right_shoulder.png']);
-%     copyfile([Folder.toolbox,'Report\Skeleton_top.png'],[Folder.data,'\Report\Skeleton_top.png']);
-% end
-% Report = GenerateReportData(Trial);
+% -------------------------------------------------------------------------
+% GENERATE REPORT
+% -------------------------------------------------------------------------
+disp('Génération du rapport');
+cd(Folder.data);
+mkdir('Report');
+cd('Report');
+close all;
+if isempty(dir('*.docx'))
+    copyfile([Folder.toolbox,'Report\KLAB - Analyse quantifiée du membre supérieur - Rapport - Template.docx'],[Folder.data,'\Report\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-Rapport.docx']);
+    copyfile([Folder.toolbox,'Report\Skeleton_left_shoulder.png'],[Folder.data,'\Report\Skeleton_left_shoulder.png']);
+    copyfile([Folder.toolbox,'Report\Skeleton_right_shoulder.png'],[Folder.data,'\Report\Skeleton_right_shoulder.png']);
+    copyfile([Folder.toolbox,'Report\Skeleton_top.png'],[Folder.data,'\Report\Skeleton_top.png']);
+end
+Report = GenerateReportData(Trial);
 % Normal = LoadNormativeData(Folder,Session,Patient);
 % GenerateReportPlots(Folder,Session,Report,Normal);
 
 % -------------------------------------------------------------------------
 % STORE RESULTS
 % -------------------------------------------------------------------------
-clearvars -except Folder Patient Session Pathology Processing Trial;
+clearvars -except Folder Patient Session Pathology Processing Trial Report;
 % save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
 save([Folder.data,'\P',num2str(Patient.ID),'.mat']);
 
-% % -------------------------------------------------------------------------
-% % STOP ALL PROCESSES
-% % -------------------------------------------------------------------------
-% close all;
-% cd([Folder.data,'\']);
-% toc
+% -------------------------------------------------------------------------
+% STOP ALL PROCESSES
+% -------------------------------------------------------------------------
+close all;
+cd([Folder.data,'\']);
+toc
