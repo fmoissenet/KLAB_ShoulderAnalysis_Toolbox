@@ -64,11 +64,15 @@ while iemg < 15 % All EMG (right and left)
         end
         srect = unique(mrect);
         fframe = 0;
-        for iframe = 1:size(signal,1)-Lb
-            if mean(signal(iframe:iframe+Lb-1)) == srect(Kb)
-                fframe = iframe;
-                baseline = signal(iframe:iframe+Lb-1);
+        if length(srect) > 1
+            for iframe = 1:size(signal,1)-Lb
+                if mean(signal(iframe:iframe+Lb-1)) == srect(Kb)
+                    fframe = iframe;
+                    baseline = signal(iframe:iframe+Lb-1);
+                end
             end
+        else
+            baseline = signal;
         end
         if manualCheck == 1
             plot(fframe:fframe+Lb-1,baseline,'red');
