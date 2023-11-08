@@ -24,14 +24,21 @@ function Trial = InitialiseForceSignals(c3dFiles,Trial,Analog,Event,mass,calibra
 
 if contains(Trial.file,'CALIBRATION4')
     disp('  - Calibrage des données du capteur de force');
-    % Get calibration values 
-    weight = mass*9.81; % (N)
-    famplitude = mean(Analog.FORCE(fix(Event.Remote(1)*Trial.fanalog):fix(Event.Remote(2)*Trial.fanalog))) - ...
-                 mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog)));
-    Trial.Fsensor.label = 'Force sensor';
-    Trial.Fsensor.calibration = weight/famplitude;
-    Trial.Fsensor.Force.value = permute((Analog.FORCE-mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog))))*Trial.Fsensor.calibration,[2,3,1]); % N
-    Trial.Fsensor.Force.units = 'N';
+    if isfield(Event,'Remote')
+        % Get calibration values 
+        weight = mass*9.81; % (N)
+        famplitude = mean(Analog.FORCE(fix(Event.Remote(1)*Trial.fanalog):fix(Event.Remote(2)*Trial.fanalog))) - ...
+                     mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog)));
+        Trial.Fsensor.label = 'Force sensor';
+        Trial.Fsensor.calibration = weight/famplitude;
+        Trial.Fsensor.Force.value = permute((Analog.FORCE-mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog))))*Trial.Fsensor.calibration,[2,3,1]); % N
+        Trial.Fsensor.Force.units = 'N';
+    else
+        Trial.Fsensor.label = 'Force sensor';
+        Trial.Fsensor.calibration = 0;
+        Trial.Fsensor.Force.value = []; % N
+        Trial.Fsensor.Force.units = 'N';        
+    end
 elseif contains(c3dFiles.name,'CALIBRATION5') || contains(c3dFiles.name,'CALIBRATION6') % Isometric tasks only
     disp('  - Calibrage des données du capteur de force');
     figure;
