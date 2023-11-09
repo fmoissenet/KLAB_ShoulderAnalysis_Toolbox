@@ -1,77 +1,77 @@
-% Author     :   F. Moissenet
-%                Kinesiology Laboratory (K-LAB)
-%                University of Geneva
-%                https://www.unige.ch/medecine/kinesiology
-% License    :   Creative Commons Attribution-NonCommercial 4.0 International License 
-%                https://creativecommons.org/licenses/by-nc/4.0/legalcode
-% Source code:   To be defined
-% Reference  :   To be defined
-% Date       :   April 2022
-% -------------------------------------------------------------------------
-% Description:   MAIN routine for the instrumented Constant Shoulder Test
-% -------------------------------------------------------------------------
-% This work is licensed under the Creative Commons Attribution - 
-% NonCommercial 4.0 International License. To view a copy of this license, 
-% visit http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to 
-% Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
-% -------------------------------------------------------------------------
-
-% -------------------------------------------------------------------------
-% INIT WORKSPACE
-% -------------------------------------------------------------------------
-tic
-clearvars;
-close all;
-warning off;
-clc;
-disp('------------------------------------------------------------------');
-disp('KLAB_UpperLimb_toolbox');
-disp('Protocole 1');
-disp('Auteur : F. Moissenet');
-disp('Version : 2 (July 2023)');
-disp('------------------------------------------------------------------');
-disp(' ');
-
-% -------------------------------------------------------------------------
-% SET FOLDERS
-% -------------------------------------------------------------------------
-disp('Définition des répertoires de travail');
-Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
-Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
-Folder.data          = uigetdir(); % Patient folder defined by GUI
-Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
-addpath(genpath(Folder.dependencies));
-disp(' ');
-
-% -------------------------------------------------------------------------
-% GET SESSION DATA
-% -------------------------------------------------------------------------
-disp('Récupération des informations de la session');
-addpath(Folder.toolbox);
-cd([Folder.data,'\']);
-[Patient,Session,Pathology] = ImportSessionData();
-rmpath(Folder.toolbox);
-disp(['  - Patient   : ',num2str(Patient.ID),' - ',Patient.lastname,' ',Patient.firstname]);
-disp(['  - Session   : ',datestr(Session.date,'YYYYmmDD')]);
-disp(['  - Protocole : ',Session.protocol]);
-disp(['  - Objectif  : ',Session.objective]);
-disp(' ');
-
-% -------------------------------------------------------------------------
-% PRE-PROCESS DATA
-% -------------------------------------------------------------------------
-% - Markers: fill gap (intercor), smoothing (movmean)
-% - EMG: zeroing (mean), filtering (btw bandpass 4th order 30-450 Hz)
-% - Force: smoothing (btw lowpass 2nd order 10 Hz)
-% -------------------------------------------------------------------------
-disp('Pré-traitement des données');
-if ~isfolder('Processed')
-    addpath(Folder.preprocessing);
-    MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'YYYYmmDD'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
-    rmpath(Folder.preprocessing);
-end
-addpath(Folder.toolbox);
-cd(Folder.toolbox);
+    % Author     :   F. Moissenet
+    %                Kinesiology Laboratory (K-LAB)
+    %                University of Geneva
+    %                https://www.unige.ch/medecine/kinesiology
+    % License    :   Creative Commons Attribution-NonCommercial 4.0 International License 
+    %                https://creativecommons.org/licenses/by-nc/4.0/legalcode
+    % Source code:   To be defined
+    % Reference  :   To be defined
+    % Date       :   April 2022
+    % -------------------------------------------------------------------------
+    % Description:   MAIN routine for the instrumented Constant Shoulder Test
+    % -------------------------------------------------------------------------
+    % This work is licensed under the Creative Commons Attribution - 
+    % NonCommercial 4.0 International License. To view a copy of this license, 
+    % visit http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to 
+    % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+    % -------------------------------------------------------------------------
+    
+    % -------------------------------------------------------------------------
+    % INIT WORKSPACE
+    % -------------------------------------------------------------------------
+    tic
+    clearvars;
+    close all;
+    warning off;
+    clc;
+    disp('------------------------------------------------------------------');
+    disp('KLAB_UpperLimb_toolbox');
+    disp('Protocole 1');
+    disp('Auteur : F. Moissenet');
+    disp('Version : 2 (July 2023)');
+    disp('------------------------------------------------------------------');
+    disp(' ');
+    
+    % -------------------------------------------------------------------------
+    % SET FOLDERS
+    % -------------------------------------------------------------------------
+    disp('Définition des répertoires de travail');
+    Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
+    Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
+    Folder.data          = uigetdir(); % Patient folder defined by GUI
+    Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
+    addpath(genpath(Folder.dependencies));
+    disp(' ');
+    
+    % -------------------------------------------------------------------------
+    % GET SESSION DATA
+    % -------------------------------------------------------------------------
+    disp('Récupération des informations de la session');
+    addpath(Folder.toolbox);
+    cd([Folder.data,'\']);
+    [Patient,Session,Pathology] = ImportSessionData();
+    rmpath(Folder.toolbox);
+    disp(['  - Patient   : ',num2str(Patient.ID),' - ',Patient.lastname,' ',Patient.firstname]);
+    disp(['  - Session   : ',datestr(Session.date,'YYYYmmDD')]);
+    disp(['  - Protocole : ',Session.protocol]);
+    disp(['  - Objectif  : ',Session.objective]);
+    disp(' ');
+    
+    % -------------------------------------------------------------------------
+    % PRE-PROCESS DATA
+    % -------------------------------------------------------------------------
+    % - Markers: fill gap (intercor), smoothing (movmean)
+    % - EMG: zeroing (mean), filtering (btw bandpass 4th order 30-450 Hz)
+    % - Force: smoothing (btw lowpass 2nd order 10 Hz)
+    % -------------------------------------------------------------------------
+    disp('Pré-traitement des données');
+    if ~isfolder('Processed')
+        addpath(Folder.preprocessing);
+        MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'YYYYmmDD'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
+        rmpath(Folder.preprocessing);
+    end
+    addpath(Folder.toolbox);
+    cd(Folder.toolbox);
 
 % -------------------------------------------------------------------------
 % PROCESS DATA

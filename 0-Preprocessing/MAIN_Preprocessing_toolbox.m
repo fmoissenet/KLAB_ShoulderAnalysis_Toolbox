@@ -99,7 +99,7 @@ end
 % PRE-PROCESS DATA
 % -------------------------------------------------------------------------
 % Video files
-ProcessVideos(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,staticTypes,trialTypes,videoTypes);
+% ProcessVideos(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,staticTypes,trialTypes,videoTypes);
 
 % Static data
 for i = 1:size(Static,2)
