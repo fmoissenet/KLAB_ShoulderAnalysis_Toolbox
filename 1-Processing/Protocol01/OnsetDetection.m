@@ -59,7 +59,7 @@ while iemg < 15 % All EMG (right and left)
     if btype == 1
         Lb = 1*Trial.fanalog; % Optimised: 1s
         Kb = 5; % Rank 5
-        for iframe = 1:fix(size(signal,1)*0.80) % 80% of the signal is analysed to avoid issue related to bad signal stop time
+        for iframe = 1:fix(size(signal,1)*0.80)-Lb % 80% of the signal is analysed to avoid issue related to bad signal stop time
             mrect(iframe) = mean(signal(iframe:iframe+Lb-1));
         end
         srect = unique(mrect);
