@@ -58,15 +58,15 @@ REOS2  = Trial.Marker(32).Trajectory.full;
 REOS3  = Trial.Marker(33).Trajectory.full;
 RCAJ   = Trial.Marker(14).Trajectory.full;
 LCAJ   = Trial.Marker(37).Trajectory.full;
-if ~isnan(sum(Trial.Marker(57).Trajectory.full(1,1,:)))
-    RRSP = Trial.Marker(57).Trajectory.full;
-else
+if sum(Trial.Marker(57).Trajectory.full(1,1,:)) == 0
     RRSP = [];
-end
-if ~isnan(sum(Trial.Marker(58).Trajectory.full(1,1,:)))
-    RUSP = Trial.Marker(58).Trajectory.full;
 else
+    RRSP = Trial.Marker(57).Trajectory.full;
+end
+if sum(Trial.Marker(58).Trajectory.full(1,1,:)) == 0
     RUSP = [];
+else
+    RUSP = Trial.Marker(58).Trajectory.full;
 end
 % Define elbow joint centre
 REJC                              = (RHME+RHLE)/2;
@@ -144,15 +144,15 @@ LEOS2  = Trial.Marker(55).Trajectory.full;
 LEOS3  = Trial.Marker(56).Trajectory.full;
 RCAJ  = Trial.Marker(14).Trajectory.full;
 LCAJ  = Trial.Marker(37).Trajectory.full;
-if ~isnan(sum(Trial.Marker(61).Trajectory.full(1,1,:)))
-    LRSP = Trial.Marker(61).Trajectory.full;
-else
+if sum(Trial.Marker(61).Trajectory.full(1,1,:)) == 0
     LRSP = [];
-end
-if ~isnan(sum(Trial.Marker(62).Trajectory.full(1,1,:)))
-    LUSP = Trial.Marker(62).Trajectory.full;
 else
+    LRSP = Trial.Marker(61).Trajectory.full;
+end
+if sum(Trial.Marker(62).Trajectory.full(1,1,:)) == 0
     LUSP = [];
+else
+    LUSP = Trial.Marker(62).Trajectory.full;
 end
 % Define elbow joint centre
 LEJC                              = (LHME+LHLE)/2;
