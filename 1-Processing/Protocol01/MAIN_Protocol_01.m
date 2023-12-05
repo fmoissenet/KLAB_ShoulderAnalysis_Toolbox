@@ -74,10 +74,8 @@ disp(' ');
 % -------------------------------------------------------------------------
 disp('Ajout des marqueurs pointés');
 addpath(Folder.toolbox);
-STY06                   = CalibrateStylus(Folder);
-Session.LocalPoints.SXS = DefineLocalSXS(Folder,STY06);
+Session.LocalPoints.SXS = DefineLocalSXS(Folder);
 AddGlobalSXSToFiles(Folder,Session.LocalPoints.SXS);
-clear STY06 SXSlocal;
 disp(' ');
 
 % -------------------------------------------------------------------------
