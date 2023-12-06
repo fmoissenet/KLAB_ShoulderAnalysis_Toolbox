@@ -31,7 +31,7 @@ Event       = btkGetEvents(btkFile);
 frame       = round(Event.Remote*fMarker)-btkGetFirstFrame(btkFile)+1;
 clear temp;
 % Store the virtual marker corresponding to the stylus tip at SXS landmarks
-Marker.SXS  = Marker.STY04(frame,:)';
+Marker.SXS  = Marker.STY05(frame,:)';
 % Store the SXS marker in a thorax technical coordinate system
 Ot          = Marker.SJN(frame,:);
 Yt          = (Marker.SJN(frame,:)-Marker.SME(frame,:));
