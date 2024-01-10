@@ -109,7 +109,7 @@ cd([Folder.data,'\Processed\']);
 c3dFiles   = dir('*.c3d');
 trialTypes = {'STATIC','ANALYTIC','FUNCTIONAL','ISOMETRIC'};
 k          = 1;
-for i = 1:size(c3dFiles,1)
+for i = [11 12 13 1 2 3 4 5 6 7 8 9 10]
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             % Extract data from C3D files 
@@ -162,7 +162,9 @@ for i = 1:size(c3dFiles,1)
             Trial(k)         = CutCycles(Session,c3dFiles(i),Trial(k));
             % Compute SHR
             Trial(k).SHR     = [];
-            Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k));
+            if ~contains(c3dFiles(i).name,'STATIC')
+                Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k),Trial(3));
+            end
             % Update C3D files
             UpdateC3DFile(Trial(k));
             % Increment trial index

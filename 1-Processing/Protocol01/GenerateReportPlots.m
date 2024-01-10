@@ -23,7 +23,7 @@ function [] = GenerateReportPlots(Folder,Session,Report,Normal)
 % -------------------------------------------------------------------------
 % Amplitude and EMG /Analytic motions
 % -------------------------------------------------------------------------
-for imotion = 1:4
+for imotion = 2%1:4
 
     clear motion;
 
@@ -191,21 +191,24 @@ for imotion = 1:4
                 clear angleR thetaL r x y;
         
                 % SHR
-                if imotion == 1 || imotion == 2    
+
+                if imotion == 1 || imotion == 2   
+                    r      = 17; % Full radius of the circular plot 
+                    maxshr = 5; % Maximal reported SHR value
                     angleL = (Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
                     thetaL = deg2rad(-90+angleL);
                     for t = range
-                        x(t) = 3*Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle).*cos(thetaL(t))+xshift;
-                        y(t) = 3*Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle).*sin(thetaL(t));
-    %                     if x(t)-xshift < 7 && y(t) < 7
-                            if (rad2deg(thetaL(t))+90 > 30) && (rad2deg(thetaL(t))+90 < 120)                        
+                        x(t) = r/maxshr*Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle).*cos(thetaL(t))+xshift;
+                        y(t) = r/maxshr*Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle).*sin(thetaL(t));
+                        if Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle) < maxshr
+                            if (rad2deg(thetaL(t))+90 >= 30) && (rad2deg(thetaL(t))+90 <= 120)                        
                                 plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',11);
                             else
-                                plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',4);
+%                                 plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',4);
                             end
-    %                     end
+                        end
                     end
-                    clear thetaL r x y;
+                    clear thetaL r maxshr x y;
                 end
             
                 % EMG
@@ -264,12 +267,14 @@ for imotion = 1:4
             
             % SHR lines
             if imotion == 1 || imotion == 2
-                x = [3*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*cos(linspace(min(thetaLmin),max(thetaLmax),1000))+xshift ...
-                     3*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*cos(linspace(max(thetaLmax),min(thetaLmin),1000))+xshift];
-                y = [3*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*sin(linspace(min(thetaLmin),max(thetaLmax),1000)) ...
-                     3*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*sin(linspace(max(thetaLmax),min(thetaLmin),1000))];
+                r      = 17; % Full radius of the circular plot 
+                maxshr = 5; % Maximal reported SHR value
+                x = [r/maxshr*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*cos(linspace(min(thetaLmin),max(thetaLmax),1000))+xshift ...
+                     r/maxshr*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*cos(linspace(max(thetaLmax),min(thetaLmin),1000))+xshift];
+                y = [r/maxshr*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*sin(linspace(min(thetaLmin),max(thetaLmax),1000)) ...
+                     r/maxshr*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*sin(linspace(max(thetaLmax),min(thetaLmin),1000))];
                 fill(x,y,'red','LineStyle','none','FaceAlpha',0.15);
-                clear x y;
+                clear r maxshr x y;
             end
     
             % RIGHT
@@ -309,19 +314,21 @@ for imotion = 1:4
                 clear angleR thetaR r x y;
         
                 % SHR
-                if imotion == 1 || imotion == 2     
+                if imotion == 1 || imotion == 2   
+                    r      = 17; % Full radius of the circular plot 
+                    maxshr = 5; % Maximal reported SHR value  
                     angleR = (Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
                     thetaR = deg2rad(-90-angleR);
                     for t = range
                         x(t) = 3*Report.Analytic(imotion).Kinematics.SHR(1).tvalue(t,:,icycle).*cos(thetaR(t))-xshift;
                         y(t) = 3*Report.Analytic(imotion).Kinematics.SHR(1).tvalue(t,:,icycle).*sin(thetaR(t));     
-    %                     if x(t)-xshift < 7 && y(t) < 7
-                            if (-rad2deg(thetaR(t))-90 > 30) && (-rad2deg(thetaR(t))-90 < 120)
+                        if Report.Analytic(imotion).Kinematics.SHR(1).tvalue(t,:,icycle) < maxshr
+                            if (-rad2deg(thetaR(t))-90 >= 30) && (-rad2deg(thetaR(t))-90 <= 120)
                                 plot(x(t),y(t),'Color',[0 0 1],'Linestyle','none','Marker','.','Markersize',11);
                             else
-                                plot(x(t),y(t),'Color',[0 0 1],'Linestyle','none','Marker','.','Markersize',4);
+%                                 plot(x(t),y(t),'Color',[0 0 1],'Linestyle','none','Marker','.','Markersize',4);
                             end
-    %                     end
+                        end
                     end
                     clear thetaR r x y;
                 end        
@@ -382,10 +389,12 @@ for imotion = 1:4
             
             % SHR lines
             if imotion == 1 || imotion == 2
-                x = [3*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*cos(linspace(min(thetaRmin),max(thetaRmax),1000))-xshift ...
-                     3*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*cos(linspace(max(thetaRmax),min(thetaRmin),1000))-xshift];
-                y = [3*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*sin(linspace(min(thetaRmin),max(thetaRmax),1000)) ...
-                     3*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*sin(linspace(max(thetaRmax),min(thetaRmin),1000))];
+                r      = 17; % Full radius of the circular plot 
+                maxshr = 5; % Maximal reported SHR value
+                x = [r/maxshr*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*cos(linspace(min(thetaRmin),max(thetaRmax),1000))-xshift ...
+                     r/maxshr*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*cos(linspace(max(thetaRmax),min(thetaRmin),1000))-xshift];
+                y = [r/maxshr*(Normal.Analytic(imotion).SHR.mean-Normal.Analytic(imotion).SHR.std).*sin(linspace(min(thetaRmin),max(thetaRmax),1000)) ...
+                     r/maxshr*(Normal.Analytic(imotion).SHR.mean+Normal.Analytic(imotion).SHR.std).*sin(linspace(max(thetaRmax),min(thetaRmin),1000))];
                 fill(x,y,'blue','LineStyle','none','FaceAlpha',0.15);
                 clear x y;
             end
