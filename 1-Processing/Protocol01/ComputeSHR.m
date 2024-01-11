@@ -29,20 +29,20 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
         if contains(c3dFiles.name,'ANALYTIC2')
             % Elevation
             itemp = find(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(1).Euler.cycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe1 = find(abs(Trial.Joint(1).Euler.cycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
             % Return
             itemp = find(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(1).Euler.cycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe2 = find(abs(Trial.Joint(1).Euler.cycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
         elseif contains(c3dFiles.name,'ANALYTIC1')
             % Elevation
             itemp = find(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(1).Euler.cycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe1 = find(abs(Trial.Joint(1).Euler.cycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
             % Return
             itemp = find(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(1).Euler.cycle(:,3,itemp:end,icycle))>=120 & abs(Trial.Joint(1).Euler.cycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe2 = find(abs(Trial.Joint(1).Euler.cycle(:,3,itemp:end,icycle))>=120 & abs(Trial.Joint(1).Euler.cycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
         end
         for iframe = 1:101 % Cycle frames (%)
@@ -102,20 +102,20 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
         if contains(c3dFiles.name,'ANALYTIC2')
             % Elevation
             itemp = find(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(6).Euler.cycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe1 = find(abs(Trial.Joint(6).Euler.cycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
             % Return
             itemp = find(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(6).Euler.cycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe2 = find(abs(Trial.Joint(6).Euler.cycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
         elseif contains(c3dFiles.name,'ANALYTIC1')
             % Elevation
             itemp = find(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(6).Euler.cycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe1 = find(abs(Trial.Joint(6).Euler.cycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
             % Return
             itemp = find(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(6).Euler.cycle(:,3,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30° and 120°
+            iframe2 = find(abs(Trial.Joint(6).Euler.cycle(:,3,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30Â° and 120Â°
             clear itemp;
         end
         for iframe = 1:101 % Cycle frames (%)

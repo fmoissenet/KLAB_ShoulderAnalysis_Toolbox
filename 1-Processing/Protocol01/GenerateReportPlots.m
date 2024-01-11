@@ -23,7 +23,7 @@ function [] = GenerateReportPlots(Folder,Session,Report,Normal)
 % -------------------------------------------------------------------------
 % Amplitude and EMG /Analytic motions
 % -------------------------------------------------------------------------
-for imotion = 2%1:4
+for imotion = 1:4
 
     clear motion;
 

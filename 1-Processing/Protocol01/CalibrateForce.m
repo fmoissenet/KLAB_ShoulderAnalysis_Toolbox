@@ -67,7 +67,11 @@ if ~isempty(temp)
             % Get analogs
             Analog = btkGetAnalogs(Trial(itrial).btk);
             % Apply force calibration
-            Force = (Analog.FORCE-force.zero) * force.calibration; % N
+            if ~isempty(fieldnames(Analog))
+                Force = (Analog.FORCE-force.zero) * force.calibration; % N
+            else
+                Force = zeros(Trial(itrial).n1,1);
+            end
             % Update file
             n     = size(Force,1);
             k0    = (1:n)';
