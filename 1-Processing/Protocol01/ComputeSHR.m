@@ -22,34 +22,34 @@ function Trial = ComputeSHR(c3dFiles,Trial,Reference)
 
 if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % Only applied on elevation tasks
     % Right scapulo humeral rhythm computation (mean across cycles)        
-    for icycle = 1:size(Trial.Joint(1).Euler.cycle,4)
+    for icycle = 1:size(Trial.Joint(1).Euler.rcycle,4)
         theta_HT = [];
         theta_GH = [];
         theta_ST = [];
         if contains(c3dFiles.name,'ANALYTIC2')
             % Elevation
-            itemp = find(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(1).Euler.cycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
+            iframe1 = find(abs(Trial.Joint(1).Euler.rcycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.rcycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
             % Return
-            itemp = find(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,1,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(1).Euler.cycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
+            iframe2 = find(abs(Trial.Joint(1).Euler.rcycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(1).Euler.rcycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
         elseif contains(c3dFiles.name,'ANALYTIC1')
             % Elevation
-            itemp = find(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(1).Euler.cycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.cycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))));
+            iframe1 = find(abs(Trial.Joint(1).Euler.rcycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.rcycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
             % Return
-            itemp = find(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.cycle(:,3,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(1).Euler.cycle(:,3,itemp:end,icycle))>=120 & abs(Trial.Joint(1).Euler.cycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))));
+            iframe2 = find(abs(Trial.Joint(1).Euler.rcycle(:,3,itemp:end,icycle))>=120 & abs(Trial.Joint(1).Euler.rcycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
         end
         for iframe = 1:101 % Cycle frames (%)
             % Define rotation matrices
-            R_ICS_T     = Trial.Segment(4).T.cycle(1:3,1:3,iframe,icycle);
-            R_ICS_S     = Trial.Segment(2).T.cycle(1:3,1:3,iframe,icycle);
-            R_ICS_H     = Trial.Segment(1).T.cycle(1:3,1:3,iframe,icycle);
+            R_ICS_T     = Trial.Segment(4).T.rcycle(1:3,1:3,iframe,icycle);
+            R_ICS_S     = Trial.Segment(2).T.rcycle(1:3,1:3,iframe,icycle);
+            R_ICS_H     = Trial.Segment(1).T.rcycle(1:3,1:3,iframe,icycle);
             R_T_S       = inv(R_ICS_T)*R_ICS_S;
             R_S_H       = inv(R_ICS_S)*R_ICS_H;
             % Define reference rotation matrices
@@ -81,13 +81,13 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
         cST = AUC_ST/AUC_HT;
         tSHR2 = (1-cST)/cST;
         % Store results
-        Trial.SHR(1).label                        = 'Right scapulo-humeral rhythm';
-        Trial.SHR(1).value1.cycle(1,1,1,icycle)   = tSHR1; % Elevation
-        Trial.SHR(1).value2.cycle(1,1,1,icycle)   = tSHR2; % Return
-        Trial.SHR(1).tvalue.cycle(1,1,:,icycle)   = permute(interp1((1:size(theta_HT,2))',SHR,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(1).theta_HT.cycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_HT,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(1).theta_ST.cycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_ST,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(1).theta_GH.cycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_GH,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(1).label                         = 'Right scapulo-humeral rhythm';
+        Trial.SHR(1).value1.rcycle(1,1,1,icycle)   = tSHR1; % Elevation
+        Trial.SHR(1).value2.rcycle(1,1,1,icycle)   = tSHR2; % Return
+        Trial.SHR(1).tvalue.rcycle(1,1,:,icycle)   = permute(interp1((1:size(theta_HT,2))',SHR,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(1).theta_HT.rcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_HT,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(1).theta_ST.rcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_ST,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(1).theta_GH.rcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_GH,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
 %         figure; hold on;
 %         plot(theta_ST_GH,theta_ST_GH,'Color','black','Linestyle','-');
 %         plot(theta_ST_GH,theta_ST,'Color','red','Linestyle','-');
@@ -95,34 +95,34 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
 %         legend({'HT','ST','GH'});
     end
     % Left scapulo humeral rhythm computation (mean across cycles)             
-    for icycle = 1:size(Trial.Joint(6).Euler.cycle,4)
+    for icycle = 1:size(Trial.Joint(6).Euler.lcycle,4)
         theta_HT = [];
         theta_GH = [];
         theta_ST = [];
         if contains(c3dFiles.name,'ANALYTIC2')
             % Elevation
-            itemp = find(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(6).Euler.cycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
+            iframe1 = find(abs(Trial.Joint(6).Euler.lcycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
             % Return
-            itemp = find(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,1,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(6).Euler.cycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
+            iframe2 = find(abs(Trial.Joint(6).Euler.lcycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
         elseif contains(c3dFiles.name,'ANALYTIC1')
             % Elevation
-            itemp = find(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(6).Euler.cycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))));
+            iframe1 = find(abs(Trial.Joint(6).Euler.lcycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
             % Return
-            itemp = find(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.cycle(:,3,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(6).Euler.cycle(:,3,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.cycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
+            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))));
+            iframe2 = find(abs(Trial.Joint(6).Euler.lcycle(:,3,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
             clear itemp;
         end
         for iframe = 1:101 % Cycle frames (%)
             % Define rotation matrices
-            R_ICS_T     = Trial.Segment(4).T.cycle(1:3,1:3,iframe,icycle);
-            R_ICS_S     = Trial.Segment(6).T.cycle(1:3,1:3,iframe,icycle);
-            R_ICS_H     = Trial.Segment(5).T.cycle(1:3,1:3,iframe,icycle);
+            R_ICS_T     = Trial.Segment(4).T.lcycle(1:3,1:3,iframe,icycle);
+            R_ICS_S     = Trial.Segment(6).T.lcycle(1:3,1:3,iframe,icycle);
+            R_ICS_H     = Trial.Segment(5).T.lcycle(1:3,1:3,iframe,icycle);
             R_T_S       = inv(R_ICS_T)*R_ICS_S;
             R_S_H       = inv(R_ICS_S)*R_ICS_H;
             % Define reference rotation matrices
@@ -154,13 +154,13 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
         cST = AUC_ST/AUC_HT;
         tSHR2 = (1-cST)/cST;
         % Store results
-        Trial.SHR(2).label                        = 'Left scapulo-humeral rhythm';
-        Trial.SHR(2).value1.cycle(1,1,1,icycle)   = tSHR1; % Elevation
-        Trial.SHR(2).value2.cycle(1,1,1,icycle)   = tSHR2; % Return
-        Trial.SHR(2).tvalue.cycle(1,1,:,icycle)   = permute(interp1((1:size(theta_HT,2))',SHR,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(2).theta_HT.cycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_HT,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(2).theta_ST.cycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_ST,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(2).theta_GH.cycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_GH,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(2).label                         = 'Left scapulo-humeral rhythm';
+        Trial.SHR(2).value1.lcycle(1,1,1,icycle)   = tSHR1; % Elevation
+        Trial.SHR(2).value2.lcycle(1,1,1,icycle)   = tSHR2; % Return
+        Trial.SHR(2).tvalue.lcycle(1,1,:,icycle)   = permute(interp1((1:size(theta_HT,2))',SHR,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(2).theta_HT.lcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_HT,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(2).theta_ST.lcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_ST,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
+        Trial.SHR(2).theta_GH.lcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_GH,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
 %         figure; hold on;
 %         plot(theta_ST_GH,theta_ST_GH,'Color','black','Linestyle','-');
 %         plot(theta_ST_GH,theta_ST,'Color','red','Linestyle','-');
