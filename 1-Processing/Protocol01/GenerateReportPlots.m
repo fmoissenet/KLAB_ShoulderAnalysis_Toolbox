@@ -191,24 +191,25 @@ for imotion = 1:4
                 clear angleR thetaL r x y;
         
                 % SHR
-
                 if imotion == 1 || imotion == 2   
                     r      = 17; % Full radius of the circular plot 
                     maxshr = 5; % Maximal reported SHR value
-                    angleL = (Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
+                    if nmotion == 1
+                        angleL = Report.Analytic(1).Kinematics.SHR(2).theta_HT1(:,:,icycle); % Elevation
+                        SHRL   = Report.Analytic(1).Kinematics.SHR(2).SHR_curve1(:,:,icycle);
+                    else
+                        angleL = Report.Analytic(1).Kinematics.SHR(2).theta_HT2(:,:,icycle); % Return
+                        SHRL   = Report.Analytic(1).Kinematics.SHR(2).SHR_curve2(:,:,icycle);
+                    end
                     thetaL = deg2rad(-90+angleL);
-                    for t = range
-                        x(t) = r/maxshr*Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle).*cos(thetaL(t))+xshift;
-                        y(t) = r/maxshr*Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle).*sin(thetaL(t));
-                        if Report.Analytic(imotion).Kinematics.SHR(2).tvalue(t,:,icycle) < maxshr
-                            if (rad2deg(thetaL(t))+90 >= 30) && (rad2deg(thetaL(t))+90 <= 120)                        
-                                plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',11);
-                            else
-%                                 plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',4);
-                            end
+                    for t = 1:size(SHRL,1)
+                        x(t) = r/maxshr*SHRL(t).*cos(thetaL(t))+xshift;
+                        y(t) = r/maxshr*SHRL(t).*sin(thetaL(t));
+                        if SHRL(t) < maxshr
+                            plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',11);
                         end
                     end
-                    clear thetaL r maxshr x y;
+                    clear angleL SHRL thetaL r maxshr x y;
                 end
             
                 % EMG
@@ -313,25 +314,27 @@ for imotion = 1:4
                 plot(x,y,'Color',[0 0 1 0.2],'Linewidth',10);
                 clear angleR thetaR r x y;
         
-                % SHR
-                if imotion == 1 || imotion == 2   
+                % SHR    
+                if imotion == 1 || imotion == 2
                     r      = 17; % Full radius of the circular plot 
-                    maxshr = 5; % Maximal reported SHR value  
-                    angleR = (Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
+                    maxshr = 5; % Maximal reported SHR value
+                    if nmotion == 1
+                        angleR = Report.Analytic(1).Kinematics.SHR(1).theta_HT1(:,:,icycle); % Elevation
+                        SHRR   = Report.Analytic(1).Kinematics.SHR(1).SHR_curve1(:,:,icycle);
+                    else
+                        angleR = Report.Analytic(1).Kinematics.SHR(1).theta_HT2(:,:,icycle); % Return
+                        SHRR   = Report.Analytic(1).Kinematics.SHR(1).SHR_curve2(:,:,icycle);
+                    end
                     thetaR = deg2rad(-90-angleR);
-                    for t = range
-                        x(t) = 3*Report.Analytic(imotion).Kinematics.SHR(1).tvalue(t,:,icycle).*cos(thetaR(t))-xshift;
-                        y(t) = 3*Report.Analytic(imotion).Kinematics.SHR(1).tvalue(t,:,icycle).*sin(thetaR(t));     
-                        if Report.Analytic(imotion).Kinematics.SHR(1).tvalue(t,:,icycle) < maxshr
-                            if (-rad2deg(thetaR(t))-90 >= 30) && (-rad2deg(thetaR(t))-90 <= 120)
-                                plot(x(t),y(t),'Color',[0 0 1],'Linestyle','none','Marker','.','Markersize',11);
-                            else
-%                                 plot(x(t),y(t),'Color',[0 0 1],'Linestyle','none','Marker','.','Markersize',4);
-                            end
+                    for t = 1:size(SHRR,1)
+                        x(t) = r/maxshr*SHRR(t).*cos(thetaR(t))-xshift;
+                        y(t) = r/maxshr*SHRR(t).*sin(thetaR(t));
+                        if SHRR(t) < maxshr
+                            plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',11);
                         end
                     end
-                    clear thetaR r x y;
-                end        
+                    clear angleR SHRR thetaR r maxshr x y;
+                end
             
                 % EMG
                 for iemg = 1:7
@@ -529,9 +532,9 @@ for imotion = 1:4
                 hold on;
                 axis off;
                 if nmotion == 1
-                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(1).value1),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(1).value1),1))]);
+                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(1).SHR_mean1,'omitnan'),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(1).SHR_mean1),1))]);
                 elseif nmotion == 2
-                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(1).value2),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(1).value2),1))]);
+                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(1).SHR_mean2,'omitnan'),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(1).SHR_mean2),1))]);
                 end                
                 exportgraphics(img,[motion(nmotion).ifile,'_rhythmR.png'],'BackgroundColor','none','Resolution',600);
                 close all;
@@ -539,9 +542,9 @@ for imotion = 1:4
                 hold on;
                 axis off;
                 if nmotion == 1
-                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(2).value1),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(2).value1),1))]);
+                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(2).SHR_mean1,'omitnan'),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(2).SHR_mean1),1))]);
                 elseif nmotion == 2
-                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(2).value2),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(2).value2),1))]);
+                    text(0,1,[num2str(round(mean(Report.Analytic(imotion).Kinematics.SHR(2).SHR_mean2,'omitnan'),1)),' +/- ',num2str(round(std(Report.Analytic(imotion).Kinematics.SHR(2).SHR_mean2),1))]);
                 end                    
                 exportgraphics(img,[motion(nmotion).ifile,'_rhythmL.png'],'BackgroundColor','none','Resolution',600);
                 close all;

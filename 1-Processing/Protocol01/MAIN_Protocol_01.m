@@ -66,7 +66,7 @@ if ~isfolder('Processed')
     addpath(Folder.preprocessing);
     MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'YYYYmmDD'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
     rmpath(Folder.preprocessing);
-end
+end 
 disp(' ');
 
 % -------------------------------------------------------------------------
@@ -163,7 +163,7 @@ for i = [11 12 13 1 2 3 4 5 6 7 8 9 10]
             % Compute SHR
             Trial(k).SHR     = [];
             if ~contains(c3dFiles(i).name,'STATIC')
-                Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k),Trial(3));
+                Trial(k)     = ComputeSHR(c3dFiles(i),Trial(k),Trial(k)); % Last input is the reference position used for SHR computation
             end
             % Update C3D files
             UpdateC3DFile(Trial(k));
