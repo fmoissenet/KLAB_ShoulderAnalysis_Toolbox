@@ -330,7 +330,7 @@ for imotion = 1:4
                         x(t) = r/maxshr*SHRR(t).*cos(thetaR(t))-xshift;
                         y(t) = r/maxshr*SHRR(t).*sin(thetaR(t));
                         if SHRR(t) < maxshr
-                            plot(x(t),y(t),'Color',[1 0 0],'Linestyle','none','Marker','.','Markersize',11);
+                            plot(x(t),y(t),'Color',[0 0 1],'Linestyle','none','Marker','.','Markersize',11);
                         end
                     end
                     clear angleR SHRR thetaR r maxshr x y;
