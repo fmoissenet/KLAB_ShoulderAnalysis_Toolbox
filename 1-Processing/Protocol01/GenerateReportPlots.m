@@ -195,11 +195,11 @@ for imotion = 1:4
                     r      = 17; % Full radius of the circular plot 
                     maxshr = 5; % Maximal reported SHR value
                     if nmotion == 1
-                        angleL = Report.Analytic(1).Kinematics.SHR(2).theta_HT1(:,:,icycle); % Elevation
-                        SHRL   = Report.Analytic(1).Kinematics.SHR(2).SHR_curve1(:,:,icycle);
+                        angleL = Report.Analytic(imotion).Kinematics.SHR(2).theta_HT1(:,:,icycle); % Elevation
+                        SHRL   = Report.Analytic(imotion).Kinematics.SHR(2).SHR_curve1(:,:,icycle);
                     else
-                        angleL = Report.Analytic(1).Kinematics.SHR(2).theta_HT2(:,:,icycle); % Return
-                        SHRL   = Report.Analytic(1).Kinematics.SHR(2).SHR_curve2(:,:,icycle);
+                        angleL = Report.Analytic(imotion).Kinematics.SHR(2).theta_HT2(:,:,icycle); % Return
+                        SHRL   = Report.Analytic(imotion).Kinematics.SHR(2).SHR_curve2(:,:,icycle);
                     end
                     thetaL = deg2rad(-90+angleL);
                     for t = 1:size(SHRL,1)
@@ -319,11 +319,11 @@ for imotion = 1:4
                     r      = 17; % Full radius of the circular plot 
                     maxshr = 5; % Maximal reported SHR value
                     if nmotion == 1
-                        angleR = Report.Analytic(1).Kinematics.SHR(1).theta_HT1(:,:,icycle); % Elevation
-                        SHRR   = Report.Analytic(1).Kinematics.SHR(1).SHR_curve1(:,:,icycle);
+                        angleR = Report.Analytic(imotion).Kinematics.SHR(1).theta_HT1(:,:,icycle); % Elevation
+                        SHRR   = Report.Analytic(imotion).Kinematics.SHR(1).SHR_curve1(:,:,icycle);
                     else
-                        angleR = Report.Analytic(1).Kinematics.SHR(1).theta_HT2(:,:,icycle); % Return
-                        SHRR   = Report.Analytic(1).Kinematics.SHR(1).SHR_curve2(:,:,icycle);
+                        angleR = Report.Analytic(imotion).Kinematics.SHR(1).theta_HT2(:,:,icycle); % Return
+                        SHRR   = Report.Analytic(imotion).Kinematics.SHR(1).SHR_curve2(:,:,icycle);
                     end
                     thetaR = deg2rad(-90-angleR);
                     for t = 1:size(SHRR,1)
