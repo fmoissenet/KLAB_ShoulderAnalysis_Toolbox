@@ -28,7 +28,7 @@ if ~strcmp(EmgSet{1},'') % Empty list
     for i = 1:length(EmgSet)
         Trial.Emg(i).label = EmgSet{i,2};
         Trial.Emg(i).type  = '';
-        if isfield(Emg,EmgSet{i,2})
+        if isfield(Emg,EmgSet{i,2}) || isfield(Emg,[EmgSet{i,2},'_EMG_1'])
             if ~isnan(sum(sum(Emg.(EmgSet{i,2}))))
                 Trial.Emg(i).Signal.full = permute(Emg.(EmgSet{i,2}),[2,3,1]);
             else
