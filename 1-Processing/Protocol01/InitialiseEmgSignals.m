@@ -28,9 +28,17 @@ if ~strcmp(EmgSet{1},'') % Empty list
     for i = 1:length(EmgSet)
         Trial.Emg(i).label = EmgSet{i,2};
         Trial.Emg(i).type  = '';
-        if isfield(Emg,EmgSet{i,2}) || isfield(Emg,[EmgSet{i,2},'_EMG_1'])
+        if isfield(Emg,EmgSet{i,2}) == 1
             if ~isnan(sum(sum(Emg.(EmgSet{i,2}))))
                 Trial.Emg(i).Signal.full = permute(Emg.(EmgSet{i,2}),[2,3,1]);
+            else
+                Trial.Emg(i).Signal.full = [];
+            end
+            Trial.Emg(i).Signal.cycle = [];
+            Trial.Emg(i).Signal.units = '%';
+        elseif isfield(Emg,[cell2mat(EmgSet{i,2}),'_EMG_1']) == 1
+            if ~isnan(sum(sum(Emg.(EmgSet{i,2}))))
+                Trial.Emg(i).Signal.full = permute(Emg.([cell2mat(EmgSet{i,2}),'_EMG_1']),[2,3,1]);
             else
                 Trial.Emg(i).Signal.full = [];
             end

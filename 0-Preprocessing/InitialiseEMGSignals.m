@@ -26,8 +26,14 @@ function Trial = InitialiseEMGSignals(emgSet,Trial,Analog)
 if ~strcmp(cell2mat(emgSet(1,1)),'') % Empty list
     for i = 1:size(emgSet,1)
         Trial.EMG(i).label              = cell2mat(emgSet(i,2));
-        if isfield(Analog,emgSet(i,1))
+        if isfield(Analog,emgSet(i,1)) == 1
             Trial.EMG(i).Signal.raw     = permute(Analog.(cell2mat(emgSet(i,1))),[2,3,1]);
+            Trial.EMG(i).Signal.filt    = [];
+            Trial.EMG(i).Signal.rect    = [];
+            Trial.EMG(i).Signal.smooth  = [];
+            Trial.EMG(i).Signal.units   = 'V';
+        elseif isfield(Analog,[cell2mat(emgSet(i,1)),'_EMG_1']) == 1
+            Trial.EMG(i).Signal.raw     = permute(Analog.([cell2mat(emgSet(i,1)),'_EMG_1']),[2,3,1]);
             Trial.EMG(i).Signal.filt    = [];
             Trial.EMG(i).Signal.rect    = [];
             Trial.EMG(i).Signal.smooth  = [];
