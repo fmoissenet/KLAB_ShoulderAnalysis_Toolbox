@@ -189,12 +189,12 @@ if isempty(dir('*.docx'))
 end
 Report = GenerateReportData(Trial);
 Normal = LoadNormativeData(Folder,Session,Patient);
-GenerateReportPlots(Folder,Session,Report,Normal);
+% GenerateReportPlots(Folder,Session,Report,Normal);
 
 % -------------------------------------------------------------------------
 % STORE RESULTS
 % -------------------------------------------------------------------------
-clearvars -except Folder Patient Session Pathology Processing Trial;
+clearvars -except Folder Patient Session Pathology Processing Trial Report Normal;
 save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
 
 % -------------------------------------------------------------------------

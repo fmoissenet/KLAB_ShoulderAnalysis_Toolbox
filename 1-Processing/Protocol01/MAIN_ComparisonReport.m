@@ -50,7 +50,7 @@ disp(' ');
 % Session 1
 disp('Récupération des informations de la première session');
 Session1.Folder.data = uigetdir();
-cd([Session1.Folder.data,'\Report\']);
+cd(Session1.Folder.data);
 matFile = dir('*.mat');
 Session1 = load(matFile.name);
 disp(['  - Patient   : ',num2str(Session1.Patient.ID),' - ',Session1.Patient.lastname,' ',Session1.Patient.firstname]);
@@ -62,7 +62,7 @@ clear matFile;
 % Session 2
 disp('Récupération des informations de la seconde sessions');
 Session2.Folder.data = uigetdir();
-cd([Session2.Folder.data,'\Report\']);
+cd(Session2.Folder.data);
 matFile = dir('*.mat');
 Session2 = load(matFile.name);
 disp(['  - Patient   : ',num2str(Session2.Patient.ID),' - ',Session2.Patient.lastname,' ',Session2.Patient.firstname]);
