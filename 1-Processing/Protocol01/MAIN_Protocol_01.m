@@ -121,7 +121,7 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
             if contains(c3dFiles(i).name,'CALIBRATION3')
                 Vmarker          = [];
             end
-            [Trial(k),Vmarker]   = AddPointedLandmarks(Trial(k),Marker,Vmarker,Event,pointList);
+            [Trial(k),Vmarker]   = AddPointedLandmarks(Trial(k),Marker,Vmarker,Event,pointList,'Stylusb');
             % Add acromial cluster landmarks as virtual markers
             [Trial(k),Vmarker]   = AddACMLandmarks(Session,Trial(k),Marker,Vmarker);
             % Import force data
@@ -163,7 +163,7 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
                 Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
                 % Compute SHR
                 if i ~= 5 && i ~= 6 
-                    Trial(k)     = ComputeSHR(c3dFiles(i),Trial(k),Trial(3));
+                    Trial(k)     = ComputeSHR(c3dFiles(i),Trial(k),Trial(k)); % Last input is the reference position used for SHR computation
                 end
                 close all;
             end

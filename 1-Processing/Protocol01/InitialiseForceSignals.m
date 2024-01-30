@@ -26,12 +26,11 @@ if contains(Trial.file,'CALIBRATION4')
     disp('  - Calibrage des données du capteur de force');
     if isfield(Event,'Remote')
         % Get calibration values 
-        weight = mass*9.81; % (N)
-        famplitude = mean(Analog.FORCE(fix(Event.Remote(1)*Trial.fanalog):fix(Event.Remote(2)*Trial.fanalog))) - ...
-                     mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog)));
-        Trial.Fsensor.label = 'Force sensor';
-        Trial.Fsensor.calibration = weight/famplitude;
-        Trial.Fsensor.Force.value = permute((Analog.FORCE-mean(Analog.FORCE(fix(Event.Remote(3)*Trial.fanalog):fix(Event.Remote(4)*Trial.fanalog))))*Trial.Fsensor.calibration,[2,3,1]); % N
+        weight                    = mass*9.81; % (N)
+        fmax                      = mean(Analog.FORCE);
+        Trial.Fsensor.label       = 'Force sensor';
+        Trial.Fsensor.calibration = weight/(mean(Analog.CH16_FORCE(fix(Event.Remote(1)*f):fix(Event.Remote(2)*f),1)));
+        Trial.Fsensor.Force.value = permute(Analog.FORCE*Trial.Fsensor.calibration,[2,3,1]); % N
         Trial.Fsensor.Force.units = 'N';
     else
         Trial.Fsensor.label = 'Force sensor';

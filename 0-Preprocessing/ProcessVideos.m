@@ -73,9 +73,9 @@ for ifile = 1:size(aviFiles,1)
 
     % Apply video compression and rotation (only for high compression)
     cd(Folder.dependencies);
-    if contains(aviFiles(ifile).name,'Miqus_2') || contains(aviFiles(ifile).name,'Miqus_11') || contains(aviFiles(ifile).name,'Miqus_13') || contains(aviFiles(ifile).name,'Oqus_13')
+    if contains(aviFiles(ifile).name,'Miqus_12') || contains(aviFiles(ifile).name,'Miqus_14')
         system(['ffmpeg.exe -i ',inputFile,' -vf "transpose=2" -vcodec libx264 ',outputFile2]);
-    elseif contains(aviFiles(ifile).name,'Miqus_12') || contains(aviFiles(ifile).name,'Miqus_14')
+    elseif contains(aviFiles(ifile).name,'Miqus_13') || contains(aviFiles(ifile).name,'Miqus_15')
         system(['ffmpeg.exe -i ',inputFile,' -vf "transpose=1"  -vcodec libx264 ',outputFile2]);
     end
 

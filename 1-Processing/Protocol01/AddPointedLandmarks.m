@@ -18,26 +18,46 @@
 % Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 % -------------------------------------------------------------------------
 
-function [Trial,Vmarker] = AddPointedLandmarks(Trial,Marker,Vmarker,Event,pointList)
+function [Trial,Vmarker] = AddPointedLandmarks(Trial,Marker,Vmarker,Event,pointList,stylus)
 
 disp('  - Ajout des marqueurs pointés');
-if contains(Trial.file,'CALIBRATION3')
-    load('Stylus1Calibration.mat'); % Get local position of the stylus tip                
-    Vmarker   = [];
-    % Define stylus coordinate system
-    Os = Marker.STY04;
-    Ys = (Marker.STY02-Marker.STY05);
-    Ys = Ys./sqrt(Ys(:,1).^2+Ys(:,2).^2+Ys(:,3).^2);
-    Xs = cross((Marker.STY03-Marker.STY05),(Marker.STY01-Marker.STY05));
-    Xs = Xs./sqrt(Xs(:,1).^2+Xs(:,2).^2+Xs(:,3).^2);   
-    Zs = cross(Xs,Ys);
-    Xs = cross(Ys,Zs);
-    Rs = [permute(Xs,[2,3,1]) permute(Ys,[2,3,1]) permute(Zs,[2,3,1])];
-    ds = permute(Os,[2,3,1]);
-    % Get the global position of the stylus tip at each event
-    for ievent = 1:length(Event.Remote)
-        temp(:,:,ievent) = Rs(:,:,ievent)*STY06+ds(:,:,ievent);
-    end
+if contains(Trial.file,'CALIBRATION3')       
+	Vmarker   = [];
+	if strcmp(stylus,'Stylus1')
+		% Set local position of the stylus tip 
+		STY06 = [0.00101827958486882; -0.230005152480007; -0.000106002004537661];     
+		% Define stylus coordinate system
+		Os = Marker.STY04;
+		Ys = (Marker.STY02-Marker.STY05);
+		Ys = Ys./sqrt(Ys(:,1).^2+Ys(:,2).^2+Ys(:,3).^2);
+		Xs = cross((Marker.STY03-Marker.STY05),(Marker.STY01-Marker.STY05));
+		Xs = Xs./sqrt(Xs(:,1).^2+Xs(:,2).^2+Xs(:,3).^2);   
+		Zs = cross(Xs,Ys);
+		Xs = cross(Ys,Zs);
+		Rs = [permute(Xs,[2,3,1]) permute(Ys,[2,3,1]) permute(Zs,[2,3,1])];
+		ds = permute(Os,[2,3,1]);
+		% Get the global position of the stylus tip at each event
+		for ievent = 1:length(Event.Remote)
+			temp(:,:,ievent) = Rs(:,:,ievent)*STY06+ds(:,:,ievent);
+		end
+	elseif strcmp(stylus,'Stylusb')
+		% Set local position of the stylus tip 
+		STY05 = [-7*1e-3; -80*1e-3; 0];     
+		% Define stylus coordinate system
+		Os = Marker.STY04;
+		Ys = (Marker.STY02-Marker.STY04);
+		Ys = Ys./sqrt(Ys(:,1).^2+Ys(:,2).^2+Ys(:,3).^2);
+		Xs = cross((Marker.STY03-Marker.STY04),(Marker.STY01-Marker.STY04));
+		Xs = Xs./sqrt(Xs(:,1).^2+Xs(:,2).^2+Xs(:,3).^2);   
+		Zs = cross(Xs,Ys);
+		Xs = cross(Ys,Zs);
+		Rs = [permute(Xs,[2,3,1]) permute(Ys,[2,3,1]) permute(Zs,[2,3,1])];
+		ds = permute(Os,[2,3,1]);
+		% Get the global position of the stylus tip at each event
+		for ievent = 1:length(Event.Remote)
+			temp(:,:,ievent) = Rs(:,:,ievent)*STY05+ds(:,:,ievent);
+		end
+	end
     % Store in local coordinate system
     for ievent = 1:length(Event.Remote)
         if strcmp(pointList{ievent,1},'SXS')

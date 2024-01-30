@@ -21,30 +21,17 @@
 function Trial = ComputeSHR(c3dFiles,Trial,Reference)
 
 if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % Only applied on elevation tasks
-    % Right scapulo humeral rhythm computation (mean across cycles)        
+    % Right scapulo humeral rhythm computation        
     for icycle = 1:size(Trial.Joint(1).Euler.rcycle,4)
-        theta_HT = [];
-        theta_GH = [];
-        theta_ST = [];
+        % Set frames of interest
         if contains(c3dFiles.name,'ANALYTIC2')
-            % Elevation
-            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(1).Euler.rcycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.rcycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
-            % Return
-            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(1).Euler.rcycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(1).Euler.rcycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
+            imax = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
+            imin = find(abs(Trial.Joint(1).Euler.full(:,1,:))==min(abs(Trial.Joint(1).Euler.full(:,1,:))));
         elseif contains(c3dFiles.name,'ANALYTIC1')
-            % Elevation
-            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(1).Euler.rcycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(1).Euler.rcycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
-            % Return
-            itemp = find(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(1).Euler.rcycle(:,3,itemp:end,icycle))>=120 & abs(Trial.Joint(1).Euler.rcycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
-        end
+            imax = find(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,3,:,icycle))));
+            imin = find(abs(Trial.Joint(1).Euler.full(:,3,:))==min(abs(Trial.Joint(1).Euler.full(:,3,:))));
+        end 
+        % Compute 3D joint contributions and SHR (Robert-Lachaine et al., 2015)       
         for iframe = 1:101 % Cycle frames (%)
             % Define rotation matrices
             R_ICS_T     = Trial.Segment(4).T.rcycle(1:3,1:3,iframe,icycle);
@@ -53,71 +40,65 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
             R_T_S       = inv(R_ICS_T)*R_ICS_S;
             R_S_H       = inv(R_ICS_S)*R_ICS_H;
             % Define reference rotation matrices
-            R_ICS_T_ref = Reference.Segment(4).T.full(1:3,1:3,1);
-            R_ICS_S_ref = Reference.Segment(2).T.full(1:3,1:3,1);
-            R_ICS_H_ref = Reference.Segment(1).T.full(1:3,1:3,1);
+            R_ICS_T_ref = Reference.Segment(4).T.full(1:3,1:3,imin);
+            R_ICS_S_ref = Reference.Segment(2).T.full(1:3,1:3,imin);
+            R_ICS_H_ref = Reference.Segment(1).T.full(1:3,1:3,imin);
             R_T_S_ref   = inv(R_ICS_T_ref)*R_ICS_S_ref;
             R_S_H_ref   = inv(R_ICS_S_ref)*R_ICS_H_ref;
-            % Compute 3D joint contributions (Robert-Lachaine et al., 2015)
+            % Compute 3D joint contributions
             C_HT        = inv(R_T_S_ref)*R_T_S*inv(R_S_H_ref)*R_S_H;
-            C_ST        = inv(R_T_S_ref)*R_T_S*inv(R_S_H_ref)*eye(3);
+            C_ST        = inv(R_T_S_ref)*R_T_S*inv(R_S_H_ref)*R_S_H_ref;
             % Store resulting angles
             theta_HT(iframe) = acosd(C_HT(2,2)); % YXY Euler sequence
             theta_ST(iframe) = acosd(C_ST(2,2)); % YXY Euler sequence
             theta_GH(iframe) = theta_HT(iframe)-theta_ST(iframe);
             SHR(iframe)      = theta_GH(iframe)/theta_ST(iframe);
-        end     
-        % Mean SHR computation proposed by Bruttel et al. 2020
-        % Elevation
-        AUC_ST = []; AUC_HT = []; cST = [];
-        AUC_ST = trapz(theta_ST(iframe1));
-        AUC_HT = trapz(theta_HT(iframe1));
-        cST = AUC_ST/AUC_HT;
-        tSHR1 = (1-cST)/cST;
-        % Return
-        AUC_ST = []; AUC_HT = []; cST = [];
-        AUC_ST = trapz(theta_ST(iframe2));
-        AUC_HT = trapz(theta_HT(iframe2));
-        cST = AUC_ST/AUC_HT;
-        tSHR2 = (1-cST)/cST;
-        % Store results
-        Trial.SHR(1).label                         = 'Right scapulo-humeral rhythm';
-        Trial.SHR(1).value1.rcycle(1,1,1,icycle)   = tSHR1; % Elevation
-        Trial.SHR(1).value2.rcycle(1,1,1,icycle)   = tSHR2; % Return
-        Trial.SHR(1).tvalue.rcycle(1,1,:,icycle)   = permute(interp1((1:size(theta_HT,2))',SHR,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(1).theta_HT.rcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_HT,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(1).theta_ST.rcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_ST,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(1).theta_GH.rcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_GH,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-%         figure; hold on;
-%         plot(theta_ST_GH,theta_ST_GH,'Color','black','Linestyle','-');
-%         plot(theta_ST_GH,theta_ST,'Color','red','Linestyle','-');
-%         plot(theta_ST_GH,theta_GH,'Color','blue','Linestyle','-');
-%         legend({'HT','ST','GH'});
-    end
-    % Left scapulo humeral rhythm computation (mean across cycles)             
-    for icycle = 1:size(Trial.Joint(6).Euler.lcycle,4)
-        theta_HT = [];
-        theta_GH = [];
-        theta_ST = [];
-        if contains(c3dFiles.name,'ANALYTIC2')
-            % Elevation
-            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(6).Euler.lcycle(:,1,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,1,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
-            % Return
-            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(6).Euler.lcycle(:,1,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,1,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
-        elseif contains(c3dFiles.name,'ANALYTIC1')
-            % Elevation
-            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))));
-            iframe1 = find(abs(Trial.Joint(6).Euler.lcycle(:,3,1:itemp,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,3,1:itemp,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
-            % Return
-            itemp = find(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))));
-            iframe2 = find(abs(Trial.Joint(6).Euler.lcycle(:,3,itemp:end,icycle))>=30 & abs(Trial.Joint(6).Euler.lcycle(:,3,itemp:end,icycle))<=120); % Only frames related to humerus elevated between 30� and 120�
-            clear itemp;
         end
+        % ELEVATION
+        clear range theta_HT1 theta_ST1 theta_GH1 SHR1;
+        % Compute best-fit polynomial curves (3th order) between 30° and 90°
+        angleMin              = 30;
+        angleMax              = 90;
+        range                 = min(find(theta_HT(1:imax)>=angleMin)):max(find(theta_HT(1:imax)<=angleMax));
+        [theta_HT1,theta_ST1] = interpoly3(theta_HT(range),theta_ST(range),angleMin,angleMax);
+        [~,theta_GH1]         = interpoly3(theta_HT(range),theta_GH(range),angleMin,angleMax);
+        [~,SHR1]              = interpoly3(theta_HT(range),SHR(range),angleMin,angleMax);
+        % Store results
+        Trial.SHR(1).label                             = 'Right scapulo-humeral rhythm';
+        Trial.SHR(1).theta_HT(1).rcycle(1,1,:,icycle)  = permute(theta_HT1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).theta_ST(1).rcycle(1,1,:,icycle)  = permute(theta_ST1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).theta_GH(1).rcycle(1,1,:,icycle)  = permute(theta_GH1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).SHR_curve(1).rcycle(1,1,:,icycle) = permute(SHR1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).SHR_mean(1).rcycle(1,1,:,icycle)  = mean(SHR1,'omitnan'); % scalar
+        % RETURN
+        clear range theta_HT1 theta_ST1 theta_GH1 SHR1;
+        % Compute best-fit polynomial curves (3th order) between 30° and 90°
+        angleMin              = 30;
+        angleMax              = 90;
+        range                 = imax+min(find(theta_HT(imax:end)<=angleMax))-1:imax+max(find(theta_HT(imax:end)>=angleMin))-1;
+        [theta_HT1,theta_ST1] = interpoly3(theta_HT(range),theta_ST(range),angleMin,angleMax);
+        [~,theta_GH1]         = interpoly3(theta_HT(range),theta_GH(range),angleMin,angleMax);
+        [~,SHR1]              = interpoly3(theta_HT(range),SHR(range),angleMin,angleMax);
+        % Store results
+        Trial.SHR(1).label                             = 'Right scapulo-humeral rhythm';
+        Trial.SHR(1).theta_HT(2).rcycle(1,1,:,icycle)  = permute(theta_HT1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).theta_ST(2).rcycle(1,1,:,icycle)  = permute(theta_ST1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).theta_GH(2).rcycle(1,1,:,icycle)  = permute(theta_GH1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).SHR_curve(2).rcycle(1,1,:,icycle) = permute(SHR1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(1).SHR_mean(2).rcycle(1,1,:,icycle)  = mean(SHR1,'omitnan'); % scalar
+    end
+
+    % Left scapulo humeral rhythm computation       
+    for icycle = 1:size(Trial.Joint(6).Euler.lcycle,4)
+        % Set frames of interest
+        if contains(c3dFiles.name,'ANALYTIC2')
+            imax = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
+            imin = find(abs(Trial.Joint(6).Euler.full(:,1,:))==min(abs(Trial.Joint(6).Euler.full(:,1,:))));
+        elseif contains(c3dFiles.name,'ANALYTIC1')
+            imax = find(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,3,:,icycle))));
+            imin = find(abs(Trial.Joint(6).Euler.full(:,3,:))==min(abs(Trial.Joint(6).Euler.full(:,3,:))));
+        end 
+        % Compute 3D joint contributions and SHR (Robert-Lachaine et al., 2015)       
         for iframe = 1:101 % Cycle frames (%)
             % Define rotation matrices
             R_ICS_T     = Trial.Segment(4).T.lcycle(1:3,1:3,iframe,icycle);
@@ -126,45 +107,51 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
             R_T_S       = inv(R_ICS_T)*R_ICS_S;
             R_S_H       = inv(R_ICS_S)*R_ICS_H;
             % Define reference rotation matrices
-            R_ICS_T_ref = Reference.Segment(4).T.full(1:3,1:3,1);
-            R_ICS_S_ref = Reference.Segment(6).T.full(1:3,1:3,1);
-            R_ICS_H_ref = Reference.Segment(5).T.full(1:3,1:3,1);
+            R_ICS_T_ref = Reference.Segment(4).T.full(1:3,1:3,imin);
+            R_ICS_S_ref = Reference.Segment(6).T.full(1:3,1:3,imin);
+            R_ICS_H_ref = Reference.Segment(5).T.full(1:3,1:3,imin);
             R_T_S_ref   = inv(R_ICS_T_ref)*R_ICS_S_ref;
             R_S_H_ref   = inv(R_ICS_S_ref)*R_ICS_H_ref;
-            % Compute 3D joint contributions (Robert-Lachaine et al., 2015)
+            % Compute 3D joint contributions
             C_HT        = inv(R_T_S_ref)*R_T_S*inv(R_S_H_ref)*R_S_H;
-            C_ST        = inv(R_T_S_ref)*R_T_S*inv(R_S_H_ref)*eye(3);
+            C_ST        = inv(R_T_S_ref)*R_T_S*inv(R_S_H_ref)*R_S_H_ref;
             % Store resulting angles
             theta_HT(iframe) = acosd(C_HT(2,2)); % YXY Euler sequence
             theta_ST(iframe) = acosd(C_ST(2,2)); % YXY Euler sequence
             theta_GH(iframe) = theta_HT(iframe)-theta_ST(iframe);
             SHR(iframe)      = theta_GH(iframe)/theta_ST(iframe);
         end
-        % Mean SHR computation proposed by Bruttel et al. 2020
-        % Elevation
-        AUC_ST = []; AUC_HT = []; cST = [];
-        AUC_ST = trapz(theta_ST(iframe1));
-        AUC_HT = trapz(theta_HT(iframe1));
-        cST = AUC_ST/AUC_HT;
-        tSHR1 = (1-cST)/cST;
-        % Return
-        AUC_ST = []; AUC_HT = []; cST = [];
-        AUC_ST = trapz(theta_ST(iframe2));
-        AUC_HT = trapz(theta_HT(iframe2));
-        cST = AUC_ST/AUC_HT;
-        tSHR2 = (1-cST)/cST;
+        % ELEVATION
+        clear range theta_HT1 theta_ST1 theta_GH1 SHR1;
+        % Compute best-fit polynomial curves (3th order) between 30° and 90°
+        angleMin              = 30;
+        angleMax              = 90;
+        range                 = min(find(theta_HT(1:imax)>=angleMin)):max(find(theta_HT(1:imax)<=angleMax));
+        [theta_HT1,theta_ST1] = interpoly3(theta_HT(range),theta_ST(range),angleMin,angleMax);
+        [~,theta_GH1]         = interpoly3(theta_HT(range),theta_GH(range),angleMin,angleMax);
+        [~,SHR1]              = interpoly3(theta_HT(range),SHR(range),angleMin,angleMax);
         % Store results
-        Trial.SHR(2).label                         = 'Left scapulo-humeral rhythm';
-        Trial.SHR(2).value1.lcycle(1,1,1,icycle)   = tSHR1; % Elevation
-        Trial.SHR(2).value2.lcycle(1,1,1,icycle)   = tSHR2; % Return
-        Trial.SHR(2).tvalue.lcycle(1,1,:,icycle)   = permute(interp1((1:size(theta_HT,2))',SHR,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(2).theta_HT.lcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_HT,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(2).theta_ST.lcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_ST,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-        Trial.SHR(2).theta_GH.lcycle(1,1,:,icycle) = permute(interp1((1:size(theta_HT,2))',theta_GH,(linspace(1,size(theta_HT,2),101))','spline'),[1,3,2]);
-%         figure; hold on;
-%         plot(theta_ST_GH,theta_ST_GH,'Color','black','Linestyle','-');
-%         plot(theta_ST_GH,theta_ST,'Color','red','Linestyle','-');
-%         plot(theta_ST_GH,theta_GH,'Color','blue','Linestyle','-');
-%         legend({'HT','ST','GH'});
+        Trial.SHR(2).label                             = 'Left scapulo-humeral rhythm';
+        Trial.SHR(2).theta_HT(1).lcycle(1,1,:,icycle)  = permute(theta_HT1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).theta_ST(1).lcycle(1,1,:,icycle)  = permute(theta_ST1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).theta_GH(1).lcycle(1,1,:,icycle)  = permute(theta_GH1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).SHR_curve(1).lcycle(1,1,:,icycle) = permute(SHR1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).SHR_mean(1).lcycle(1,1,:,icycle)  = mean(SHR1,'omitnan'); % scalar
+        % RETURN
+        clear range theta_HT1 theta_ST1 theta_GH1 SHR1;
+        % Compute best-fit polynomial curves (3th order) between 30° and 90°
+        angleMin              = 30;
+        angleMax              = 90;
+        range                 = imax+min(find(theta_HT(imax:end)<=angleMax))-1:imax+max(find(theta_HT(imax:end)>=angleMin))-1;
+        [theta_HT1,theta_ST1] = interpoly3(theta_HT(range),theta_ST(range),angleMin,angleMax);
+        [~,theta_GH1]         = interpoly3(theta_HT(range),theta_GH(range),angleMin,angleMax);
+        [~,SHR1]              = interpoly3(theta_HT(range),SHR(range),angleMin,angleMax);
+        % Store results
+        Trial.SHR(2).label                             = 'Left scapulo-humeral rhythm';
+        Trial.SHR(2).theta_HT(2).lcycle(1,1,:,icycle)  = permute(theta_HT1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).theta_ST(2).lcycle(1,1,:,icycle)  = permute(theta_ST1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).theta_GH(2).lcycle(1,1,:,icycle)  = permute(theta_GH1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).SHR_curve(2).lcycle(1,1,:,icycle) = permute(SHR1,[2,3,1]); % 61 point vector (30° to 90°)
+        Trial.SHR(2).SHR_mean(2).lcycle(1,1,:,icycle)  = mean(SHR1,'omitnan'); % scalar
     end
 end
