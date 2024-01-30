@@ -86,7 +86,7 @@ if nargin>0
     switch varargin{1}
         
         case 'init'
-            if odd(nargin) && nargin>3
+%             if mod(nargin,2)~=1 && nargin>3 %odd(nargin) && nargin>3
                 for qwe=2:2:(nargin-1)
                     switch varargin{qwe}
                         case 'url'
@@ -99,11 +99,11 @@ if nargin>0
                             return
                     end
                 end
-            else
-                fprintf(2, 'REDCap:Init: Malformed input arguments!\n');
-                response = -1.2;
-                return
-            end
+%             else
+%                 fprintf(2, 'REDCap:Init: Malformed input arguments!\n');
+%                 response = -1.2;
+%                 return
+%             end
 
         case 'read'
             if ~isempty(redcap_url)
@@ -261,12 +261,9 @@ if nargin>0
                         dToken = [  '-d "token=', redcap_token, '&', ...
                         'content=record&format=json&type=flat&overwriteBehavior=overwrite&', ...  % overwrite
                         'forceAutoNumber=false&', ...
-                        ['records[0]=', record_num, '&'], ...
-                        ['event[0]=', varargin{3}],'&', ...
                         ['data=[{', ...
-                            '\"us_record_id\":\"', record_num, '\",', ...
-                            '\"', varargin{4}, '\":\"', varargin{5}, '\",', ...
-                            '\"redcap_event_name\":\"', varargin{3}, '\"}]&'], ...
+                            '\"id_redcap\":\"', record_num, '\",', ...
+                            '\"', varargin{4}, '\":\"', varargin{5}, '\"}]&'], ...
                         'returnContent=count&returnFormat=json"'  ];
                    
                         unixCmd = sprintf('curl  %s  %s   -X POST  %s  %s ', hCmd1, hCmd2, dToken, redcap_url);
