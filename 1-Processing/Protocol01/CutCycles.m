@@ -284,7 +284,7 @@ if contains(c3dFiles.name,'ANALYTIC')
     end
     % Emg
     fratio = Trial.fanalog/Trial.fmarker;
-    manualCheck = 0;
+    manualCheck = 1;
     Trial  = OnsetDetection(Trial,Rcycles,Lcycles,btype,manualCheck);
     if ~isempty(Trial.Emg)
         for iemg = 1:size(Trial.Emg,2)

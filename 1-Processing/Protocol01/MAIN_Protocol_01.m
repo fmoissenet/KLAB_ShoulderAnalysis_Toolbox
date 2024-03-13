@@ -36,10 +36,10 @@ disp(' ');
 % SET FOLDERS
 % -------------------------------------------------------------------------
 disp('Définition des répertoires de travail');
-Folder.preprocessing = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
-Folder.toolbox       = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
+Folder.preprocessing = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
+Folder.toolbox       = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
 Folder.data          = uigetdir(); % Patient folder defined by GUI
-Folder.dependencies  = 'C:\Users\moissene\OneDrive - unige.ch\_AQMS\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
+Folder.dependencies  = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
 addpath(genpath(Folder.dependencies));
 disp(' ');
 
@@ -86,7 +86,8 @@ cd([Folder.data,'\Processed\']);
 c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
-for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
+%%
+for i = [3,4] %[7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             disp(' ');
@@ -159,7 +160,7 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
                 % Define and cut movement cycles
                 % Based on humerothoracic kinematics
                 figure;       
-                btype = 1; % Automatic baseline selection
+                btype            = 2; % Manual baseline selection
                 Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
                 % Compute SHR
                 if i ~= 5 && i ~= 6 
@@ -190,15 +191,14 @@ if isempty(dir('*.docx'))
     copyfile([Folder.toolbox,'Report\Skeleton_top.png'],[Folder.data,'\Report\Skeleton_top.png']);
 end
 Report = GenerateReportData(Trial);
-% Normal = LoadNormativeData(Folder,Session,Patient);
-% GenerateReportPlots(Folder,Session,Report,Normal);
+Normal = LoadNormativeData(Folder,Session,Patient);
+GenerateReportPlots(Folder,Session,Report,Normal);
 
 % -------------------------------------------------------------------------
 % STORE RESULTS
 % -------------------------------------------------------------------------
-clearvars -except Folder Patient Session Pathology Processing Trial Report;
-% save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
-save([Folder.data,'\P',num2str(Patient.ID),'.mat']);
+clearvars -except Folder Patient Session Pathology Processing Trial Report Normal;
+save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
 
 % -------------------------------------------------------------------------
 % STOP ALL PROCESSES

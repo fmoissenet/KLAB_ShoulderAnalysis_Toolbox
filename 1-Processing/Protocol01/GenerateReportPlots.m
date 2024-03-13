@@ -167,6 +167,14 @@ for imotion = 1:4
                         range = imax:101;
                     end  
                     angleL   = -(Report.Analytic(imotion).Kinematics.Joint(6).Euler(range,ieuler,icycle));
+                elseif  imotion == 1 || imotion == 2
+                    [~,imax] = max(abs(Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle)));
+                    if nmotion == 1
+                        range = 1:imax;
+                    else
+                        range = imax:101;
+                    end  
+                    angleL   = abs(Report.Analytic(imotion).Kinematics.Joint(6).Euler(range,ieuler,icycle));
                 else
                     [~,imax] = max((Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle)));
                     if nmotion == 1
@@ -220,9 +228,9 @@ for imotion = 1:4
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
                         else
-                            angleEMG = (Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
+                            angleEMG = abs(Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
                         end
-                        for iframe = 1:size(angleEMG,1) % We reject negative value = the task was defined not performed in this case
+                        for iframe = 1:size(angleEMG,1) % We reject negative value = the task was defined "not performed" in this case
                             if angleEMG(iframe) < 0
                                 angleEMG(iframe) = 0;
                                 value(iframe)    = 0;
@@ -289,6 +297,14 @@ for imotion = 1:4
                         range = imax:101;
                     end  
                     angleR   = -(Report.Analytic(imotion).Kinematics.Joint(1).Euler(range,ieuler,icycle));
+                elseif imotion == 1 || imotion == 2
+                    [~,imax] = max(abs(Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle)));
+                    if nmotion == 1
+                        range = 1:imax;
+                    else
+                        range = imax:101;
+                    end  
+                    angleR   = abs(Report.Analytic(imotion).Kinematics.Joint(1).Euler(range,ieuler,icycle));
                 else
                     [~,imax] = max((Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle)));
                     if nmotion == 1
@@ -342,9 +358,9 @@ for imotion = 1:4
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
                         else
-                            angleEMG = (Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
+                            angleEMG = abs(Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
                         end
-                        for iframe = 1:size(angleEMG,1) % We reject negative value = the task was defined not performed in this case
+                        for iframe = 1:size(angleEMG,1) % We reject negative value = the task was defined "not performed in this case
                             if angleEMG(iframe) < 0
                                 angleEMG(iframe) = 0;
                                 value(iframe)    = 0;

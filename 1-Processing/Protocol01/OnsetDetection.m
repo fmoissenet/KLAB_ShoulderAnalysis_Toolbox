@@ -26,7 +26,7 @@ disp('  - Détection des onsets/offsets des signaux EMG');
 fratio = Trial.fanalog/Trial.fmarker;
 
 % Plot ylim
-ylimit = 8e-4;
+% ylimit = 8e-4;
 
 % Manual validation of EMG signal
 iemg = 1;
@@ -43,7 +43,7 @@ while iemg < 15 % All EMG (right and left)
     envelop2 = smoothdata(envelop,'gaussian',3*Trial.fanalog)'; % Used to compute signal peak
     if manualCheck == 1
         fig = figure('units','normalized','outerposition',[0 0 1 1]);
-    %     ylim([-ylimit ylimit]);
+%         ylim([-ylimit ylimit]);
         ylimit = max(signal);
         hold on;
         plot(signal0,'Color',[0.5 0.5 0.5]);
@@ -59,7 +59,7 @@ while iemg < 15 % All EMG (right and left)
     if btype == 1
         Lb = 1*Trial.fanalog; % Optimised: 1s
         Kb = 5; % Rank 5
-        for iframe = 1:fix(size(signal,1)*0.80)-Lb % 80% of the signal is analysed to avoid issue related to bad signal stop time
+        for iframe = 1:fix(size(signal,1)*0.90)-Lb % 90% of the signal is analysed to avoid issue related to bad signal stop time
             mrect(iframe) = mean(signal(iframe:iframe+Lb-1));
         end
         srect = unique(mrect);
@@ -184,10 +184,10 @@ while iemg < 15 % All EMG (right and left)
                 [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
                 plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
                 rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
-                title('Y > 0 : Onset accepté, Y < 0 : Onset refusé');
+%                 title('Y > 0 : Onset accepté, Y < 0 : Onset refusé');
                 [~,y] = ginput(1);
                 if y < 0 % Manual onset definition
-                    title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
+%                     title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
                     [x,y] = ginput(2);
                     if y(1) > 0 % New detection
                         Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
@@ -195,7 +195,7 @@ while iemg < 15 % All EMG (right and left)
                         delete(ponset);
                         ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
                         drawnow;
-                        title('Sélectionner le début et fin du nouvel onset');
+%                         title('Sélectionner le début et fin du nouvel onset');
                         [x,y] = ginput(2);
                         if y(1) > 0 % New detection
                             Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % Update onset
@@ -222,7 +222,7 @@ while iemg < 15 % All EMG (right and left)
                 rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
                 [~,y] = ginput(1);
                 if y < 0 % Manual onset definition
-                    title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
+%                     title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
                     [x,y] = ginput(2);
                     if y(1) > 0 % New detection
                         Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 0; % Clean onset
@@ -230,7 +230,7 @@ while iemg < 15 % All EMG (right and left)
                         delete(ponset);
                         ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
                         drawnow;
-                        title('Sélectionner le début et fin du nouvel onset');
+%                         title('Sélectionner le début et fin du nouvel onset');
                         [x,y] = ginput(2);
                         if y(1) > 0 % New detection
                             Trial.Emg(iemg).Signal.onset(:,:,x(1):x(2)) = 1; % Update onset

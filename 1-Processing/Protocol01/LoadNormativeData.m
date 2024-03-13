@@ -22,136 +22,140 @@ function Normal = LoadNormativeData(Folder,Session,Patient)
 
 % Maximal angles
 % -------------------------------------------------------------------------
+tNormals = readtable([Folder.dependencies,'ConstantNormatives.xlsx'],'Range','D5:K16');
 % Get normals adjusted by age and gender
 patientAge = str2num(datestr(datenum(Session.date)-datenum(Patient.dob),'YYYY'));
 patientGender = Patient.gender;
 if patientAge < 31
     if strcmp(patientGender,'Homme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F5');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G5');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D5');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E5');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H5');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I5');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J5');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K5');
+        Normal.Analytic(2).mean = table2array(tNormals(1,3));
+        Normal.Analytic(2).std = table2array(tNormals(1,4));
+        Normal.Analytic(1).mean = table2array(tNormals(1,1));
+        Normal.Analytic(1).std = table2array(tNormals(1,2));
+        Normal.Analytic(3).mean = table2array(tNormals(1,5));
+        Normal.Analytic(3).std = table2array(tNormals(1,6));
+        Normal.Analytic(4).mean = table2array(tNormals(1,7));
+        Normal.Analytic(4).std = table2array(tNormals(1,8));
     elseif strcmp(patientGender,'Femme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F6');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G6');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D6');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E6');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H6');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I6');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J6');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K6');
+        Normal.Analytic(2).mean = table2array(tNormals(2,3));
+        Normal.Analytic(2).std = table2array(tNormals(2,4));
+        Normal.Analytic(1).mean = table2array(tNormals(2,1));
+        Normal.Analytic(1).std = table2array(tNormals(2,2));
+        Normal.Analytic(3).mean = table2array(tNormals(2,5));
+        Normal.Analytic(3).std = table2array(tNormals(2,6));
+        Normal.Analytic(4).mean = table2array(tNormals(2,7));
+        Normal.Analytic(4).std = table2array(tNormals(2,8));
     end
 end
 if patientAge >= 31 && patientAge < 41
     if strcmp(patientGender,'Homme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F7');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G7');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D7');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E7');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H7');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I7');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J7');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K7');
+        Normal.Analytic(2).mean = table2array(tNormals(3,3));
+        Normal.Analytic(2).std = table2array(tNormals(3,4));
+        Normal.Analytic(1).mean = table2array(tNormals(3,1));
+        Normal.Analytic(1).std = table2array(tNormals(3,2));
+        Normal.Analytic(3).mean = table2array(tNormals(3,5));
+        Normal.Analytic(3).std = table2array(tNormals(3,6));
+        Normal.Analytic(4).mean = table2array(tNormals(3,7));
+        Normal.Analytic(4).std = table2array(tNormals(3,8));
     elseif strcmp(patientGender,'Femme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F8');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G8');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D8');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E8');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H8');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I8');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J8');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K8');
+        Normal.Analytic(2).mean = table2array(tNormals(4,3));
+        Normal.Analytic(2).std = table2array(tNormals(4,4));
+        Normal.Analytic(1).mean = table2array(tNormals(4,1));
+        Normal.Analytic(1).std = table2array(tNormals(4,2));
+        Normal.Analytic(3).mean = table2array(tNormals(4,5));
+        Normal.Analytic(3).std = table2array(tNormals(4,6));
+        Normal.Analytic(4).mean = table2array(tNormals(4,7));
+        Normal.Analytic(4).std = table2array(tNormals(4,8));
     end
 end
 if patientAge >= 41 && patientAge < 51
     if strcmp(patientGender,'Homme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F9');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G9');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D9');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E9');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H9');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I9');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J9');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K9');
+        Normal.Analytic(2).mean = table2array(tNormals(5,3));
+        Normal.Analytic(2).std = table2array(tNormals(5,4));
+        Normal.Analytic(1).mean = table2array(tNormals(5,1));
+        Normal.Analytic(1).std = table2array(tNormals(5,2));
+        Normal.Analytic(3).mean = table2array(tNormals(5,5));
+        Normal.Analytic(3).std = table2array(tNormals(5,6));
+        Normal.Analytic(4).mean = table2array(tNormals(5,7));
+        Normal.Analytic(4).std = table2array(tNormals(5,8));
     elseif strcmp(patientGender,'Femme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F10');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G10');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D10');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E10');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H10');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I10');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J10');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K10');
+        Normal.Analytic(2).mean = table2array(tNormals(6,3));
+        Normal.Analytic(2).std = table2array(tNormals(6,4));
+        Normal.Analytic(1).mean = table2array(tNormals(6,1));
+        Normal.Analytic(1).std = table2array(tNormals(6,2));
+        Normal.Analytic(3).mean = table2array(tNormals(6,5));
+        Normal.Analytic(3).std = table2array(tNormals(6,6));
+        Normal.Analytic(4).mean = table2array(tNormals(6,7));
+        Normal.Analytic(4).std = table2array(tNormals(6,8));
     end
 end
 if patientAge >= 51 && patientAge < 61
     if strcmp(patientGender,'Homme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F11');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G11');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D11');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E11');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H11');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I11');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J11');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K11');
+        Normal.Analytic(2).mean = table2array(tNormals(7,3));
+        Normal.Analytic(2).std = table2array(tNormals(7,4));
+        Normal.Analytic(1).mean = table2array(tNormals(7,1));
+        Normal.Analytic(1).std = table2array(tNormals(7,2));
+        Normal.Analytic(3).mean = table2array(tNormals(7,5));
+        Normal.Analytic(3).std = table2array(tNormals(7,6));
+        Normal.Analytic(4).mean = table2array(tNormals(7,7));
+        Normal.Analytic(4).std = table2array(tNormals(7,8));
     elseif strcmp(patientGender,'Femme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F12');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G12');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D12');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E12');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H12');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I12');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J12');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K12');
+        Normal.Analytic(2).mean = table2array(tNormals(8,3));
+        Normal.Analytic(2).std = table2array(tNormals(8,4));
+        Normal.Analytic(1).mean = table2array(tNormals(8,1));
+        Normal.Analytic(1).std = table2array(tNormals(8,2));
+        Normal.Analytic(3).mean = table2array(tNormals(8,5));
+        Normal.Analytic(3).std = table2array(tNormals(8,6));
+        Normal.Analytic(4).mean = table2array(tNormals(8,7));
+        Normal.Analytic(4).std = table2array(tNormals(8,8));
     end
 end
 if patientAge >= 61 && patientAge < 71
     if strcmp(patientGender,'Homme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F13');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G13');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D13');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E13');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H13');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I13');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J13');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K13');
+        Normal.Analytic(2).mean = table2array(tNormals(9,3));
+        Normal.Analytic(2).std = table2array(tNormals(9,4));
+        Normal.Analytic(1).mean = table2array(tNormals(9,1));
+        Normal.Analytic(1).std = table2array(tNormals(9,2));
+        Normal.Analytic(3).mean = table2array(tNormals(9,5));
+        Normal.Analytic(3).std = table2array(tNormals(9,6));
+        Normal.Analytic(4).mean = table2array(tNormals(9,7));
+        Normal.Analytic(4).std = table2array(tNormals(9,8));
     elseif strcmp(patientGender,'Femme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F14');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G14');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D14');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E14');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H14');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I14');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J14');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K14');
+        Normal.Analytic(2).mean = table2array(tNormals(10,3));
+        Normal.Analytic(2).std = table2array(tNormals(10,4));
+        Normal.Analytic(1).mean = table2array(tNormals(10,1));
+        Normal.Analytic(1).std = table2array(tNormals(10,2));
+        Normal.Analytic(3).mean = table2array(tNormals(10,5));
+        Normal.Analytic(3).std = table2array(tNormals(10,6));
+        Normal.Analytic(4).mean = table2array(tNormals(10,7));
+        Normal.Analytic(4).std = table2array(tNormals(10,8));
     end
 end
 if patientAge >= 71
     if strcmp(patientGender,'Homme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F15');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G15');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D15');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E15');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H15');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I15');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J15');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K15');
+        Normal.Analytic(2).mean = table2array(tNormals(11,3));
+        Normal.Analytic(2).std = table2array(tNormals(11,4));
+        Normal.Analytic(1).mean = table2array(tNormals(11,1));
+        Normal.Analytic(1).std = table2array(tNormals(11,2));
+        Normal.Analytic(3).mean = table2array(tNormals(11,5));
+        Normal.Analytic(3).std = table2array(tNormals(11,6));
+        Normal.Analytic(4).mean = table2array(tNormals(11,7));
+        Normal.Analytic(4).std = table2array(tNormals(11,8));
     elseif strcmp(patientGender,'Femme')
-        Normal.Analytic(2).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F16');
-        Normal.Analytic(2).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G16');
-        Normal.Analytic(1).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D16');
-        Normal.Analytic(1).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E16');
-        Normal.Analytic(3).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'H16');
-        Normal.Analytic(3).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'I16');
-        Normal.Analytic(4).mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'J16');
-        Normal.Analytic(4).std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'K16');
+        Normal.Analytic(2).mean = table2array(tNormals(12,3));
+        Normal.Analytic(2).std = table2array(tNormals(12,4));
+        Normal.Analytic(1).mean = table2array(tNormals(12,1));
+        Normal.Analytic(1).std = table2array(tNormals(12,2));
+        Normal.Analytic(3).mean = table2array(tNormals(12,5));
+        Normal.Analytic(3).std = table2array(tNormals(12,6));
+        Normal.Analytic(4).mean = table2array(tNormals(12,7));
+        Normal.Analytic(4).std = table2array(tNormals(12,8));
     end
 end
-Normal.Analytic(2).SHR.mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'F22');
-Normal.Analytic(2).SHR.std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'G22');
-Normal.Analytic(1).SHR.mean = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'D22');
-Normal.Analytic(1).SHR.std = xlsread([Folder.dependencies,'ConstantNormatives.xlsx'],1,'E22');
+
+clear tNormals;
+tNormals = readtable([Folder.dependencies,'ConstantNormatives.xlsx'],'Range','D22:G22');
+Normal.Analytic(2).SHR.mean = table2array(tNormals(1,3));
+Normal.Analytic(2).SHR.std = table2array(tNormals(1,4));
+Normal.Analytic(1).SHR.mean = table2array(tNormals(1,1));
+Normal.Analytic(1).SHR.std = table2array(tNormals(1,2));

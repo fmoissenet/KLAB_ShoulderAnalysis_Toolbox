@@ -29,7 +29,7 @@ if contains(Trial.file,'CALIBRATION4')
         weight                    = mass*9.81; % (N)
         fmax                      = mean(Analog.FORCE);
         Trial.Fsensor.label       = 'Force sensor';
-        Trial.Fsensor.calibration = weight/(mean(Analog.CH16_FORCE(fix(Event.Remote(1)*f):fix(Event.Remote(2)*f),1)));
+        Trial.Fsensor.calibration = weight/(mean(Analog.FORCE(fix(Event.Remote(1)*Trial.fanalog):fix(Event.Remote(2)*Trial.fanalog),1)));
         Trial.Fsensor.Force.value = permute(Analog.FORCE*Trial.Fsensor.calibration,[2,3,1]); % N
         Trial.Fsensor.Force.units = 'N';
     else
