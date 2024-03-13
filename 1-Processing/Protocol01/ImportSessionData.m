@@ -27,7 +27,7 @@ Patient.ID                   = cell2mat(table2array(tSession(1,2)));
 Patient.lastname             = cell2mat(table2array(tSession(2,2)));
 Patient.firstname            = cell2mat(table2array(tSession(3,2)));
 Patient.gender               = cell2mat(table2array(tSession(4,2)));
-Patient.dob                  = datetime(cell2mat(table2array(tSession(5,2))),'InputFormat','dd-MMM-yyyy','Locale','fr-FR');
+Patient.dob                  = datetime(cell2mat(table2array(tSession(5,2))),'InputFormat','dd.MM.yyyy'); % The date format must be defined accordingly in the Matlab settings
 Pathology.Diagnosis.side     = cell2mat(table2array(tSession(9,2)));
 Pathology.Diagnosis.d1       = cell2mat(table2array(tSession(10,2)));
 Pathology.Diagnosis.d2       = cell2mat(table2array(tSession(11,2)));
@@ -46,7 +46,7 @@ Pathology.PreviousSurgery.i4 = cell2mat(table2array(tSession(23,2)));
 Pathology.PreviousSurgery.i5 = cell2mat(table2array(tSession(24,2)));
 % Session
 Session.ID                   = cell2mat(table2array(tSession(26,2)));
-Session.date                 = datetime(cell2mat(table2array(tSession(29,2))),'InputFormat','dd-MMM-yyyy','Locale','fr-FR');
+Session.date                 = datetime(cell2mat(table2array(tSession(29,2))),'InputFormat','dd.MM.yyyy'); % The date format must be defined accordingly in the Matlab settings
 Session.objective            = cell2mat(table2array(tSession(30,2)));
 Session.physician            = cell2mat(table2array(tSession(27,2)));
 Session.operator             = cell2mat(table2array(tSession(28,2)));
