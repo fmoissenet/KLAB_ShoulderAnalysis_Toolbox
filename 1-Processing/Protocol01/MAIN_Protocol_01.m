@@ -193,7 +193,7 @@ end
 Report = GenerateReportData(Trial);
 Normal = LoadNormativeData(Folder,Session,Patient);
 GenerateReportPlots(Folder,Session,Report,Normal);
-%%
+
 % -------------------------------------------------------------------------
 % STORE RESULTS
 % -------------------------------------------------------------------------

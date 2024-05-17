@@ -74,8 +74,10 @@ elseif contains(c3dFiles.name,'ANALYTIC4') % Internal rotation
     Euler                              = R2mobileYXZ_array3(Trial.Joint(1).T.full(1:3,1:3,:));
     Trial.Joint(1).Euler.full(1,1,:)   = rad2deg(Euler(:,2,:)); % X
 %     Trial.Joint(1).Euler.full(1,2,:)   = rad2deg(Euler(:,1,:)); % Y
-    if mean(unwrap(abs(rad2deg(Euler(:,1,:))))) > 120
+    if mean(unwrap((rad2deg(Euler(:,1,:))))) > 120
         Trial.Joint(1).Euler.full(1,2,:) = unwrap(squeeze(-180+rad2deg(Euler(:,1,:)))); % Y  
+    elseif mean(unwrap((rad2deg(Euler(:,1,:))))) < -120
+        Trial.Joint(1).Euler.full(1,2,:) = unwrap(squeeze(180+rad2deg(Euler(:,1,:)))); % Y 
     else
         Trial.Joint(1).Euler.full(1,2,:) = rad2deg(Euler(:,1,:)); % Y
     end
@@ -83,7 +85,7 @@ elseif contains(c3dFiles.name,'ANALYTIC4') % Internal rotation
     Trial.Joint(1).dj.full             = [];        
     Trial.Joint(1).ElevationPlane.full = [];
     clear Euler dj x y p x1 y1; 
-%     figure; plot(squeeze(Trial.Joint(1).Euler.full(1,2,:))');
+    figure; plot(squeeze(Trial.Joint(1).Euler.full(1,2,:))');
 end
 
 % -------------------------------------------------------------------------
