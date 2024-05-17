@@ -65,11 +65,11 @@ disp(' ');
 % - Force: smoothing (btw lowpass 2nd order 10 Hz)
 % -------------------------------------------------------------------------
 disp('Pré-traitement des données');
-if ~isfolder('Processed')
+% if ~isfolder('Processed')
     addpath(Folder.preprocessing);
     MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'YYYYmmDD'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
     rmpath(Folder.preprocessing);
-end
+% end
 addpath(Folder.toolbox);
 cd(Folder.toolbox);
 
@@ -87,7 +87,7 @@ c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
 %%
-for i = [3,4] %[7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
+for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             disp(' ');
@@ -193,7 +193,7 @@ end
 Report = GenerateReportData(Trial);
 Normal = LoadNormativeData(Folder,Session,Patient);
 GenerateReportPlots(Folder,Session,Report,Normal);
-
+%%
 % -------------------------------------------------------------------------
 % STORE RESULTS
 % -------------------------------------------------------------------------

@@ -118,12 +118,17 @@ for itrial = 1:size(Trial,2)
         Report.Analytic(1).Kinematics.SHR(2).SHR_curve2 = permute(Trial(itrial).SHR(2).SHR_curve(2).lcycle,[3,1,4,2]);
         Report.Analytic(1).Kinematics.SHR(2).SHR_mean2  = permute(Trial(itrial).SHR(2).SHR_mean(2).lcycle,[3,1,4,2]);  
         % --        
-        for iemg                                         = 1:7
+        for iemg = 1:7
             Report.Analytic(1).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(1).Emg(iemg).side    = 'Droite';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
-                Report.Analytic(1).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
-                Report.Analytic(1).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
+                    Report.Analytic(1).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(1).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(1).Emg(iemg).envelop = [];
+                    Report.Analytic(1).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(1).Emg(iemg).envelop = [];
                 Report.Analytic(1).Emg(iemg).onset   = [];
@@ -131,12 +136,17 @@ for itrial = 1:size(Trial,2)
             Report.Analytic(1).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end      
         % --
-        for iemg                                         = 8:14
+        for iemg = 8:14
             Report.Analytic(1).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(1).Emg(iemg).side    = 'Gauche';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
-                Report.Analytic(1).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
-                Report.Analytic(1).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
+                    Report.Analytic(1).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(1).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(1).Emg(iemg).envelop = [];
+                    Report.Analytic(1).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(1).Emg(iemg).envelop = [];
                 Report.Analytic(1).Emg(iemg).onset   = [];
@@ -243,9 +253,14 @@ for itrial = 1:size(Trial,2)
         for iemg = 1:7
             Report.Analytic(2).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(2).Emg(iemg).side    = 'Droite';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
-                Report.Analytic(2).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
-                Report.Analytic(2).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
+                    Report.Analytic(2).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(2).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(2).Emg(iemg).envelop = [];
+                    Report.Analytic(2).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(2).Emg(iemg).envelop = [];
                 Report.Analytic(2).Emg(iemg).onset   = [];
@@ -256,9 +271,14 @@ for itrial = 1:size(Trial,2)
         for iemg = 8:14
             Report.Analytic(2).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(2).Emg(iemg).side    = 'Gauche';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
-                Report.Analytic(2).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
-                Report.Analytic(2).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
+                    Report.Analytic(2).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(2).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(2).Emg(iemg).envelop = [];
+                    Report.Analytic(2).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(2).Emg(iemg).envelop = [];
                 Report.Analytic(2).Emg(iemg).onset   = [];
@@ -303,9 +323,14 @@ for itrial = 1:size(Trial,2)
         for iemg = 1:7
             Report.Analytic(3).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(3).Emg(iemg).side    = 'Droite';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
-                Report.Analytic(3).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
-                Report.Analytic(3).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
+                    Report.Analytic(3).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(3).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(3).Emg(iemg).envelop = [];
+                    Report.Analytic(3).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(3).Emg(iemg).envelop = [];
                 Report.Analytic(3).Emg(iemg).onset   = [];
@@ -316,9 +341,14 @@ for itrial = 1:size(Trial,2)
         for iemg = 8:14
             Report.Analytic(3).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(3).Emg(iemg).side    = 'Gauche';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
-                Report.Analytic(3).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
-                Report.Analytic(3).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
+                    Report.Analytic(3).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(3).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(3).Emg(iemg).envelop = [];
+                    Report.Analytic(3).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(3).Emg(iemg).envelop = [];
                 Report.Analytic(3).Emg(iemg).onset   = [];
@@ -387,26 +417,36 @@ for itrial = 1:size(Trial,2)
         for iemg                                         = 1:7
             Report.Analytic(4).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(4).Emg(iemg).side    = 'Droite';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
-                Report.Analytic(4).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
-                Report.Analytic(4).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
+                    Report.Analytic(4).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(4).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(4).Emg(iemg).envelop = [];
+                    Report.Analytic(4).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(4).Emg(iemg).envelop = [];
                 Report.Analytic(4).Emg(iemg).onset   = [];
-            end          
+            end         
             Report.Analytic(4).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end      
         % --
         for iemg                                         = 8:14
             Report.Analytic(4).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(4).Emg(iemg).side    = 'Gauche';
-            if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
-                Report.Analytic(4).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
-                Report.Analytic(4).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
+                    Report.Analytic(4).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(4).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(4).Emg(iemg).envelop = [];
+                    Report.Analytic(4).Emg(iemg).onset   = [];
+                end
             else
                 Report.Analytic(4).Emg(iemg).envelop = [];
                 Report.Analytic(4).Emg(iemg).onset   = [];
-            end     
+            end  
             Report.Analytic(4).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end 
 %     elseif strcmp(Trial(itrial).task,'ISOMETRIC1')

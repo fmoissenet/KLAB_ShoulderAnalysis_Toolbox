@@ -295,10 +295,17 @@ if contains(c3dFiles.name,'ANALYTIC')
                         n  = length(Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio);
                         k0 = (1:n)';
                         k1 = (linspace(1,n,101))';
-                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
-                        Trial.Emg(iemg).Signal.rcycle.envelop(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
-                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
-                        Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
+                        if ~isempty(Trial.Emg(iemg).Signal.onset)
+                            Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                            Trial.Emg(iemg).Signal.rcycle.envelop(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.envelop(:,:,Rcycles(icycle).range(1)*fratio:Rcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                            Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
+                            Trial.Emg(iemg).Signal.rcycle.onset(:,:,find(Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
+                        else
+                            Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle) = NaN;
+                            Trial.Emg(iemg).Signal.rcycle.onset(:,:,:,icycle) = [];
+                            Trial.Emg(iemg).Signal.rcycle.envelop(:,:,:,icycle) = NaN;
+                            Trial.Emg(iemg).Signal.rcycle.envelop(:,:,:,icycle) = [];
+                        end
                     end
                 end
             end
@@ -309,10 +316,17 @@ if contains(c3dFiles.name,'ANALYTIC')
                         n  = length(Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio);
                         k0 = (1:n)';
                         k1 = (linspace(1,n,101))';
-                        Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
-                        Trial.Emg(iemg).Signal.lcycle.envelop(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
-                        Trial.Emg(iemg).Signal.lcycle.onset(:,:,find(Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
-                        Trial.Emg(iemg).Signal.lcycle.onset(:,:,find(Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
+                        if ~isempty(Trial.Emg(iemg).Signal.onset)
+                            Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.onset(:,:,Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                            Trial.Emg(iemg).Signal.lcycle.envelop(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Emg(iemg).Signal.envelop(:,:,Lcycles(icycle).range(1)*fratio:Lcycles(icycle).range(end)*fratio),[3,1,2]),k1,'spline'),[2,3,1]);
+                            Trial.Emg(iemg).Signal.lcycle.onset(:,:,find(Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle)<0.5),icycle) = 0;
+                            Trial.Emg(iemg).Signal.lcycle.onset(:,:,find(Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle)>0.5),icycle) = 1;
+                        else
+                            Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle) = NaN;
+                            Trial.Emg(iemg).Signal.lcycle.onset(:,:,:,icycle) = [];
+                            Trial.Emg(iemg).Signal.lcycle.envelop(:,:,:,icycle) = NaN;
+                            Trial.Emg(iemg).Signal.lcycle.envelop(:,:,:,icycle) = [];
+                        end
                     end
                 end
             end

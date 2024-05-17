@@ -39,28 +39,60 @@ for imotion = 1:4
             motion(2).ititle = 'Elévation sagittale (descente | excentrique)';
             motion(1).ifile  = 'Analytic1_part1';
             motion(2).ifile  = 'Analytic1_part2';
-            PainR            = Session.Pain.Rvalue(4);
-            PainL            = Session.Pain.Lvalue(4);
+            if ~isnan(Session.Pain.Rvalue)
+                PainR            = Session.Pain.Rvalue(4);
+            else
+                PainR            = nan;
+            end
+            if ~isnan(Session.Pain.Lvalue)
+                PainL            = Session.Pain.Lvalue(4);
+            else
+                PainL            = nan;
+            end
         elseif imotion == 2
             ieuler = 1;
             motion(1).ititle = 'Elévation coronale (montée | concentrique)';
             motion(2).ititle = 'Elévation coronale (descente | excentrique)';
             motion(1).ifile  = 'Analytic2_part1';
             motion(2).ifile  = 'Analytic2_part2';
-            PainR            = Session.Pain.Rvalue(5);
-            PainL            = Session.Pain.Lvalue(5);
+            if ~isnan(Session.Pain.Rvalue)
+                PainR            = Session.Pain.Rvalue(5);
+            else
+                PainR            = nan;
+            end
+            if ~isnan(Session.Pain.Lvalue)
+                PainL            = Session.Pain.Lvalue(5);
+            else
+                PainL            = nan;
+            end
         elseif imotion == 3
             ieuler = 2;
             motion(1).ititle = 'Rotation externe';
             motion(1).ifile  = 'Analytic3_part1';
-            PainR            = Session.Pain.Rvalue(6);
-            PainL            = Session.Pain.Lvalue(6);
+            if ~isnan(Session.Pain.Rvalue)
+                PainR            = Session.Pain.Rvalue(6);
+            else
+                PainR            = nan;
+            end
+            if ~isnan(Session.Pain.Lvalue)
+                PainL            = Session.Pain.Lvalue(6);
+            else
+                PainL            = nan;
+            end
         elseif imotion == 4
             ieuler = 2;
             motion(1).ititle = 'Rotation interne';
             motion(1).ifile  = 'Analytic4_part1';
-            PainR            = Session.Pain.Rvalue(7);
-            PainL            = Session.Pain.Lvalue(7);
+            if ~isnan(Session.Pain.Rvalue)
+                PainR            = Session.Pain.Rvalue(7);
+            else
+                PainR            = nan;
+            end
+            if ~isnan(Session.Pain.Lvalue)
+                PainL            = Session.Pain.Lvalue(7);
+            else
+                PainL            = nan;
+            end
         end
 
         for nmotion = 1:size(motion,2)
@@ -223,7 +255,7 @@ for imotion = 1:4
                 % EMG
                 for iemg = 1:7
                     r = iemg*2;
-                    if ~isempty(Report.Analytic(imotion).Emg(iemg+7).onset) % +7 for left sensors
+                    if size(Report.Analytic(imotion).Emg(iemg+7).onset,1) == 101 % +7 for left sensors
                         value = Report.Analytic(imotion).Emg(iemg+7).onset(:,1,icycle); % +7 for left sensors
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
@@ -240,7 +272,6 @@ for imotion = 1:4
                         start = 0;
                         stop = 0;
                         for ivalue = range
-                            value(ivalue)
                             if start == 0
                                 if value(ivalue) > 0.5
                                     start = ivalue;
@@ -353,7 +384,7 @@ for imotion = 1:4
                 % EMG
                 for iemg = 1:7
                     r = iemg*2;
-                    if ~isempty(Report.Analytic(imotion).Emg(iemg).onset)
+                    if size(Report.Analytic(imotion).Emg(iemg+7).onset,1) == 101
                         value = Report.Analytic(imotion).Emg(iemg).onset(:,1,icycle);
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
@@ -370,7 +401,6 @@ for imotion = 1:4
                         start = 0;
                         stop = 0;
                         for ivalue = range
-                            value(ivalue)
                             if start == 0
                                 if value(ivalue) > 0.5
                                     start = ivalue;
@@ -579,28 +609,30 @@ for imotion = 1:4
             r9 = rectangle('Position',[9,0,1,1]); text(9.4,0.5,'9','FontSize',24);
             r10 = rectangle('Position',[10,0,1,1]); text(10.2,0.5,'10','FontSize',24);
             fcolor = [0.7 0.7 0.7];
-            if fix(PainR) == 0
-                set(r0,'FaceColor',fcolor);
-            elseif fix(PainR) == 1
-                set(r1,'FaceColor',fcolor);
-            elseif fix(PainR) == 2
-                set(r2,'FaceColor',fcolor);
-            elseif fix(PainR) == 3
-                set(r3,'FaceColor',fcolor);
-            elseif fix(PainR) == 4
-                set(r4,'FaceColor',fcolor);
-            elseif fix(PainR) == 5
-                set(r5,'FaceColor',fcolor);
-            elseif fix(PainR) == 6
-                set(r6,'FaceColor',fcolor);
-            elseif fix(PainR) == 7
-                set(r7,'FaceColor',fcolor);
-            elseif fix(PainR) == 8
-                set(r8,'FaceColor',fcolor);
-            elseif fix(PainR) == 9
-                set(r9,'FaceColor',fcolor);
-            elseif fix(PainR) == 10
-                set(r10,'FaceColor',fcolor);
+            if ~isnan(PainR)
+                if fix(PainR) == 0
+                    set(r0,'FaceColor',fcolor);
+                elseif fix(PainR) == 1
+                    set(r1,'FaceColor',fcolor);
+                elseif fix(PainR) == 2
+                    set(r2,'FaceColor',fcolor);
+                elseif fix(PainR) == 3
+                    set(r3,'FaceColor',fcolor);
+                elseif fix(PainR) == 4
+                    set(r4,'FaceColor',fcolor);
+                elseif fix(PainR) == 5
+                    set(r5,'FaceColor',fcolor);
+                elseif fix(PainR) == 6
+                    set(r6,'FaceColor',fcolor);
+                elseif fix(PainR) == 7
+                    set(r7,'FaceColor',fcolor);
+                elseif fix(PainR) == 8
+                    set(r8,'FaceColor',fcolor);
+                elseif fix(PainR) == 9
+                    set(r9,'FaceColor',fcolor);
+                elseif fix(PainR) == 10
+                    set(r10,'FaceColor',fcolor);
+                end
             end
             exportgraphics(img,[motion(nmotion).ifile,'_painR.png'],'BackgroundColor','none','Resolution',600);
             close all;
@@ -622,28 +654,30 @@ for imotion = 1:4
             r9 = rectangle('Position',[9,0,1,1]); text(9.4,0.5,'9','FontSize',24);
             r10 = rectangle('Position',[10,0,1,1]); text(10.2,0.5,'10','FontSize',24);
             fcolor = [0.7 0.7 0.7];
-            if fix(PainL) == 0
-                set(r0,'FaceColor',fcolor);
-            elseif fix(PainL) == 1
-                set(r1,'FaceColor',fcolor);
-            elseif fix(PainL) == 2
-                set(r2,'FaceColor',fcolor);
-            elseif fix(PainL) == 3
-                set(r3,'FaceColor',fcolor);
-            elseif fix(PainL) == 4
-                set(r4,'FaceColor',fcolor);
-            elseif fix(PainL) == 5
-                set(r5,'FaceColor',fcolor);
-            elseif fix(PainL) == 6
-                set(r6,'FaceColor',fcolor);
-            elseif fix(PainL) == 7
-                set(r7,'FaceColor',fcolor);
-            elseif fix(PainL) == 8
-                set(r8,'FaceColor',fcolor);
-            elseif fix(PainL) == 9
-                set(r9,'FaceColor',fcolor);
-            elseif fix(PainL) == 10
-                set(r10,'FaceColor',fcolor);
+            if ~isnan(PainL)
+                if fix(PainL) == 0
+                    set(r0,'FaceColor',fcolor);
+                elseif fix(PainL) == 1
+                    set(r1,'FaceColor',fcolor);
+                elseif fix(PainL) == 2
+                    set(r2,'FaceColor',fcolor);
+                elseif fix(PainL) == 3
+                    set(r3,'FaceColor',fcolor);
+                elseif fix(PainL) == 4
+                    set(r4,'FaceColor',fcolor);
+                elseif fix(PainL) == 5
+                    set(r5,'FaceColor',fcolor);
+                elseif fix(PainL) == 6
+                    set(r6,'FaceColor',fcolor);
+                elseif fix(PainL) == 7
+                    set(r7,'FaceColor',fcolor);
+                elseif fix(PainL) == 8
+                    set(r8,'FaceColor',fcolor);
+                elseif fix(PainL) == 9
+                    set(r9,'FaceColor',fcolor);
+                elseif fix(PainL) == 10
+                    set(r10,'FaceColor',fcolor);
+                end
             end
             exportgraphics(img,[motion(nmotion).ifile,'_painL.png'],'BackgroundColor','none','Resolution',600);
             close all;
