@@ -26,11 +26,11 @@ disp('  - Détection des onsets/offsets des signaux EMG');
 fratio = Trial.fanalog/Trial.fmarker;
 
 % Plot ylim
-% ylimit = 8e-4;
+ylimit = 4e-4;
 
 % Manual validation of EMG signal
 iemg = 1;
-while iemg < 15 % All EMG (right and left)
+while iemg <= size(Trial.Emg,2) % All EMG (right and left)
     % 0- Load EMG signal and baseline
     signal0 = filloutliers(squeeze(Trial.Emg(iemg).Signal.full),'nearest','mean',ThresholdFactor=5); % Remove outliers to avoid spikes
 
@@ -46,8 +46,8 @@ while iemg < 15 % All EMG (right and left)
         envelop2 = smoothdata(envelop,'gaussian',3*Trial.fanalog)'; % Used to compute signal peak
         if manualCheck == 1
             fig = figure('units','normalized','outerposition',[0 0 1 1]);
-    %         ylim([-ylimit ylimit]);
-            ylimit = max(signal);
+            ylim([-ylimit ylimit]);
+%             ylimit = max(signal);
             hold on;
             plot(signal0,'Color',[0.5 0.5 0.5]);
             plot(signal,'Color','blue');
@@ -182,7 +182,7 @@ while iemg < 15 % All EMG (right and left)
         Trial.Emg(iemg).Signal.onset(:,:,:)    = permute(onset,[2,3,1]);
         % Manual validation
         if manualCheck == 1
-            if iemg < 8 % Right side EMG
+            if iemg <= size(Trial.Emg,2)/2 % Right side EMG
                 for icycle = 1:size(Rcycles,2)
                     [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
                     plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
@@ -218,7 +218,7 @@ while iemg < 15 % All EMG (right and left)
                     end
                 end
                 close(fig);
-            elseif iemg > 7 % Left side EMG
+            elseif iemg > size(Trial.Emg,2)/2 % Left side EMG
                 for icycle = 1:size(Lcycles,2)
                     [vmax,imax] = max(envelop2(Lcycles(icycle).range*fratio));
                     plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
@@ -256,10 +256,10 @@ while iemg < 15 % All EMG (right and left)
             end
         end
     else
-        if iemg < 8
+        if iemg <= size(Trial.Emg,2)/2
             Trial.Emg(iemg).Signal.envelop = [];
             Trial.Emg(iemg).Signal.onset = [];
-        elseif iemg > 7 % Left side EMG
+        elseif iemg > size(Trial.Emg,2)/2 % Left side EMG
                 Trial.Emg(iemg).Signal.envelop = [];
                 Trial.Emg(iemg).Signal.onset = [];
         end

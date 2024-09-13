@@ -118,7 +118,7 @@ for itrial = 1:size(Trial,2)
         Report.Analytic(1).Kinematics.SHR(2).SHR_curve2 = permute(Trial(itrial).SHR(2).SHR_curve(2).lcycle,[3,1,4,2]);
         Report.Analytic(1).Kinematics.SHR(2).SHR_mean2  = permute(Trial(itrial).SHR(2).SHR_mean(2).lcycle,[3,1,4,2]);  
         % --        
-        for iemg = 1:7
+        for iemg = 1:size(Trial(itrial).Emg,2)/2
             Report.Analytic(1).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(1).Emg(iemg).side    = 'Droite';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -136,7 +136,7 @@ for itrial = 1:size(Trial,2)
             Report.Analytic(1).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end      
         % --
-        for iemg = 8:14
+        for iemg = size(Trial(itrial).Emg,2)/2+1:size(Trial(itrial).Emg,2)
             Report.Analytic(1).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(1).Emg(iemg).side    = 'Gauche';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -250,7 +250,7 @@ for itrial = 1:size(Trial,2)
         Report.Analytic(2).Kinematics.SHR(2).SHR_curve2 = permute(Trial(itrial).SHR(2).SHR_curve(2).lcycle,[3,1,4,2]);
         Report.Analytic(2).Kinematics.SHR(2).SHR_mean2  = permute(Trial(itrial).SHR(2).SHR_mean(2).lcycle,[3,1,4,2]);
         % --        
-        for iemg = 1:7
+        for iemg = 1:size(Trial(itrial).Emg,2)/2
             Report.Analytic(2).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(2).Emg(iemg).side    = 'Droite';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -268,7 +268,7 @@ for itrial = 1:size(Trial,2)
             Report.Analytic(2).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end      
         % --
-        for iemg = 8:14
+        for iemg = size(Trial(itrial).Emg,2)/2+1:size(Trial(itrial).Emg,2)
             Report.Analytic(2).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(2).Emg(iemg).side    = 'Gauche';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -284,6 +284,138 @@ for itrial = 1:size(Trial,2)
                 Report.Analytic(2).Emg(iemg).onset   = [];
             end
             Report.Analytic(2).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
+        end
+    % --
+    elseif strcmp(Trial(itrial).task,'ANALYTIC5')
+        Report.Analytic(5).label                         = Trial(itrial).task;
+        Report.Analytic(5).Kinematics.Joint(1).label     = 'Articulation huméro-thoracique';
+        Report.Analytic(5).Kinematics.Joint(1).side      = 'Droite';
+        Report.Analytic(5).Kinematics.Joint(1).Euler     = permute(Trial(itrial).Joint(1).Euler.rcycle,[3,2,4,1]).*[-1,1,1];
+        for icycle = 1:size(Report.Analytic(5).Kinematics.Joint(1).Euler,3)
+            [~,ind] = max(Report.Analytic(5).Kinematics.Joint(1).Euler(:,3,icycle));
+            temp    = permute(Trial(itrial).Joint(1).ElevationPlane.rcycle,[3,2,4,1]); 
+            if max(temp) > 360
+                temp = temp-360;
+            end
+            if ind == 1 % Special case
+                Report.Analytic(5).Kinematics.Joint(1).ElevationPlane.value1(1,1,icycle) = temp(fix(ind),1,icycle); % Elevation
+            else
+                Report.Analytic(5).Kinematics.Joint(1).ElevationPlane.value1(1,1,icycle) = temp(fix(ind/2),1,icycle); % Elevation
+            end
+            if ind+ind/2 >= 101 % Special case
+                Report.Analytic(5).Kinematics.Joint(1).ElevationPlane.value2(1,1,icycle) = temp(fix((ind+101)/2),1,icycle); % Return
+            elseif ind == 101 % Special case
+                Report.Analytic(5).Kinematics.Joint(1).ElevationPlane.value2(1,1,icycle) = temp(fix((ind)/2),1,icycle); % Return
+            else
+                Report.Analytic(5).Kinematics.Joint(1).ElevationPlane.value2(1,1,icycle) = temp(fix(ind+ind/2),1,icycle); % Return
+            end
+            clear ind temp;
+        end        
+        Report.Analytic(5).Kinematics.Joint(1).legend   = {'Abduction (+) / Adduction (-)','Rotation int. (+) / ext. (-)','Flexion (+) / Extension (-)'};
+        Report.Analytic(5).Kinematics.Joint(1).units    = Trial(itrial).Joint(1).Euler.units;
+        Report.Analytic(5).Kinematics.Joint(2).label    = 'Articulation gléno-humérale';
+        Report.Analytic(5).Kinematics.Joint(2).side     = 'Droite';
+        Report.Analytic(5).Kinematics.Joint(2).Euler    = permute(Trial(itrial).Joint(2).Euler.rcycle,[3,2,4,1]).*[-1,1,1];
+        Report.Analytic(5).Kinematics.Joint(2).legend   = {'Abduction (+) / Adduction (-)','Rotation int. (+) / ext. (-)','Flexion (+) / Extension (-)'};
+        Report.Analytic(5).Kinematics.Joint(2).units    = Trial(itrial).Joint(2).Euler.units;
+        Report.Analytic(5).Kinematics.Joint(3).label    = 'Articulation scapulo-thoracique';
+        Report.Analytic(5).Kinematics.Joint(3).side     = 'Droite';
+        Report.Analytic(5).Kinematics.Joint(3).Euler    = permute(Trial(itrial).Joint(3).Euler.rcycle,[3,2,4,1]).*[-1,1,1];
+        Report.Analytic(5).Kinematics.Joint(3).legend   = {'Rotation lat. (+) / méd. (-)','Rétraction (-) / Protraction (+)','Inclinaison ant. (-) / post. (+)'};
+        Report.Analytic(5).Kinematics.Joint(3).units    = Trial(itrial).Joint(3).Euler.units;
+        Report.Analytic(5).Kinematics.SHR(1).label      = Trial(itrial).SHR(1).label;
+        Report.Analytic(5).Kinematics.SHR(1).theta_HT1  = permute(Trial(itrial).SHR(1).theta_HT(1).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).theta_ST1  = permute(Trial(itrial).SHR(1).theta_ST(1).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).theta_GH1  = permute(Trial(itrial).SHR(1).theta_GH(1).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).SHR_curve1 = permute(Trial(itrial).SHR(1).SHR_curve(1).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).SHR_mean1  = permute(Trial(itrial).SHR(1).SHR_mean(1).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).theta_HT2  = permute(Trial(itrial).SHR(1).theta_HT(2).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).theta_ST2  = permute(Trial(itrial).SHR(1).theta_ST(2).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).theta_GH2  = permute(Trial(itrial).SHR(1).theta_GH(2).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).SHR_curve2 = permute(Trial(itrial).SHR(1).SHR_curve(2).rcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(1).SHR_mean2  = permute(Trial(itrial).SHR(1).SHR_mean(2).rcycle,[3,1,4,2]);
+        % --
+        Report.Analytic(5).Kinematics.Joint(6).label     = 'Articulation huméro-thoracique';
+        Report.Analytic(5).Kinematics.Joint(6).side      = 'Gauche';
+        Report.Analytic(5).Kinematics.Joint(6).Euler     = permute(Trial(itrial).Joint(6).Euler.lcycle,[3,2,4,1]).*[-1,1,1];
+        for icycle = 1:size(Report.Analytic(5).Kinematics.Joint(6).Euler,3)
+            [~,ind] = max(Report.Analytic(5).Kinematics.Joint(6).Euler(:,3,icycle));
+            temp    = permute(Trial(itrial).Joint(6).ElevationPlane.lcycle,[3,2,4,1]); 
+            if max(temp) > 360
+                temp = temp-360;
+            end
+            if ind == 1 % Special case
+                Report.Analytic(5).Kinematics.Joint(6).ElevationPlane.value1(1,1,icycle) = temp(fix(ind),1,icycle); % Elevation
+            else
+                Report.Analytic(5).Kinematics.Joint(6).ElevationPlane.value1(1,1,icycle) = temp(fix(ind/2),1,icycle); % Elevation
+            end
+            if ind+ind/2 >= 101 % Special case
+                Report.Analytic(5).Kinematics.Joint(6).ElevationPlane.value2(1,1,icycle) = temp(fix((ind+101)/2),1,icycle); % Return
+            elseif ind == 101 % Special case
+                Report.Analytic(5).Kinematics.Joint(6).ElevationPlane.value2(1,1,icycle) = temp(fix((ind)/2),1,icycle); % Return
+            else
+                Report.Analytic(5).Kinematics.Joint(6).ElevationPlane.value2(1,1,icycle) = temp(fix(ind+ind/2),1,icycle); % Return
+            end   
+            clear ind temp;
+        end        
+        Report.Analytic(5).Kinematics.Joint(6).legend   = {'Abduction (+) / Adduction (-)','Rotation int. (+) / ext. (-)','Flexion (+) / Extension (-)'};
+        Report.Analytic(5).Kinematics.Joint(6).units    = Trial(itrial).Joint(6).Euler.units;
+        Report.Analytic(5).Kinematics.Joint(7).label    = 'Articulation gléno-humérale';
+        Report.Analytic(5).Kinematics.Joint(7).side     = 'Gauche';
+        Report.Analytic(5).Kinematics.Joint(7).Euler    = permute(Trial(itrial).Joint(7).Euler.lcycle,[3,2,4,1]).*[-1,1,1];
+        Report.Analytic(5).Kinematics.Joint(7).legend   = {'Abduction (+) / Adduction (-)','Rotation int. (+) / ext. (-)','Flexion (+) / Extension (-)'};
+        Report.Analytic(5).Kinematics.Joint(7).units    = Trial(itrial).Joint(7).Euler.units;
+        Report.Analytic(5).Kinematics.Joint(8).label    = 'Articulation scapulo-thoracique';
+        Report.Analytic(5).Kinematics.Joint(8).side     = 'Gauche';
+        Report.Analytic(5).Kinematics.Joint(8).Euler    = permute(Trial(itrial).Joint(8).Euler.lcycle,[3,2,4,1]).*[-1,1,1];
+        Report.Analytic(5).Kinematics.Joint(8).legend   = {'Rotation lat. (+) / méd. (-)','Rétraction (-) / Protraction (+)','Inclinaison ant. (-) / post. (+)'};
+        Report.Analytic(5).Kinematics.Joint(8).units    = Trial(itrial).Joint(8).Euler.units;
+        Report.Analytic(5).Kinematics.SHR(2).label      = Trial(itrial).SHR(2).label;
+        Report.Analytic(5).Kinematics.SHR(2).theta_HT1  = permute(Trial(itrial).SHR(2).theta_HT(1).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).theta_ST1  = permute(Trial(itrial).SHR(2).theta_ST(1).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).theta_GH1  = permute(Trial(itrial).SHR(2).theta_GH(1).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).SHR_curve1 = permute(Trial(itrial).SHR(2).SHR_curve(1).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).SHR_mean1  = permute(Trial(itrial).SHR(2).SHR_mean(1).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).theta_HT2  = permute(Trial(itrial).SHR(2).theta_HT(2).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).theta_ST2  = permute(Trial(itrial).SHR(2).theta_ST(2).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).theta_GH2  = permute(Trial(itrial).SHR(2).theta_GH(2).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).SHR_curve2 = permute(Trial(itrial).SHR(2).SHR_curve(2).lcycle,[3,1,4,2]);
+        Report.Analytic(5).Kinematics.SHR(2).SHR_mean2  = permute(Trial(itrial).SHR(2).SHR_mean(2).lcycle,[3,1,4,2]);
+        % --        
+        for iemg = 1:size(Trial(itrial).Emg,2)/2
+            Report.Analytic(5).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
+            Report.Analytic(5).Emg(iemg).side    = 'Droite';
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.rcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.rcycle.onset)
+                    Report.Analytic(5).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.rcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(5).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.rcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(5).Emg(iemg).envelop = [];
+                    Report.Analytic(5).Emg(iemg).onset   = [];
+                end
+            else
+                Report.Analytic(5).Emg(iemg).envelop = [];
+                Report.Analytic(5).Emg(iemg).onset   = [];
+            end
+            Report.Analytic(5).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
+        end      
+        % --
+        for iemg = size(Trial(itrial).Emg,2)/2+1:size(Trial(itrial).Emg,2)
+            Report.Analytic(5).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
+            Report.Analytic(5).Emg(iemg).side    = 'Gauche';
+            if ~isempty(Trial(itrial).Emg(iemg).Signal)
+                if length(find(isnan(Trial(itrial).Emg(iemg).Signal.lcycle.onset))) < length(Trial(itrial).Emg(iemg).Signal.lcycle.onset)
+                    Report.Analytic(5).Emg(iemg).envelop = permute(Trial(itrial).Emg(iemg).Signal.lcycle.envelop,[3,1,4,2]);
+                    Report.Analytic(5).Emg(iemg).onset   = permute(Trial(itrial).Emg(iemg).Signal.lcycle.onset,[3,1,4,2]);
+                else
+                    Report.Analytic(5).Emg(iemg).envelop = [];
+                    Report.Analytic(5).Emg(iemg).onset   = [];
+                end
+            else
+                Report.Analytic(5).Emg(iemg).envelop = [];
+                Report.Analytic(5).Emg(iemg).onset   = [];
+            end
+            Report.Analytic(5).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end
     % --
     elseif strcmp(Trial(itrial).task,'ANALYTIC3')
@@ -320,7 +452,7 @@ for itrial = 1:size(Trial,2)
         Report.Analytic(3).Kinematics.Joint(8).legend    = {'Rotation lat. (+) / méd. (-)','Rétraction (-) / Protraction (+)','Inclinaison ant. (-) / post. (+)'};
         Report.Analytic(3).Kinematics.Joint(8).units     = Trial(itrial).Joint(8).Euler.units;   
         % --        
-        for iemg = 1:7
+        for iemg = 1:size(Trial(itrial).Emg,2)/2
             Report.Analytic(3).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(3).Emg(iemg).side    = 'Droite';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -338,7 +470,7 @@ for itrial = 1:size(Trial,2)
             Report.Analytic(3).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end      
         % --
-        for iemg = 8:14
+        for iemg = size(Trial(itrial).Emg,2)/2+1:size(Trial(itrial).Emg,2)
             Report.Analytic(3).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(3).Emg(iemg).side    = 'Gauche';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -414,7 +546,7 @@ for itrial = 1:size(Trial,2)
         Report.Analytic(4).Kinematics.Joint(8).legend    = {'Rotation lat. (+) / méd. (-)','Rétraction (-) / Protraction (+)','Inclinaison ant. (-) / post. (+)'};
         Report.Analytic(4).Kinematics.Joint(8).units     = Trial(itrial).Joint(8).Euler.units;
         % --        
-        for iemg                                         = 1:7
+        for iemg                                         = 1:size(Trial(itrial).Emg,2)/2
             Report.Analytic(4).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(4).Emg(iemg).side    = 'Droite';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)
@@ -432,7 +564,7 @@ for itrial = 1:size(Trial,2)
             Report.Analytic(4).Emg(iemg).unit        = Trial(itrial).Emg(iemg).Signal.units;
         end      
         % --
-        for iemg                                         = 8:14
+        for iemg                                         = size(Trial(itrial).Emg,2)/2+1:size(Trial(itrial).Emg,2)
             Report.Analytic(4).Emg(iemg).label   = Trial(itrial).Emg(iemg).label;
             Report.Analytic(4).Emg(iemg).side    = 'Gauche';
             if ~isempty(Trial(itrial).Emg(iemg).Signal)

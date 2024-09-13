@@ -31,7 +31,7 @@ if contains(c3dFiles.name,'ANALYTIC')
     stop = [];
     value = [];
     % Right side
-    if contains(c3dFiles.name,'ANALYTIC2')
+    if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5')
         value = abs(squeeze(Trial.Joint(1).Euler.full(:,1,:))');
     elseif contains(c3dFiles.name,'ANALYTIC1')
         value = abs(squeeze(Trial.Joint(1).Euler.full(:,3,:))');
@@ -62,7 +62,7 @@ if contains(c3dFiles.name,'ANALYTIC')
         close gcf;
     end
     % Left side
-    if contains(c3dFiles.name,'ANALYTIC2')
+    if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5')
         value = abs(squeeze(Trial.Joint(6).Euler.full(:,1,:))');
     elseif contains(c3dFiles.name,'ANALYTIC1')
         value = abs(squeeze(Trial.Joint(6).Euler.full(:,3,:))');
@@ -135,7 +135,9 @@ if contains(c3dFiles.name,'ANALYTIC')
                 n  = size(Rcycles(icycle).range,1);
                 k0 = (1:n)';
                 k1 = (linspace(1,n,101))';
-                Trial.Vmarker(ivmarker).Trajectory.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                if ~isempty(Trial.Vmarker(ivmarker).Trajectory.full)
+                    Trial.Vmarker(ivmarker).Trajectory.rcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Rcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                end
             end
         end
         % Left side
@@ -144,7 +146,9 @@ if contains(c3dFiles.name,'ANALYTIC')
                 n  = size(Lcycles(icycle).range,1);
                 k0 = (1:n)';
                 k1 = (linspace(1,n,101))';
-                Trial.Vmarker(ivmarker).Trajectory.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                if ~isempty(Trial.Vmarker(ivmarker).Trajectory.full)
+                    Trial.Vmarker(ivmarker).Trajectory.lcycle(:,:,:,icycle) = permute(interp1(k0,permute(Trial.Vmarker(ivmarker).Trajectory.full(:,:,Lcycles(icycle).range),[3,1,2]),k1,'spline'),[2,3,1]);
+                end
             end
         end
     end

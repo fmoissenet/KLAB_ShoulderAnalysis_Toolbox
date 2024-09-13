@@ -57,7 +57,7 @@ if contains(c3dFiles.name,'ANALYTIC')
 end
 % Emgs
 if ~isempty(Trial.Emg)
-    for iemg = 1:14
+    for iemg = 1:size(Trial.Emg,2)
         if ~isempty(Trial.Emg(iemg).Signal.full)
             btkRemoveAnalog(Trial.btk,Trial.Emg(iemg).label);
             btkAppendAnalog(Trial.btk,Trial.Emg(iemg).label,permute(Trial.Emg(iemg).Signal.full,[3,2,1]));
@@ -79,7 +79,7 @@ for icycle = 1:size(Trial.Rcycle,2)
     if contains(Trial.task,'ANALYTIC1')
         ieuler = 3;
         sign   = 1; 
-    elseif contains(Trial.task,'ANALYTIC2')
+    elseif contains(Trial.task,'ANALYTIC2') || contains(Trial.task,'ANALYTIC5')
         ieuler = 1;
         sign   = -1; 
     elseif contains(Trial.task,'ANALYTIC3')
@@ -99,7 +99,7 @@ for icycle = 1:size(Trial.Lcycle,2)
     if contains(Trial.task,'ANALYTIC1')
         ieuler = 3;
         sign   = 1; 
-    elseif contains(Trial.task,'ANALYTIC2')
+    elseif contains(Trial.task,'ANALYTIC2') || contains(Trial.task,'ANALYTIC5')
         ieuler = 1;
         sign   = -1; 
     elseif contains(Trial.task,'ANALYTIC3')

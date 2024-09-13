@@ -20,11 +20,14 @@
 
 function Trial = ComputeSHR(c3dFiles,Trial,Reference)
 
-if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % Only applied on elevation tasks
+if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'ANALYTIC1') % Only applied on elevation tasks
     % Right scapulo humeral rhythm computation        
     for icycle = 1:size(Trial.Joint(1).Euler.rcycle,4)
         % Set frames of interest
         if contains(c3dFiles.name,'ANALYTIC2')
+            imax = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
+            imin = find(abs(Trial.Joint(1).Euler.full(:,1,:))==min(abs(Trial.Joint(1).Euler.full(:,1,:))));
+        elseif contains(c3dFiles.name,'ANALYTIC5')
             imax = find(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))==max(abs(Trial.Joint(1).Euler.rcycle(:,1,:,icycle))));
             imin = find(abs(Trial.Joint(1).Euler.full(:,1,:))==min(abs(Trial.Joint(1).Euler.full(:,1,:))));
         elseif contains(c3dFiles.name,'ANALYTIC1')
@@ -92,6 +95,9 @@ if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC1') % 
     for icycle = 1:size(Trial.Joint(6).Euler.lcycle,4)
         % Set frames of interest
         if contains(c3dFiles.name,'ANALYTIC2')
+            imax = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
+            imin = find(abs(Trial.Joint(6).Euler.full(:,1,:))==min(abs(Trial.Joint(6).Euler.full(:,1,:))));
+        elseif contains(c3dFiles.name,'ANALYTIC5')
             imax = find(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))==max(abs(Trial.Joint(6).Euler.lcycle(:,1,:,icycle))));
             imin = find(abs(Trial.Joint(6).Euler.full(:,1,:))==min(abs(Trial.Joint(6).Euler.full(:,1,:))));
         elseif contains(c3dFiles.name,'ANALYTIC1')

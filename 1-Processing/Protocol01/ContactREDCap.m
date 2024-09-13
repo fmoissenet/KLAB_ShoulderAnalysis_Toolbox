@@ -65,7 +65,7 @@ elseif strcmp(action,'read_patients_fields')
 elseif strcmp(action,'write_patient_field')
 
     record   = 668;
-    event    = '1_an_arm_1';%'pre_operative_arm_1';%
+    event    = 'pre_operative_arm_1';%'1_an_arm_1';%
     field    = 'klab_session_comments';
     content  = 'toto2';
     response = REDCap('write',record,event,field,content)

@@ -45,7 +45,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Euler2                             = R2mobileYXY_array3(Trial.Joint(1).T.full(1:3,1:3,:));
     Trial.Joint(1).ElevationPlane.full = 180+rad2deg(unwrap(atan2(Trial.Joint(1).T.full(1,2,:),Trial.Joint(1).T.full(3,2,:))));
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(1).sequence            = 'XZY';
     Euler                              = R2mobileXZY_array3(Trial.Joint(1).T.full(1:3,1:3,:));
     Trial.Joint(1).Euler.full(1,1,:)   = rad2deg(Euler(:,1,:)); % X
@@ -76,8 +76,12 @@ elseif contains(c3dFiles.name,'ANALYTIC4') % Internal rotation
 %     Trial.Joint(1).Euler.full(1,2,:)   = rad2deg(Euler(:,1,:)); % Y
     if mean(unwrap((rad2deg(Euler(:,1,:))))) > 120
         Trial.Joint(1).Euler.full(1,2,:) = unwrap(squeeze(-180+rad2deg(Euler(:,1,:)))); % Y  
+    elseif mean(unwrap((rad2deg(Euler(:,1,:))))) > 160
+        Trial.Joint(1).Euler.full(1,2,:) = unwrap(squeeze(-180+rad2deg(Euler(:,1,:))))-180; % Y 
     elseif mean(unwrap((rad2deg(Euler(:,1,:))))) < -120
         Trial.Joint(1).Euler.full(1,2,:) = unwrap(squeeze(180+rad2deg(Euler(:,1,:)))); % Y 
+    elseif mean(unwrap((rad2deg(Euler(:,1,:))))) < -160
+        Trial.Joint(1).Euler.full(1,2,:) = unwrap(squeeze(180+rad2deg(Euler(:,1,:))))+180; % Y 
     else
         Trial.Joint(1).Euler.full(1,2,:) = rad2deg(Euler(:,1,:)); % Y
     end
@@ -104,7 +108,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(2).Euler.full(1,3,:) = rad2deg(Euler(:,1,:)); % Z             
     Trial.Joint(2).dj.full           = [];        
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(2).sequence          = 'XZY';
     Euler                            = R2mobileXZY_array3(Trial.Joint(2).T.full(1:3,1:3,:));
     Trial.Joint(2).Euler.full(1,1,:) = rad2deg(Euler(:,1,:)); % X
@@ -178,7 +182,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(6).dj.full             = [];                           
     Trial.Joint(6).ElevationPlane.full = -rad2deg(unwrap(atan2(Trial.Joint(6).T.full(1,2,:),Trial.Joint(6).T.full(3,2,:))));
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(6).sequence            = 'XZY';
     Euler                              = R2mobileXZY_array3(Trial.Joint(6).T.full(1:3,1:3,:));
     Trial.Joint(6).Euler.full(1,1,:)   = -rad2deg(Euler(:,1,:)); % X % Sign adaptation to fullfill ISB convention  
@@ -207,10 +211,16 @@ elseif contains(c3dFiles.name,'ANALYTIC4') % Internal rotation
     Euler                              = R2mobileYXZ_array3(Trial.Joint(6).T.full(1:3,1:3,:));
     Trial.Joint(6).Euler.full(1,1,:)   = rad2deg(Euler(:,2,:)); % X
 %     Trial.Joint(6).Euler.full(1,2,:)   = rad2deg(Euler(:,1,:)); % Y
-    if mean(unwrap(abs(rad2deg(Euler(:,1,:))))) > 100
-        Trial.Joint(6).Euler.full(1,2,:) = -unwrap(squeeze(-180+rad2deg(Euler(:,1,:)))); % Y % Sign adaptation to fullfill ISB convention   
+    if mean(unwrap((rad2deg(Euler(:,1,:))))) > 120
+        Trial.Joint(6).Euler.full(1,2,:) = -unwrap(squeeze(-180+rad2deg(Euler(:,1,:)))); % Y  
+    elseif mean(unwrap((rad2deg(Euler(:,1,:))))) > 160
+        Trial.Joint(6).Euler.full(1,2,:) = -unwrap(squeeze(-180+rad2deg(Euler(:,1,:))))-180; % Y 
+    elseif mean(unwrap((rad2deg(Euler(:,1,:))))) < -120
+        Trial.Joint(6).Euler.full(1,2,:) = -unwrap(squeeze(180+rad2deg(Euler(:,1,:)))); % Y 
+    elseif mean(unwrap((rad2deg(Euler(:,1,:))))) < -160
+        Trial.Joint(6).Euler.full(1,2,:) = -unwrap(squeeze(180+rad2deg(Euler(:,1,:))))+180; % Y 
     else
-        Trial.Joint(6).Euler.full(1,2,:) = -rad2deg(Euler(:,1,:)); % Y % Sign adaptation to fullfill ISB convention 
+        Trial.Joint(6).Euler.full(1,2,:) = -rad2deg(Euler(:,1,:)); % Y
     end    
     Trial.Joint(6).Euler.full(1,3,:)   = rad2deg(Euler(:,3,:)); % Z              
     Trial.Joint(6).dj.full             = [];                           
@@ -235,7 +245,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(7).Euler.full(1,3,:) = -rad2deg(Euler(:,1,:)); % Z              
     Trial.Joint(7).dj.full           = [];        
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(7).sequence          = 'XZY';
     Euler                            = R2mobileXZY_array3(Trial.Joint(7).T.full(1:3,1:3,:));
     Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,1,:)); % X % Sign adaptation to fullfill ISB convention  

@@ -256,7 +256,11 @@ for imotion = 1:4
                 for iemg = 1:7
                     r = iemg*2;
                     if size(Report.Analytic(imotion).Emg(iemg+7).onset,1) == 101 % +7 for left sensors
-                        value = Report.Analytic(imotion).Emg(iemg+7).onset(:,1,icycle); % +7 for left sensors
+                        if size(Report.Analytic(imotion).Emg(iemg+7).onset,1) > 1
+                            value = Report.Analytic(imotion).Emg(iemg+7).onset(:,1,icycle); % +7 for left sensors
+                        else
+                            value = [];
+                        end
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(6).Euler(:,ieuler,icycle));
                         else
@@ -271,10 +275,12 @@ for imotion = 1:4
                         thetaEMG = [];
                         start = 0;
                         stop = 0;
-                        for ivalue = range
+                        for ivalue = range                            
                             if start == 0
-                                if value(ivalue) > 0.5
-                                    start = ivalue;
+                                if ivalue <= length(value)
+                                    if value(ivalue) > 0.5
+                                        start = ivalue;
+                                    end
                                 end
                             end
                             if start > 0
@@ -385,7 +391,11 @@ for imotion = 1:4
                 for iemg = 1:7
                     r = iemg*2;
                     if size(Report.Analytic(imotion).Emg(iemg+7).onset,1) == 101
-                        value = Report.Analytic(imotion).Emg(iemg).onset(:,1,icycle);
+                        if size(Report.Analytic(imotion).Emg(iemg).onset,1) > 1
+                            value = Report.Analytic(imotion).Emg(iemg).onset(:,1,icycle);
+                        else
+                            value = [];
+                        end
                         if imotion == 3
                             angleEMG = -(Report.Analytic(imotion).Kinematics.Joint(1).Euler(:,ieuler,icycle));
                         else
@@ -400,10 +410,12 @@ for imotion = 1:4
                         thetaEMG = [];
                         start = 0;
                         stop = 0;
-                        for ivalue = range
+                        for ivalue = range                       
                             if start == 0
-                                if value(ivalue) > 0.5
-                                    start = ivalue;
+                                if ivalue <= length(value)
+                                    if value(ivalue) > 0.5
+                                        start = ivalue;
+                                    end
                                 end
                             end
                             if start > 0
