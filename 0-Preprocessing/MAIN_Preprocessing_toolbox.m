@@ -33,7 +33,7 @@ addpath(genpath(Folder.dependencies));
 % -------------------------------------------------------------------------
 % GET USER COMMANDS
 % -------------------------------------------------------------------------
-txtFile      = 'userCommands.txt';
+txtFile      = 'userCommands.txt'; % 'userCommands_dyskinesie.txt'
 userCommands = fileread(txtFile);
 eval(userCommands);
 

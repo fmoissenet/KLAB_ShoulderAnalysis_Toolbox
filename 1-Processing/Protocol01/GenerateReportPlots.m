@@ -114,6 +114,8 @@ for imotion = 1:4
             
             % LEGEND
             fontsize = 9;
+%             emgLabels = {'    < TRAP. SUP.','    < TRAP. MED.','    < TRAP. INF.','    < INFRA. EP.','    < GD. DORSAL.','    < NA','    < GD. DENTELE', ...
+%                          '    TRAP. SUP. >','    TRAP. MED. >','    TRAP. INF. >','    INFRA. EP. >','    GD. DORSAL. >','    NA >','    GD. DENTELE >'};            
             emgLabels = {'    < DELT. ANT.','    < DELT. MED.','    < DELT. POS.','    < TRAP. SUP.','    < TRAP. INF.','    < GD. DENTELE','    < GD. DORSAL', ...
                          '    DELT. ANT. >','    DELT. MED. >','    DELT. POS. >','    TRAP. SUP. >','    TRAP. INF. >','    GD. DENTELE >','    GD. DORSAL >'};
             for iemg = 1:7

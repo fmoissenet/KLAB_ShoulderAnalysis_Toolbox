@@ -35,7 +35,7 @@ disp(' ');
 % -------------------------------------------------------------------------
 % SET PARTICIPANT
 % -------------------------------------------------------------------------
-participantID = 'LD15';
+participantID = 'JV18';
 
 % -------------------------------------------------------------------------
 % SET FOLDERS
@@ -89,7 +89,7 @@ c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
 %%
-for i = [8,6,7,1,2,3,4,5]
+for i = [8,6,7,1,2,3,4,5] % [7,5,6,1,2,3,4] WARNING CHANGE ALSO INDEX AT LINE 153
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             disp(' ');
@@ -150,7 +150,7 @@ for i = [8,6,7,1,2,3,4,5]
             Trial(k).Rcycle      = [];
             Trial(k).Lcycle      = [];
             Trial(k).SHR         = [];
-            if i ~= 8 % Not applicable
+            if i ~= 8 % 7
                 % Initialise segments
                 Trial(k)         = InitialiseSegments(Trial(k));
                 % Initialise joints

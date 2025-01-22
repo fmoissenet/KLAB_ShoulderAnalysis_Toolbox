@@ -38,7 +38,7 @@ if contains(Trial.file,'CALIBRATION3')
 		ds = permute(Os,[2,3,1]);
 		% Get the global position of the stylus tip at each event
 		for ievent = 1:length(Event.Remote)
-			temp(:,:,ievent) = Rs(:,:,ievent)*STY06+ds(:,:,ievent);
+			temp(:,:,ievent) = Rs(:,:,fix(Event.Remote(ievent)*Trial.fmarker))*STY06+ds(:,:,fix(Event.Remote(ievent)*Trial.fmarker));
 		end
 	elseif strcmp(stylus,'Stylusb')
 		% Set local position of the stylus tip 
@@ -55,7 +55,7 @@ if contains(Trial.file,'CALIBRATION3')
 		ds = permute(Os,[2,3,1]);
 		% Get the global position of the stylus tip at each event
 		for ievent = 1:length(Event.Remote)
-			temp(:,:,ievent) = Rs(:,:,ievent)*STY05+ds(:,:,ievent);
+			temp(:,:,ievent) = Rs(:,:,fix(Event.Remote(ievent)*Trial.fmarker))*STY05+ds(:,:,fix(Event.Remote(ievent)*Trial.fmarker));
 		end
 	end
     % Store in local coordinate system

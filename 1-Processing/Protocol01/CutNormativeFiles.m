@@ -67,6 +67,12 @@ elseif contains(c3dFile,'Mouvements_Florent_01') % Analytic motions
                   7,8, 'ANALYTIC3'; ...    % External rotation
                   9,10,'ANALYTIC4'; ...    % Internal rotation
                  };
+% elseif contains(c3dFile,'Mouvements_Florent_01') % Analytic motions
+%     motionList = {1,2, 'ANALYTIC1'; ...    % Flexion
+%                   3,4, 'ANALYTIC2'; ...    % Abduction
+%                   5,6, 'ANALYTIC3'; ...    % External rotation
+%                   7,8, 'ANALYTIC4'; ...    % Internal rotation
+%                  };
 elseif contains(c3dFile,'Mouvements_Florent_02') % Functional motions
     motionList = {1,2, 'FUNCTIONAL1'; ...  % Touch mouth
                   3,4, 'FUNCTIONAL2'; ...  % Touch top of the head
@@ -74,6 +80,16 @@ elseif contains(c3dFile,'Mouvements_Florent_02') % Functional motions
                   7,8, 'FUNCTIONAL4'; ...  % Reach upper point along the spine
                  };
 end
+% elseif contains(c3dFile,'Mouvements_Florent_02a') % Functional motions
+%     motionList = {1,2, 'FUNCTIONAL1'; ...  % Touch mouth
+%                   3,4, 'FUNCTIONAL2'; ...  % Touch top of the head
+%                  };
+% end
+% elseif contains(c3dFile,'Mouvements_Florent_02b') % Functional motions
+%     motionList = {1,2, 'FUNCTIONAL3'; ...  % Reach upper point above head
+%                   3,4, 'FUNCTIONAL4'; ...  % Reach upper point along the spine
+%                  };
+% end
 
 % -------------------------------------------------------------------------
 % CUT RECORD IN SEPARATE MOTION FILES
