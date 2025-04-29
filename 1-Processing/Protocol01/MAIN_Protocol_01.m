@@ -18,7 +18,7 @@
 
 % -------------------------------------------------------------------------
 % INIT WORKSPACE
-% 
+% -------------------------------------------------------------------------
 tic
 clearvars;
 close all;
@@ -170,7 +170,7 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
                 close all;
             end
             % Update C3D files
-            UpdateC3DFile(Trial(k),c3dFiles(i));
+            UpdateC3DFile(Trial(k),c3dFiles(i),0);
             % Increment trial index
             k                    = k+1;
         end
@@ -209,63 +209,86 @@ cd([Folder.data,'\']);
 toc
 
 %% DYSKINESIA ANALYSIS
+clearvars;
+file = uigetfile('*.mat');
+load(file);
+
 ianalytic = 2;
 ieuler = 1;
 
 %% EMG and ratio
 figure('Color','white');
+clf;
+
+iJoint   = 1;
+iTrapSup = 4;
+iTrapMed = 5;
+iTrapInf = 5;
+iSerra   = 6;
+
+% iJoint   = 6;
+% iTrapSup = 11;
+% iTrapMed = 12;
+% iTrapInf = 12;
+% iSerra   = 13;
 
 [~,ind(1)] = max(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(:,ieuler,1));
 [~,ind(2)] = max(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(:,ieuler,2));
 [~,ind(3)] = max(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(:,ieuler,3));
-ncolor = {'blue' 'green' 'red'};
+ncolor = {'red' 'green' 'blue'};
 
 for icycle = 1:3
     subplot(2,3,1); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel('Activité du trapèze supérieur (V)');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
     subplot(2,3,2); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel('Activité du trapèze inférieur (V)');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(3).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(3).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(3).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapInf).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapInf).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapInf).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
     subplot(2,3,3); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel('Activité du grand dentelé (V)');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(7).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(7).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(7).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iSerra).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iSerra).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(iSerra).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
     subplot(2,3,4); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel('Ratio trapèze supérieur / trapèze inférieur');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(3).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(1:ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(3).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(ind(icycle):end,:,icycle)./Report.Analytic(ianalytic).Emg(3).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(iTrapInf).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(1:ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(iTrapInf).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(ind(icycle):end,:,icycle)./Report.Analytic(ianalytic).Emg(iTrapInf).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
     subplot(2,3,5); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel('Ratio trapèze supérieur / grand dentelé');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(7).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(1:ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(7).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(1).envelop(ind(icycle):end,:,icycle)./Report.Analytic(ianalytic).Emg(7).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(iSerra).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(1:ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(iSerra).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapSup).envelop(ind(icycle):end,:,icycle)./Report.Analytic(ianalytic).Emg(iSerra).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
     subplot(2,3,6); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel('Ratio trapèze inférieur / grand dentelé');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(3).envelop(ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(7).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(3).envelop(1:ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(7).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(3).envelop(ind(icycle):end,:,icycle)./Report.Analytic(ianalytic).Emg(7).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapInf).envelop(ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(iSerra).envelop(ind(icycle),:,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapInf).envelop(1:ind(icycle),:,icycle)./Report.Analytic(ianalytic).Emg(iSerra).envelop(1:ind(icycle),:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Emg(iTrapInf).envelop(ind(icycle):end,:,icycle)./Report.Analytic(ianalytic).Emg(iSerra).envelop(ind(icycle):end,:,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
 end
 
 %% Scapulothoracic kinematics
-figure('Color','white');
+% figure('Color','white');
+clf;
 
-[~,ind(1)] = max(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(:,ieuler,1));
-[~,ind(2)] = max(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(:,ieuler,2));
-[~,ind(3)] = max(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(:,ieuler,3));
-ncolor = {'blue' 'green' 'red'};
+iJoint1 = 1;
+iJoint2 = 3;
+% iJoint1 = 6;
+% iJoint2 = 8;
+
+[~,ind(1)] = max(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(:,ieuler,1));
+[~,ind(2)] = max(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(:,ieuler,2));
+[~,ind(3)] = max(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(:,ieuler,3));
+ncolor = {'red' 'green' 'blue'};
 
 for icycle = 1:3
-    subplot(1,3,1); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel(Report.Analytic(ianalytic).Kinematics.Joint(3).legend{1});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(ind(icycle),1,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(1:ind(icycle),1,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(ind(icycle):end,1,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
-    subplot(1,3,2); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel(Report.Analytic(ianalytic).Kinematics.Joint(3).legend{2});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(ind(icycle),2,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(1:ind(icycle),2,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(ind(icycle):end,2,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
-    subplot(1,3,3); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel(Report.Analytic(ianalytic).Kinematics.Joint(3).legend{3});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(ind(icycle),3,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(1:ind(icycle),3,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
-    plot(Report.Analytic(ianalytic).Kinematics.Joint(1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(3).Euler(ind(icycle):end,3,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    subplot(1,3,1); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel(Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).legend{1});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(ind(icycle),1,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(1:ind(icycle),1,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(ind(icycle):end,1,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    subplot(1,3,2); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel(Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).legend{2});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(ind(icycle),2,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(1:ind(icycle),2,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(ind(icycle):end,2,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
+    subplot(1,3,3); hold on; box on; grid on; xlabel('Mouvement huméral (°)'); ylabel(Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).legend{3});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(ind(icycle),3,icycle),'Marker','x','Markersize',15,'Color',ncolor{icycle});
+    plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(1:ind(icycle),ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(1:ind(icycle),3,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','-');
+%     plot(Report.Analytic(ianalytic).Kinematics.Joint(iJoint1).Euler(ind(icycle):end,ieuler,icycle),Report.Analytic(ianalytic).Kinematics.Joint(iJoint2).Euler(ind(icycle):end,3,icycle),'linewidth',2,'Color',ncolor{icycle},'LineStyle','--');
 end

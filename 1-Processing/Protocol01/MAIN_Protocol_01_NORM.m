@@ -35,16 +35,17 @@ disp(' ');
 % -------------------------------------------------------------------------
 % SET PARTICIPANT
 % -------------------------------------------------------------------------
-participantID = 'JV18';
+participantID = 'LP27';
 
 % -------------------------------------------------------------------------
 % SET FOLDERS
 % -------------------------------------------------------------------------
 disp('Définition des répertoires de travail');
-Folder.preprocessing = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\';
-Folder.toolbox       = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\';
-Folder.data          = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Données\KLAB-UPPERLIMB-PROTOCOL01\Data\_NORME\Lyon_STAPS\';
-Folder.dependencies  = 'C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\';
+MainFolder           = 'C:\Users\Florent\OneDrive - Université de Genève\';
+Folder.preprocessing = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\'];
+Folder.toolbox       = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\'];
+Folder.data          = [MainFolder,'_CLINIQUE\Données\KLAB-UPPERLIMB-PROTOCOL01\Data\_NORME\Lyon_STAPS\'];
+Folder.dependencies  = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\'];
 addpath(genpath(Folder.dependencies));
 cd([Folder.data,participantID])
 disp(' ');

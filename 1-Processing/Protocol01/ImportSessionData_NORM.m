@@ -21,7 +21,7 @@
 function [Patient,Session,Pathology] = ImportSessionData_NORM(participantID)
 
 % Extract data
-tSession                     = readtable('C:\Users\Moissenet Florent\OneDrive - unige.ch\_CLINIQUE\Données\Protocole01_Recrutement_Cinesiologie.xlsx','Range','A4:K36','Sheet',2);
+tSession = readtable('C:\Users\Florent\OneDrive - Université de Genève\_CLINIQUE\Données\Protocole01_Recrutement_Cinesiologie.xlsx','Range','A4:K36','Sheet',2);
 for iparticipant = 1:size(tSession,1)
     if strcmp(cell2mat(table2array(tSession(iparticipant,1))),participantID)
         tSession = tSession(iparticipant,:);

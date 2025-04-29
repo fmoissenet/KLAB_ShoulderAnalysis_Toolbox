@@ -154,9 +154,9 @@ markerSet = { ...
     'LHBI','technical','LHumerus','none',nan; ... % 51
     'LHME','landmark','LHumerus','none',nan; ... % 52
     'LHLE','landmark','LHumerus','none',nan; ... % 53
-    'LEOS1','technical','RHumerus','none',nan; ... % 54
-    'LEOS2','technical','RHumerus','none',nan; ... % 55
-    'LEOS3','technical','RHumerus','none',nan; ... % 56
+    'LEOS1','technical','LHumerus','none',nan; ... % 54
+    'LEOS2','technical','LHumerus','none',nan; ... % 55
+    'LEOS3','technical','LHumerus','none',nan; ... % 56
     'RRSP','landmark','RForearm','none',nan; ... % 57
     'RUSP','landmark','RForearm','none',nan; ... % 58
     'RWUP','landmark','RForearm','none',nan; ... % 59
@@ -175,10 +175,10 @@ markerSet = { ...
     'LHUM2','landmark','LHumerus','none',nan; ... % 72
     'LHUM3','landmark','LHumerus','none',nan; ... % 73
     'LHUM4','landmark','LHumerus','none',nan; ... % 74
-    'RHUM1','landmark','LHumerus','none',nan; ... % 75
-    'RHUM2','landmark','LHumerus','none',nan; ... % 76
-    'RHUM3','landmark','LHumerus','none',nan; ... % 77
-    'RHUM4','landmark','LHumerus','none',nan; ... % 78
+    'RHUM1','landmark','RHumerus','none',nan; ... % 75
+    'RHUM2','landmark','RHumerus','none',nan; ... % 76
+    'RHUM3','landmark','RHumerus','none',nan; ... % 77
+    'RHUM4','landmark','RHumerus','none',nan; ... % 78
 };
 Processing.Marker.fmethod.type      = 'intercor';
 Processing.Marker.fmethod.parameter = [];
