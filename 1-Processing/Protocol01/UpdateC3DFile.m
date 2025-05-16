@@ -59,12 +59,14 @@ if patch == 0
     % Emgs
     if ~isempty(Trial.Emg)
         for iemg = 1:size(Trial.Emg,2)
-            if ~isempty(Trial.Emg(iemg).Signal.full)
-                btkRemoveAnalog(Trial.btk,Trial.Emg(iemg).label);
-                btkAppendAnalog(Trial.btk,Trial.Emg(iemg).label,permute(Trial.Emg(iemg).Signal.full,[3,2,1]));
-                if ~isempty(Trial.Emg(iemg).Signal.envelop)
-                    btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_envelop'],permute(Trial.Emg(iemg).Signal.envelop,[3,2,1]));
-                    btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_onset'],permute(Trial.Emg(iemg).Signal.onset(1,1,1:length(Trial.Emg(iemg).Signal.envelop)),[3,2,1])*max(Trial.Emg(iemg).Signal.envelop));
+            if ~isempty(Trial.Emg(iemg).Signal)
+                if ~isempty(Trial.Emg(iemg).Signal.full)
+                    btkRemoveAnalog(Trial.btk,Trial.Emg(iemg).label);
+                    btkAppendAnalog(Trial.btk,Trial.Emg(iemg).label,permute(Trial.Emg(iemg).Signal.full,[3,2,1]));
+                    if ~isempty(Trial.Emg(iemg).Signal.envelop)
+                        btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_envelop'],permute(Trial.Emg(iemg).Signal.envelop,[3,2,1]));
+                        btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_onset'],permute(Trial.Emg(iemg).Signal.onset(1,1,1:length(Trial.Emg(iemg).Signal.envelop)),[3,2,1])*max(Trial.Emg(iemg).Signal.envelop));
+                    end
                 end
             end
         end
