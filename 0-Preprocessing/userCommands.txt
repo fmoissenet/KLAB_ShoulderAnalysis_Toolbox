@@ -1,8 +1,8 @@
 % -------------------------------------------------------------------------
 % KLAB PRE-PROCESSING TOOLBOX
 % USER COMMANDS FILE
-% VERSION 1
-% 27.05.2022
+% VERSION 2
+% 06.05.2025
 % AUTHOR: Florent Moissenet
 % -------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ Units.output = 'm';
 staticTypes = {'Static_reference1'  'CALIBRATION1'; ...
                'Static_reference2'  'CALIBRATION2'; ...
               };
-trialTypes  = {'Pointing_SXS'       'CALIBRATION3'; ...
+trialTypes  = {'Static_reference3'  'CALIBRATION3'; ...
                'Calibration_force'  'CALIBRATION4'; ...
                'Isometric_right'    'CALIBRATION5'; ...
                'Isometric_left'     'CALIBRATION6'; ...
@@ -108,76 +108,69 @@ eventSet = { ...
 %                    'sgolay':     Window width (number of frames)
 marker = 1;
 markerSet = { ...
-    'RFHD','landmark','Head','none',nan; ... % 1
-    'RBHD','landmark','Head','none',nan; ... % 2
-    'LBHD','landmark','Head','none',nan; ... % 3
-    'LFHD','landmark','Head','none',nan; ... % 4
-    'SJN','landmark','Thorax','none',nan; ... % 5
-    'SME','landmark','Thorax','none',nan; ... % 6
-    'SXS','landmark','Thorax','none',nan; ... % 7
-    'CV7','landmark','Thorax','none',nan; ... % 8
-    'TV5','landmark','Thorax','none',nan; ... % 9
-    'TV8','landmark','Thorax','none',nan; ... % 10
-    'RCAS','landmark','RClavicule','none',nan; ... % 11
-    'RCAS2','technical','RClavicule','none',nan; ... % 12
-    'RCAJ2','technical','RClavicule','none',nan; ... % 13
-    'RCAJ','landmark','RScapula','none',nan; ...  % 14 % Defined in scapula so as to be reconstructed with scapula cluster when necessary
-    'RSIA','landmark','RScapula','none',nan; ... % 15
-    'RSRS','landmark','RScapula','none',nan; ... % 16
-    'RSAA','landmark','RScapula','none',nan; ... % 17
-    'RSCT','landmark','RScapula','none',nan; ... % 18
-    'RSIA2','landmark','RScapula','none',nan; ... % 19
-    'RSRS2','landmark','RScapula','none',nan; ... % 20
-    'RSAA2','landmark','RScapula','none',nan; ... % 21
-    'RSCT2','landmark','RScapula','none',nan; ... % 22
-    'RACM1','technical','RScapula','none',nan; ... % 23
-    'RACM2','technical','RScapula','none',nan; ... % 24
-    'RACM3','technical','RScapula','none',nan; ... % 25
-    'RHDT','technical','RHumerus','none',nan; ... % 26
-    'RHTI','technical','RHumerus','none',nan; ... % 27
-    'RHBI','technical','RHumerus','none',nan; ... % 28
-    'RHME','landmark','RHumerus','none',nan; ... % 29
-    'RHLE','landmark','RHumerus','none',nan; ... % 30
-    'REOS1','technical','RHumerus','none',nan; ... % 31
-    'REOS2','technical','RHumerus','none',nan; ... % 32
-    'REOS3','technical','RHumerus','none',nan; ... % 33
+    'SJN','landmark','Thorax','none',nan; ... % 1
+    'SME','landmark','Thorax','none',nan; ... % 2
+    'SXS','landmark','Thorax','none',nan; ... % 3
+    'CV7','landmark','Thorax','none',nan; ... % 4
+    'TV3','landmark','Thorax','none',nan; ... % 5
+    'TV5','landmark','Thorax','none',nan; ... % 6
+    'TV8','landmark','Thorax','none',nan; ... % 7
+    'S1','landmark','Thorax','none',nan; ... % 8
+    'RCAS','landmark','RClavicule','none',nan; ... % 9
+    'RCAS2','technical','RClavicule','none',nan; ... % 10
+    'RCAJ2','technical','RClavicule','none',nan; ... % 11
+    'RCAJ','landmark','RClavicule','none',nan; ...  % 12
+    'Cluster_RS_01','landmark','RScapula','none',nan; ... % 13
+    'Cluster_RS_02','landmark','RScapula','none',nan; ... % 14
+    'Cluster_RS_03','landmark','RScapula','none',nan; ... % 15
+    'RSIA','landmark','RScapula','none',nan; ... % 16
+    'RSRS','landmark','RScapula','none',nan; ... % 17
+    'RSAA','landmark','RScapula','none',nan; ... % 18
+    'RSCT','landmark','RScapula','none',nan; ... % 19
+    'Cluster_RA_01','landmark','RHumerus','none',nan; ... % 20
+    'Cluster_RA_02','landmark','RHumerus','none',nan; ... % 21
+    'Cluster_RA_03','landmark','RHumerus','none',nan; ... % 22
+    'Cluster_RA_04','landmark','RHumerus','none',nan; ... % 23
+    'Cluster_RA_05','landmark','RHumerus','none',nan; ... % 24
+    'RHME','landmark','RHumerus','none',nan; ... % 25
+    'RHLE','landmark','RHumerus','none',nan; ... % 26
+    'Cluster_RF_01','landmark','RForearm','none',nan; ... % 27
+    'Cluster_RF_02','landmark','RForearm','none',nan; ... % 28
+    'Cluster_RF_03','landmark','RForearm','none',nan; ... % 29
+    'Cluster_RF_04','landmark','RForearm','none',nan; ... % 30
+    'Cluster_RF_05','landmark','RForearm','none',nan; ... % 31
+    'RRSP','landmark','RForearm','none',nan; ... % 32
+    'RUSP','landmark','RForearm','none',nan; ... % 33
     'LCAS','landmark','LClavicule','none',nan; ... % 34
     'LCAS2','technical','LClavicule','none',nan; ... % 35
     'LCAJ2','technical','LClavicule','none',nan; ... % 36
-    'LCAJ','landmark','LScapula','none',nan; ...  % 37 % Defined in scapula so as to be reconstructed with scapula cluster when necessary
-    'LSIA','landmark','LScapula','none',nan; ... % 38
-    'LSRS','landmark','LScapula','none',nan; ... % 39
-    'LSAA','landmark','LScapula','none',nan; ... % 40
-    'LSCT','landmark','LScapula','none',nan; ... % 41
-    'LSIA2','landmark','LScapula','none',nan; ... % 42
-    'LSRS2','landmark','LScapula','none',nan; ... % 43
-    'LSAA2','landmark','LScapula','none',nan; ... % 44
-    'LSCT2','landmark','LScapula','none',nan; ... % 45
-    'LACM1','technical','LScapula','none',nan; ... % 46
-    'LACM2','technical','LScapula','none',nan; ... % 47
-    'LACM3','technical','LScapula','none',nan; ... % 48
-    'LHDT','technical','LHumerus','none',nan; ... % 49
-    'LHTI','technical','LHumerus','none',nan; ... % 50
-    'LHBI','technical','LHumerus','none',nan; ... % 51
-    'LHME','landmark','LHumerus','none',nan; ... % 52
-    'LHLE','landmark','LHumerus','none',nan; ... % 53
-    'LEOS1','technical','RHumerus','none',nan; ... % 54
-    'LEOS2','technical','RHumerus','none',nan; ... % 55
-    'LEOS3','technical','RHumerus','none',nan; ... % 56
-    'RRSP','landmark','RForearm','none',nan; ... % 57
-    'RUSP','landmark','RForearm','none',nan; ... % 58
-    'RWUP','landmark','RForearm','none',nan; ... % 59
-    'RWBK','landmark','RForearm','none',nan; ... % 60
-    'LRSP','landmark','LForearm','none',nan; ... % 61
-    'LUSP','landmark','LForearm','none',nan; ... % 62
-    'LWUP','landmark','LForearm','none',nan; ... % 63
-    'LWBK','landmark','LForearm','none',nan; ... % 64
-    'STY01','technical','Stylus','none',nan; ... % 65
-    'STY02','technical','Stylus','none',nan; ... % 66
-    'STY03','technical','Stylus','none',nan; ... % 67
-    'STY04','technical','Stylus','none',nan; ... % 68
-    'STY05','technical','Stylus','none',nan      % 69
-    'S1','landmark','Thorax','none',nan; ... % 70
+    'LCAJ','landmark','LClavicule','none',nan; ...  % 37
+    'Cluster_LS_01','landmark','LScapula','none',nan; ... % 38
+    'Cluster_LS_02','landmark','LScapula','none',nan; ... % 39
+    'Cluster_LS_03','landmark','LScapula','none',nan; ... % 40
+    'LSIA','landmark','LScapula','none',nan; ... % 41
+    'LSRS','landmark','LScapula','none',nan; ... % 42
+    'LSAA','landmark','LScapula','none',nan; ... % 43
+    'LSCT','landmark','LScapula','none',nan; ... % 44
+    'Cluster_LA_01','landmark','LHumerus','none',nan; ... % 45
+    'Cluster_LA_02','landmark','LHumerus','none',nan; ... % 46
+    'Cluster_LA_03','landmark','LHumerus','none',nan; ... % 47
+    'Cluster_LA_04','landmark','LHumerus','none',nan; ... % 48
+    'Cluster_LA_05','landmark','LHumerus','none',nan; ... % 49
+    'LHME','landmark','LHumerus','none',nan; ... % 50
+    'LHLE','landmark','LHumerus','none',nan; ... % 51
+    'Cluster_LF_01','landmark','LForearm','none',nan; ... % 52
+    'Cluster_LF_02','landmark','LForearm','none',nan; ... % 53
+    'Cluster_LF_03','landmark','LForearm','none',nan; ... % 54
+    'Cluster_LF_04','landmark','LForearm','none',nan; ... % 55
+    'Cluster_LF_05','landmark','LForearm','none',nan; ... % 56
+    'LRSP','landmark','LForearm','none',nan; ... % 57
+    'LUSP','landmark','LForearm','none',nan; ... % 58
+    'STY01','technical','Stylus','none',nan; ... % 59
+    'STY02','technical','Stylus','none',nan; ... % 60
+    'STY03','technical','Stylus','none',nan; ... % 61
+    'STY04','technical','Stylus','none',nan; ... % 62
+    'STY05','technical','Stylus','none',nan      % 63
 };
 Processing.Marker.fmethod.type      = 'intercor';
 Processing.Marker.fmethod.parameter = [];
@@ -227,29 +220,15 @@ emgSet = { ... % Convertion table between QTM file names and toolbox file names
     'CH3_EMG_1','RDELTP'; ...
     'CH4_EMG_1','RTRAPS'; ...
     'CH5_EMG_1','RTRAPM'; ...
-    'CH6_EMG_1','RSERRA'; ...
-    'CH7_EMG_1','RLATD'; ...
+    'CH6_EMG_1','RTRAPI'; ...
+    'CH7_EMG_1','RSERRA'; ...
     'CH8_EMG_1','LDELTA'; ...
     'CH9_EMG_1','LDELTM'; ...
     'CH10_EMG_1','LDELTP'; ...
     'CH11_EMG_1','LTRAPS'; ...
     'CH12_EMG_1','LTRAPM'; ...
-    'CH13_EMG_1','LSERRA'; ...
-    'CH14_EMG_1','LLATD'; ...
-    'CH1','RDELTA'; ... % Alternative names
-    'CH2','RDELTM'; ...
-    'CH3','RDELTP'; ...
-    'CH4','RTRAPS'; ...
-    'CH5','RTRAPM'; ...
-    'CH6','RSERRA'; ...
-    'CH7','RLATD'; ...
-    'CH8','LDELTA'; ...
-    'CH9','LDELTM'; ...
-    'CH10','LDELTP'; ...
-    'CH11','LTRAPS'; ...
-    'CH12','LTRAPM'; ...
-    'CH13','LSERRA'; ...
-    'CH14','LLATD' ...
+    'CH13_EMG_1','LTRAPI'; ...
+    'CH14_EMG_1','LSERRA'; ...
 };
 Processing.EMG.zmethod.type      = 'mean';
 Processing.EMG.zmethod.parameter = [];
@@ -295,7 +274,6 @@ Processing.EMG.smethod.parameter = [];
 force = 1;
 forceSet = { ...
     'CH16_FORCE','FORCE'; ...
-    'CH16_1','FORCE' ... % Alternative name
 };
 Processing.Force.zmethod.type      = 'none';
 Processing.Force.zmethod.parameter = [];
