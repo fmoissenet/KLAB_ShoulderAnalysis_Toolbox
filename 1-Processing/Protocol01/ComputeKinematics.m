@@ -35,7 +35,7 @@ Trial.Joint(1).T.full = Mprod_array3(Tinv_array3(Trial.Segment(4).T.full),...
 % JCS and motion for the humerus relative to the thorax (XZY order)     
 % (Wu et al. 2005)
 % (Senk and Chèze 2006, Creveaux et al. 2018, Phadke et al. 2011)
-if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
+if contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4') % Sagittal elevation
     Trial.Joint(1).sequence            = 'ZXY';
     Euler                              = R2mobileZXY_array3(Trial.Joint(1).T.full(1:3,1:3,:));
     Trial.Joint(1).Euler.full(1,1,:)   = rad2deg(Euler(:,2,:)); % X
@@ -45,7 +45,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Euler2                             = R2mobileYXY_array3(Trial.Joint(1).T.full(1:3,1:3,:));
     Trial.Joint(1).ElevationPlane.full = 180+rad2deg(unwrap(atan2(Trial.Joint(1).T.full(1,2,:),Trial.Joint(1).T.full(3,2,:))));
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(1).sequence            = 'XZY';
     Euler                              = R2mobileXZY_array3(Trial.Joint(1).T.full(1:3,1:3,:));
     Trial.Joint(1).Euler.full(1,1,:)   = rad2deg(Euler(:,1,:)); % X
@@ -100,7 +100,7 @@ Trial.Joint(2).T.full = Mprod_array3(Tinv_array3(Trial.Segment(2).T.full),...
                                      Trial.Segment(1).T.full);
 % JCS and motion for the humerus relative to the scapula (XZY order)     
 % (Senk and Chèze 2006, Creveaux et al. 2018, Phadke et al. 2011)
-if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
+if contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4') % Sagittal elevation
     Trial.Joint(2).sequence          = 'ZXY';
     Euler                            = R2mobileZXY_array3(Trial.Joint(2).T.full(1:3,1:3,:));
     Trial.Joint(2).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X
@@ -108,7 +108,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(2).Euler.full(1,3,:) = rad2deg(Euler(:,1,:)); % Z             
     Trial.Joint(2).dj.full           = [];        
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(2).sequence          = 'XZY';
     Euler                            = R2mobileXZY_array3(Trial.Joint(2).T.full(1:3,1:3,:));
     Trial.Joint(2).Euler.full(1,1,:) = rad2deg(Euler(:,1,:)); % X
@@ -154,7 +154,7 @@ Trial.Joint(3).T.full = Mprod_array3(Tinv_array3(Trial.Segment(4).T.full),...
                                      Trial.Segment(2).T.full);
 % JCS and motion for the scapula relative to the thorax (YXZ order) 
 % (Wu et al. 2005)
-if contains(c3dFiles.name,'ANALYTIC')
+if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
     Trial.Joint(3).sequence          = 'YXZ';
     Euler                            = R2mobileYXZ_array3(Trial.Joint(3).T.full(1:3,1:3,:));
     Trial.Joint(3).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X
@@ -173,7 +173,7 @@ Trial.Joint(6).T.full = Mprod_array3(Tinv_array3(Trial.Segment(4).T.full),...
 % JCS and motion for the humerus relative to the thorax (XZY order)     
 % (Wu et al. 2005)
 % (Senk and Chèze 2006, Creveaux et al. 2018, Phadke et al. 2011)
-if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
+if contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4') % Sagittal elevation
     Trial.Joint(6).sequence            = 'ZXY';
     Euler                              = R2mobileZXY_array3(Trial.Joint(6).T.full(1:3,1:3,:));
     Trial.Joint(6).Euler.full(1,1,:)   = rad2deg(Euler(:,2,:)); % X
@@ -182,7 +182,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(6).dj.full             = [];                           
     Trial.Joint(6).ElevationPlane.full = -rad2deg(unwrap(atan2(Trial.Joint(6).T.full(1,2,:),Trial.Joint(6).T.full(3,2,:))));
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(6).sequence            = 'XZY';
     Euler                              = R2mobileXZY_array3(Trial.Joint(6).T.full(1:3,1:3,:));
     Trial.Joint(6).Euler.full(1,1,:)   = -rad2deg(Euler(:,1,:)); % X % Sign adaptation to fullfill ISB convention  
@@ -237,7 +237,7 @@ Trial.Joint(7).T.full = Mprod_array3(Tinv_array3(Trial.Segment(6).T.full),...
                                      Trial.Segment(5).T.full);
 % JCS and motion for the humerus relative to the scapula (XZY order)     
 % (Senk and Chèze 2006, Creveaux et al. 2018, Phadke et al. 2011)
-if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
+if contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4') % Sagittal elevation
     Trial.Joint(7).sequence          = 'ZXY';
     Euler                            = R2mobileZXY_array3(Trial.Joint(7).T.full(1:3,1:3,:));
     Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X
@@ -245,7 +245,7 @@ if contains(c3dFiles.name,'ANALYTIC1') % Sagittal elevation
     Trial.Joint(7).Euler.full(1,3,:) = -rad2deg(Euler(:,1,:)); % Z              
     Trial.Joint(7).dj.full           = [];        
     clear Euler dj x y p x1 y1; 
-elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
+elseif contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3') || contains(c3dFiles.name,'STATIC') || contains(c3dFiles.name,'ISOMETRIC') % Coronal elevation
     Trial.Joint(7).sequence          = 'XZY';
     Euler                            = R2mobileXZY_array3(Trial.Joint(7).T.full(1:3,1:3,:));
     Trial.Joint(7).Euler.full(1,1,:) = rad2deg(Euler(:,1,:)); % X % Sign adaptation to fullfill ISB convention  
@@ -291,7 +291,7 @@ Trial.Joint(8).T.full = Mprod_array3(Tinv_array3(Trial.Segment(4).T.full),...
                                      Trial.Segment(6).T.full);
 % JCS and motion for the scapula relative to the thorax (YXZ order) 
 % (Wu et al. 2005)
-if contains(c3dFiles.name,'ANALYTIC')
+if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
     Trial.Joint(8).sequence          = 'YXZ';
     Euler                            = R2mobileYXZ_array3(Trial.Joint(8).T.full(1:3,1:3,:));
     Trial.Joint(8).Euler.full(1,1,:) = rad2deg(Euler(:,2,:)); % X

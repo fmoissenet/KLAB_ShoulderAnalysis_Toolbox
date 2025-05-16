@@ -25,15 +25,15 @@ disp('  - Découpage des cycles de mouvement');
 Rcycles = [];
 Lcycles = [];
 
-if contains(c3dFiles.name,'ANALYTIC')
+if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
     % Set cycles
     start = [];
     stop = [];
     value = [];
     % Right side
-    if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5')
+    if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3')
         value = abs(squeeze(Trial.Joint(1).Euler.full(:,1,:))');
-    elseif contains(c3dFiles.name,'ANALYTIC1')
+    elseif contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4')
         value = abs(squeeze(Trial.Joint(1).Euler.full(:,3,:))');
     elseif contains(c3dFiles.name,'ANALYTIC3')
         value = -squeeze(Trial.Joint(1).Euler.full(:,2,:))';
@@ -62,9 +62,9 @@ if contains(c3dFiles.name,'ANALYTIC')
         close gcf;
     end
     % Left side
-    if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5')
+    if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3')
         value = abs(squeeze(Trial.Joint(6).Euler.full(:,1,:))');
-    elseif contains(c3dFiles.name,'ANALYTIC1')
+    elseif contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4')
         value = abs(squeeze(Trial.Joint(6).Euler.full(:,3,:))');
     elseif contains(c3dFiles.name,'ANALYTIC3')
         value = -squeeze(Trial.Joint(6).Euler.full(:,2,:))';

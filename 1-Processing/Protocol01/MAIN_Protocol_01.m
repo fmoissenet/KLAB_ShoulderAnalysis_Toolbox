@@ -79,7 +79,7 @@ cd(Folder.toolbox);
 % -------------------------------------------------------------------------
 % Get user commands
 cd(Folder.preprocessing);
-txtFile      = 'userCommands.txt'; %'userCommands_dyskinesie.txt'
+txtFile      = 'userCommands.txt';
 userCommands = fileread(txtFile);
 eval(userCommands);
 % Load data
@@ -88,7 +88,7 @@ c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
 %%
-for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
+for i = [5,6,7,8,9,10,1,2,3,4,11,12,13,14]
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             disp(' ');
@@ -118,38 +118,30 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
             % Initialise virtual marker trajectories
             Trial(k).Vmarker     = [];
             Trial(k)             = InitialiseVmarkerTrajectories(Trial(k));            
-            % Add pointed landmarks as virtual markers
-            pointList            = {'SXS'}; % List of virtual markers pointed with stylus (the order must be the same than the events stored in C3D file)
-            if contains(c3dFiles(i).name,'CALIBRATION3')
-                Vmarker          = [];
-            end
-            [Trial(k),Vmarker]   = AddPointedLandmarks(Trial(k),Marker,Vmarker,Event,pointList,'Stylusb');
-            % Add acromial cluster landmarks as virtual markers
-            [Trial(k),Vmarker]   = AddACMLandmarks(Session,Trial(k),Marker,Vmarker);
-            % Import force data
-            Trial(k).Fsensor     = [];
-            mass                 = 4; % (kg) Mass used for calibration
-            Analog               = btkGetAnalogs(Trial(k).btk);
-            if strcmp(Trial(k).task,'CALIBRATION5') || strcmp(Trial(k).task,'CALIBRATION6')
-                calibration      = Trial(2).Fsensor.calibration; % from CALIBRATION4
-            else
-                calibration      = [];
-            end
-            Trial(k)             = InitialiseForceSignals(c3dFiles(i),Trial(k),Analog,Event,mass,calibration);
-            % Import EMG signals
-            Trial(k).Emg         = [];
-            if strcmp(Trial(k).task,'CALIBRATION3')                
-                Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),[],Analog);
-            else                
-                Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),Trial(1),Analog); % Load Trial(1) as reference baseline container
-            end
+%             % Import force data
+%             Trial(k).Fsensor     = [];
+%             mass                 = 4; % (kg) Mass used for calibration
+%             Analog               = btkGetAnalogs(Trial(k).btk);
+%             if strcmp(Trial(k).task,'CALIBRATION5') || strcmp(Trial(k).task,'CALIBRATION6')
+%                 calibration      = Trial(4).Fsensor.calibration; % from CALIBRATION4
+%             else
+%                 calibration      = [];
+%             end
+%             Trial(k)             = InitialiseForceSignals(c3dFiles(i),Trial(k),Analog,Event,mass,calibration);
+%             % Import EMG signals
+%             Trial(k).Emg         = [];
+%             if strcmp(Trial(k).task,'CALIBRATION3')                
+%                 Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),[],Analog);
+%             else                
+%                 Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),Trial(1),Analog); % Load Trial(1) as reference baseline container
+%             end
             % Manage kinematics
             Trial(k).Segment     = [];
             Trial(k).Joint       = [];
             Trial(k).Rcycle      = [];
             Trial(k).Lcycle      = [];
             Trial(k).SHR         = [];
-            if i ~= 7 && i ~= 8 % Not applicable
+            if i ~= 8 % Not applicable
                 % Initialise segments
                 Trial(k)         = InitialiseSegments(Trial(k));
                 % Initialise joints
@@ -164,9 +156,7 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
                 btype            = 2; % Manual baseline selection
                 Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
                 % Compute SHR
-                if i ~= 5 && i ~= 6 
-                    Trial(k)     = ComputeSHR(c3dFiles(i),Trial(k),Trial(k)); % Last input is the reference position used for SHR computation
-                end
+                Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k),Trial(k)); % Last input is the reference position used for SHR computation
                 close all;
             end
             % Update C3D files
@@ -177,7 +167,7 @@ for i = [7,8,5,6,9,10,1,2,3,4] %[7,8,5,6,9,10,1,2,3,4,11,12,13,14]
     end
 end
 
-% -------------------------------------------------------------------------
+%% -------------------------------------------------------------------------
 % GENERATE REPORT
 % -------------------------------------------------------------------------
 disp('Génération du rapport');
