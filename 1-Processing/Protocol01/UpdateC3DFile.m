@@ -56,27 +56,27 @@ if patch == 0
             end
         end
     end
-%     % Emgs
-%     if ~isempty(Trial.Emg)
-%         for iemg = 1:size(Trial.Emg,2)
-%             if ~isempty(Trial.Emg(iemg).Signal)
-%                 if ~isempty(Trial.Emg(iemg).Signal.full)
-%                     btkRemoveAnalog(Trial.btk,Trial.Emg(iemg).label);
-%                     btkAppendAnalog(Trial.btk,Trial.Emg(iemg).label,permute(Trial.Emg(iemg).Signal.full,[3,2,1]));
-%                     if ~isempty(Trial.Emg(iemg).Signal.envelop)
-%                         btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_envelop'],permute(Trial.Emg(iemg).Signal.envelop,[3,2,1]));
-%                         btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_onset'],permute(Trial.Emg(iemg).Signal.onset(1,1,1:length(Trial.Emg(iemg).Signal.envelop)),[3,2,1])*max(Trial.Emg(iemg).Signal.envelop));
-%                     end
-%                 end
-%             end
-%         end
-%     end
-%     % Force
-%     if ~isempty(Trial.Fsensor.Force.value)
-%         btkRemoveAnalog(Trial.btk,'FORCE');
-%         btkAppendAnalog(Trial.btk,'FORCE',permute(Trial.Fsensor.Force.value,[3,2,1]),'');
-%         btkSetAnalogUnit(Trial.btk,'FORCE',Trial.Fsensor.Force.units);
-%     end
+    % Emgs
+    if ~isempty(Trial.Emg)
+        for iemg = 1:size(Trial.Emg,2)
+            if ~isempty(Trial.Emg(iemg).Signal)
+                if ~isempty(Trial.Emg(iemg).Signal.full)
+                    btkRemoveAnalog(Trial.btk,Trial.Emg(iemg).label);
+                    btkAppendAnalog(Trial.btk,Trial.Emg(iemg).label,permute(Trial.Emg(iemg).Signal.full,[3,2,1]));
+                    if ~isempty(Trial.Emg(iemg).Signal.envelop)
+                        btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_envelop'],permute(Trial.Emg(iemg).Signal.envelop,[3,2,1]));
+                        btkAppendAnalog(Trial.btk,[Trial.Emg(iemg).label,'_onset'],permute(Trial.Emg(iemg).Signal.onset(1,1,1:length(Trial.Emg(iemg).Signal.envelop)),[3,2,1])*max(Trial.Emg(iemg).Signal.envelop));
+                    end
+                end
+            end
+        end
+    end
+    % Force
+    if ~isempty(Trial.Fsensor.Force.value)
+        btkRemoveAnalog(Trial.btk,'FORCE');
+        btkAppendAnalog(Trial.btk,'FORCE',permute(Trial.Fsensor.Force.value,[3,2,1]),'');
+        btkSetAnalogUnit(Trial.btk,'FORCE',Trial.Fsensor.Force.units);
+    end
     % Events
     for icycle = 1:size(Trial.Rcycle,2)
         if contains(Trial.task,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL3')

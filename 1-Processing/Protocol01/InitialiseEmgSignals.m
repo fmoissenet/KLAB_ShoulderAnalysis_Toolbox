@@ -23,7 +23,7 @@
 function Trial = InitialiseEmgSignals(EmgSet,Trial,Trial2,Emg)
 
 if contains(Trial.file,'CALIBRATION3') % May be used to defined EMG baselines
-    for iemg = 1:length(EmgSet)/2
+    for iemg = 1:length(EmgSet)
         Trial.Emg(iemg).label = EmgSet{iemg,2};
         Trial.Emg(iemg).type  = '';
         if isfield(Emg,EmgSet{iemg,2})
@@ -44,7 +44,7 @@ if contains(Trial.file,'CALIBRATION3') % May be used to defined EMG baselines
         end
     end
 elseif contains(Trial.file,'ANALYTIC')
-    for iemg = 1:length(EmgSet)/2
+    for iemg = 1:length(EmgSet)
         Trial.Emg(iemg).label = EmgSet{iemg,2};
         Trial.Emg(iemg).type  = '';
         if isfield(Emg,EmgSet{iemg,2})

@@ -24,7 +24,7 @@ function Trial = InitialiseEMGSignals(emgSet,Trial,Analog)
          
 % Initialise Analogs
 if ~strcmp(cell2mat(emgSet(1,1)),'') % Empty list
-    for i = 1:size(emgSet,1)/2
+    for i = 1:size(emgSet,1)
         Trial.EMG(i).label              = cell2mat(emgSet(i,2));
         if isfield(Analog,emgSet(i,1))
             Trial.EMG(i).Signal.raw     = permute(Analog.(cell2mat(emgSet(i,1))),[2,3,1]); 

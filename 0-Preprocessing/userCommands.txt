@@ -116,8 +116,8 @@ markerSet = { ...
     'TV5','landmark','Thorax','none',nan; ... % 6
     'TV8','landmark','Thorax','none',nan; ... % 7
     'S1','landmark','Thorax','none',nan; ... % 8
-    'RCAS','landmark','RClavicule','none',nan; ... % 9
-    'RCAJ','landmark','RClavicule','none',nan; ...  % 10
+    'RCAS','landmark','Thorax','none',nan; ... % 9
+    'RCAJ','landmark','RScapula','none',nan; ...  % 10
     'Cluster_RS_01','landmark','RScapula','none',nan; ... % 11
     'Cluster_RS_02','landmark','RScapula','none',nan; ... % 12
     'Cluster_RS_03','landmark','RScapula','none',nan; ... % 13
@@ -139,8 +139,8 @@ markerSet = { ...
     'Cluster_RF_05','landmark','RForearm','none',nan; ... % 29
     'RRSP','landmark','RForearm','none',nan; ... % 30
     'RUSP','landmark','RForearm','none',nan; ... % 31
-    'LCAS','landmark','LClavicule','none',nan; ... % 32
-    'LCAJ','landmark','LClavicule','none',nan; ...  % 33
+    'LCAS','landmark','Thorax','none',nan; ... % 32
+    'LCAJ','landmark','LScapula','none',nan; ...  % 33
     'Cluster_LS_01','landmark','LScapula','none',nan; ... % 34
     'Cluster_LS_02','landmark','LScapula','none',nan; ... % 35
     'Cluster_LS_03','landmark','LScapula','none',nan; ... % 36

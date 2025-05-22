@@ -88,7 +88,7 @@ c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
 %%
-for i = [5,6,7,8,9,10,1,2,3,4,11,12,13,14]
+for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             disp(' ');
@@ -118,23 +118,23 @@ for i = [5,6,7,8,9,10,1,2,3,4,11,12,13,14]
             % Initialise virtual marker trajectories
             Trial(k).Vmarker     = [];
             Trial(k)             = InitialiseVmarkerTrajectories(Trial(k));            
-%             % Import force data
-%             Trial(k).Fsensor     = [];
-%             mass                 = 4; % (kg) Mass used for calibration
-%             Analog               = btkGetAnalogs(Trial(k).btk);
-%             if strcmp(Trial(k).task,'CALIBRATION5') || strcmp(Trial(k).task,'CALIBRATION6')
-%                 calibration      = Trial(4).Fsensor.calibration; % from CALIBRATION4
-%             else
-%                 calibration      = [];
-%             end
-%             Trial(k)             = InitialiseForceSignals(c3dFiles(i),Trial(k),Analog,Event,mass,calibration);
-%             % Import EMG signals
-%             Trial(k).Emg         = [];
-%             if strcmp(Trial(k).task,'CALIBRATION3')                
-%                 Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),[],Analog);
-%             else                
-%                 Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),Trial(1),Analog); % Load Trial(1) as reference baseline container
-%             end
+            % Import force data
+            Trial(k).Fsensor     = [];
+            mass                 = 4; % (kg) Mass used for calibration
+            Analog               = btkGetAnalogs(Trial(k).btk);
+            if strcmp(Trial(k).task,'CALIBRATION5') || strcmp(Trial(k).task,'CALIBRATION6')
+                calibration      = Trial(4).Fsensor.calibration; % from CALIBRATION4
+            else
+                calibration      = [];
+            end
+            Trial(k)             = InitialiseForceSignals(c3dFiles(i),Trial(k),Analog,Event,mass,calibration);
+            % Import EMG signals
+            Trial(k).Emg         = [];
+            if strcmp(Trial(k).task,'CALIBRATION3')                
+                Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),[],Analog);
+            else                
+                Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),Trial(1),Analog); % Load Trial(1) as reference baseline container
+            end
             % Manage kinematics
             Trial(k).Segment     = [];
             Trial(k).Joint       = [];
