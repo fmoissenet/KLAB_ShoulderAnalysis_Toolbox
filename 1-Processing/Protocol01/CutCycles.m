@@ -33,9 +33,9 @@ if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
     % Right side
     if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3')
         value = abs(squeeze(Trial.Joint(1).Euler.full(:,1,:))');
-    elseif contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4')
+    elseif contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2')
         value = abs(squeeze(Trial.Joint(1).Euler.full(:,3,:))');
-    elseif contains(c3dFiles.name,'ANALYTIC3')
+    elseif contains(c3dFiles.name,'ANALYTIC3') || contains(c3dFiles.name,'FUNCTIONAL4')
         value = -squeeze(Trial.Joint(1).Euler.full(:,2,:))';
     elseif contains(c3dFiles.name,'ANALYTIC4')
         value = squeeze(Trial.Joint(1).Euler.full(:,2,:))';
@@ -64,9 +64,9 @@ if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
     % Left side
     if contains(c3dFiles.name,'ANALYTIC2') || contains(c3dFiles.name,'ANALYTIC5') || contains(c3dFiles.name,'FUNCTIONAL3')
         value = abs(squeeze(Trial.Joint(6).Euler.full(:,1,:))');
-    elseif contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2') || contains(c3dFiles.name,'FUNCTIONAL4')
+    elseif contains(c3dFiles.name,'ANALYTIC1') || contains(c3dFiles.name,'FUNCTIONAL1') || contains(c3dFiles.name,'FUNCTIONAL2')
         value = abs(squeeze(Trial.Joint(6).Euler.full(:,3,:))');
-    elseif contains(c3dFiles.name,'ANALYTIC3')
+    elseif contains(c3dFiles.name,'ANALYTIC3') || contains(c3dFiles.name,'FUNCTIONAL4')
         value = -squeeze(Trial.Joint(6).Euler.full(:,2,:))';
     elseif contains(c3dFiles.name,'ANALYTIC4')
         value = squeeze(Trial.Joint(6).Euler.full(:,2,:))';
