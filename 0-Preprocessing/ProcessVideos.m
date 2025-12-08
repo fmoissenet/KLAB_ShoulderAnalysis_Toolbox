@@ -22,7 +22,7 @@
 function [] = ProcessVideos(Patient_ID,Session_ID,Session_date,Session_protocol,Folder,staticTypes,trialTypes,videoTypes)
 
 % Create temporary folder
-mkdir('temp');
+% mkdir('temp');
 
 % Find AVI files
 aviFiles = dir('*.avi');
@@ -69,11 +69,14 @@ for ifile = 1:size(aviFiles,1)
     else
         num = num2str(num);
     end
-    outputFile2 = ['"',Folder.data,'\temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi"']; % Stored as processed file after high compression
+    outputFile2 = ['C:\temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi"']; % Stored as processed file after high compression
+%     outputFile2 = ['"',Folder.data,'\temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi"']; % Stored as processed file after high compression
 
     % Apply video compression and rotation (only for high compression)
     cd(Folder.dependencies);
-    if contains(aviFiles(ifile).name,'Miqus_10') || contains(aviFiles(ifile).name,'Miqus_12')
+    if contains(aviFiles(ifile).name,'Miqus_10')
+        system(['ffmpeg.exe -i ',inputFile,' -vf "transpose=3" -vcodec libx264 ',outputFile2]);
+    elseif contains(aviFiles(ifile).name,'Miqus_12')
         system(['ffmpeg.exe -i ',inputFile,' -vf "transpose=2" -vcodec libx264 ',outputFile2]);
     elseif contains(aviFiles(ifile).name,'Miqus_11') || contains(aviFiles(ifile).name,'Miqus_13')
         system(['ffmpeg.exe -i ',inputFile,' -vf "transpose=1"  -vcodec libx264 ',outputFile2]);
@@ -93,9 +96,10 @@ for ifile = 1:size(aviFiles,1)
     folder = pwd;
     cd(regexprep(Folder.data,'"',''));
 %     movefile(['temp\',aviFiles(ifile).name],regexprep(Folder.data,'"',''));
-    movefile(['temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi'],[folder,'\']);
+    movefile(['C:\temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi'],[folder,'\']);
+%     movefile(['temp\',num2str(Patient_ID),'-',Session_ID,'-',Session_date,'-',regexprep(Session_protocol,'KLAB-UPPERLIMB-',''),'-',task,'-',num,'-',video,'.avi'],[folder,'\']);
 end
 
 % Clear temporary folder
 cd(Folder.data);
-rmdir('temp');
+% rmdir('temp');

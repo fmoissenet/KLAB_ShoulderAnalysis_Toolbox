@@ -61,7 +61,7 @@ disp(' ');
 % -------------------------------------------------------------------------
 % PRE-PROCESS DATA
 % -------------------------------------------------------------------------
-% - Markers: fill gap (intercor), smoothing (movmean)
+% - Markers: fill gap (intercor), smoothing (movmean)y
 % - EMG: zeroing (mean), filtering (btw bandpass 4th order 30-450 Hz)
 % - Force: smoothing (btw lowpass 2nd order 10 Hz)
 % -------------------------------------------------------------------------
