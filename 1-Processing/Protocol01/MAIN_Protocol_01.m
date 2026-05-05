@@ -36,7 +36,7 @@ disp(' ');
 % SET FOLDERS
 % -------------------------------------------------------------------------
 disp('Définition des répertoires de travail');
-MainFolder           = 'C:\Users\Florent\OneDrive - Université de Genève\';
+MainFolder           = 'C:\Users\flore\OneDrive - Université de Genève\';
 Folder.preprocessing = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\'];
 Folder.toolbox       = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\'];
 Folder.data          = uigetdir(); % Patient folder defined by GUI
