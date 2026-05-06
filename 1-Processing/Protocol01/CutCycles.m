@@ -45,7 +45,7 @@ if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
         hold on; title(c3dFiles.name);
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
-        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');
+        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0],'FaceAlpha',0.2,'EdgeColor','none');
         localmin = ginput(6); % If nothing to select, click in the red rectangle
         index = [];
         for imin = 1:2:size(localmin,1)
@@ -76,7 +76,7 @@ if contains(c3dFiles.name,'ANALYTIC') || contains(c3dFiles.name,'FUNCTIONAL')
         hold on; title(c3dFiles.name);
         value = unwrap(value);
         plot(1:size(value,2),value,'red');
-        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0 0.2],'EdgeColor','none');       
+        rectangle('Position',[0 -10 length(value) 10],'FaceColor',[1 0 0],'FaceAlpha',0.2,'EdgeColor','none');       
         localmin = ginput(6); % If nothing to select, click in the red rectangle
         index = [];
         for imin = 1:2:size(localmin,1)

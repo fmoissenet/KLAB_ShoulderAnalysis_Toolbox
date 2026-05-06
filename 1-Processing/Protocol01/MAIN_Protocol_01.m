@@ -88,7 +88,7 @@ c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
 %%
-for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
+for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14] %[7,5,6,8,9,10,1,2,3,4,11,12,13,14]
     for j = 1:size(trialTypes,2)
         if contains(c3dFiles(i).name,trialTypes{j})  
             disp(' ');
