@@ -186,7 +186,7 @@ while iemg <= size(Trial.Emg,2) % All EMG (right and left)
                 for icycle = 1:size(Rcycles,2)
                     [vmax,imax] = max(envelop2(Rcycles(icycle).range*fratio));
                     plot((Rcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
-                    rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
+                    rectangle('Position',[Rcycles(icycle).range(1)*fratio 0 length(Rcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0],'FaceAlpha',0.2,'EdgeColor','none');
     %                 title('Y > 0 : Onset accepté, Y < 0 : Onset refusé');
                     [~,y] = ginput(1);
                     if y < 0 % Manual onset definition
@@ -222,7 +222,7 @@ while iemg <= size(Trial.Emg,2) % All EMG (right and left)
                 for icycle = 1:size(Lcycles,2)
                     [vmax,imax] = max(envelop2(Lcycles(icycle).range*fratio));
                     plot((Lcycles(icycle).range(1)+imax)*fratio,vmax,'Marker','p','MarkerEdgeColor','none','MarkerFaceColor','black','MarkerSize',15);
-                    rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0 0.2],'EdgeColor','none');
+                    rectangle('Position',[Lcycles(icycle).range(1)*fratio 0 length(Lcycles(icycle).range)*fratio max(signal0)],'FaceColor',[0 1 0],'FaceAlpha',0.2,'EdgeColor','none');
                     [~,y] = ginput(1);
                     if y < 0 % Manual onset definition
     %                     title('Y > 0 : Région à remettre à zéro, Y < 0 : Onset refusé');
