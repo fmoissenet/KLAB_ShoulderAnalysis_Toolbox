@@ -1,14 +1,15 @@
-% Author     :   F. Moissenet
-%                Kinesiology Laboratory (K-LAB)
+% Author     :   H. Francalanci
+%                Biomechanics and Translational Research in Surgery Group
 %                University of Geneva
-%                https://www.unige.ch/medecine/kinesiology
+%                https://www.unige.ch/medecine/chiru/en/research-groups/nicolas-holzer-et-florent-moissenet
 % License    :   Creative Commons Attribution-NonCommercial 4.0 International License 
 %                https://creativecommons.org/licenses/by-nc/4.0/legalcode
 % Source code:   To be defined
 % Reference  :   To be defined
-% Date       :   April 2022
+% Date       :   Mai 2026
 % -------------------------------------------------------------------------
-% Description:   MAIN routine for the instrumented Constant Shoulder Test
+% Description: (1) Research & Development Branch. 
+%              (2) Extension of the KLAB_ShoulderAnalysis_Toolbox (F. Moissenet)
 % -------------------------------------------------------------------------
 % This work is licensed under the Creative Commons Attribution - 
 % NonCommercial 4.0 International License. To view a copy of this license, 
@@ -19,66 +20,45 @@
 % -------------------------------------------------------------------------
 % INIT WORKSPACE
 % -------------------------------------------------------------------------
-tic
 clearvars;
 close all;
 warning off;
 clc;
 disp('------------------------------------------------------------------');
-disp('KLAB_UpperLimb_toolbox');
-disp('Protocole 1');
-disp('Auteur : F. Moissenet');
-disp('Version : 2 (July 2023)');
+disp('KLAB_UpperLimb_toolbox_Research_Development_Branch_Hugo_Dev');
 disp('------------------------------------------------------------------');
 disp(' ');
 
 % -------------------------------------------------------------------------
 % SET FOLDERS
-% -------------------------------------------------------------------------
-disp('Définition des répertoires de travail');
-MainFolder           = 'C:\Users\Florent\OneDrive - Université de Genève\';
-Folder.preprocessing = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\0-Preprocessing\'];
-Folder.toolbox       = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01\'];
-Folder.data          = uigetdir(); % Patient folder defined by GUI
-Folder.dependencies  = [MainFolder,'_CLINIQUE\Matlab\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies\'];
+% ------------------------------------------------------------------------
+MainFolder           = 'C:\Users\franc\Desktop';
+Folder.toolbox       = [MainFolder,'\KLAB_ShoulderAnalysis_Toolbox\1-Processing\Protocol01'];
+Folder.data          = uigetdir(); 
+Folder.dependencies  = [MainFolder,'\KLAB_ShoulderAnalysis_Toolbox\1-Processing\dependencies'];
+addpath(Folder.toolbox);
 addpath(genpath(Folder.dependencies));
+addpath(fullfile(Folder.toolbox, 'Core'));
+addpath(fullfile(Folder.toolbox, 'Init'));
+addpath(fullfile(Folder.toolbox, 'IO'));
+addpath(fullfile(Folder.toolbox, 'Plot'));
+addpath(fullfile(Folder.toolbox, 'Templates'));
+addpath(fullfile(Folder.toolbox, 'Tests'));
 disp(' ');
 
 % -------------------------------------------------------------------------
 % GET SESSION DATA
 % -------------------------------------------------------------------------
-disp('Récupération des informations de la session');
-addpath(Folder.toolbox);
+disp('Get session information');
+disp('-----------------------');
 cd([Folder.data,'\']);
 [Patient,Session,Pathology] = ImportSessionData();
-rmpath(Folder.toolbox);
-disp(['  - Patient   : ',num2str(Patient.ID),' - ',Patient.lastname,' ',Patient.firstname]);
-disp(['  - Session   : ',datestr(Session.date,'YYYYmmDD')]);
-disp(['  - Protocole : ',Session.protocol]);
-disp(['  - Objectif  : ',Session.objective]);
 disp(' ');
-
-% -------------------------------------------------------------------------
-% PRE-PROCESS DATA
-% -------------------------------------------------------------------------
-% - Markers: fill gap (intercor), smoothing (movmean)y
-% - EMG: zeroing (mean), filtering (btw bandpass 4th order 30-450 Hz)
-% - Force: smoothing (btw lowpass 2nd order 10 Hz)
-% -------------------------------------------------------------------------
-disp('Pré-traitement des données');
-% if ~isfolder('Processed')
-    addpath(Folder.preprocessing);
-    MAIN_Preprocessing_toolbox(Patient.ID,Session.ID,datestr(Session.date,'YYYYmmDD'),Session.protocol,Folder.preprocessing,[Folder.data,'\Raw\']);
-    rmpath(Folder.preprocessing);
-% end
-addpath(Folder.toolbox);
-cd(Folder.toolbox);
 
 % -------------------------------------------------------------------------
 % PROCESS DATA
 % -------------------------------------------------------------------------
-% Get user commands
-cd(Folder.preprocessing);
+cd(Folder.toolbox);
 txtFile      = 'userCommands.txt';
 userCommands = fileread(txtFile);
 eval(userCommands);
@@ -87,10 +67,30 @@ cd([Folder.data,'\Processed\']);
 c3dFiles   = dir('*.c3d');
 trialTypes = {'CALIBRATION','ANALYTIC','FUNCTIONAL'};
 k          = 1;
+
 %%
-for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
+trialOrder = {'CALIBRATION3','CALIBRATION1','CALIBRATION2','CALIBRATION4', ...
+              'CALIBRATION5','CALIBRATION6', ...
+              'ANALYTIC1','ANALYTIC2','ANALYTIC3','ANALYTIC4','ANALYTIC5', ...
+              'FUNCTIONAL1','FUNCTIONAL2','FUNCTIONAL3','FUNCTIONAL4'};
+% Robust alternative for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
+% Order is same but can handle patient having more or less files 
+
+orderedIdx = zeros(1, length(c3dFiles));
+nIdx = 0;
+for itype = 1:length(trialOrder)
+    for ifile = 1:length(c3dFiles)
+        if contains(c3dFiles(ifile).name, trialOrder{itype})
+            nIdx = nIdx + 1;
+            orderedIdx(nIdx) = ifile;
+        end
+    end
+end
+orderedIdx = orderedIdx(1:nIdx);
+
+for i = orderedIdx
     for j = 1:size(trialTypes,2)
-        if contains(c3dFiles(i).name,trialTypes{j})  
+        if contains(c3dFiles(i).name, trialTypes{j}) 
             disp(' ');
             % Extract data from C3D files 
             if contains(c3dFiles(i).name,'CALIBRATION')
@@ -106,7 +106,7 @@ for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
             Trial(k).n1          = btkGetLastFrame(Trial(k).btk)-Trial(k).n0+1;
             Trial(k).fmarker     = btkGetPointFrequency(Trial(k).btk);
             Trial(k).fanalog     = btkGetAnalogFrequency(Trial(k).btk);       
-            disp(['Chargement du fichier : ',Trial(k).task]);
+            disp(['File loading : ',Trial(k).task]);
             % Set units
             Units                = SetUnits(Trial);
             % Import events
@@ -118,23 +118,6 @@ for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
             % Initialise virtual marker trajectories
             Trial(k).Vmarker     = [];
             Trial(k)             = InitialiseVmarkerTrajectories(Trial(k));            
-            % Import force data
-            Trial(k).Fsensor     = [];
-            mass                 = 4; % (kg) Mass used for calibration
-            Analog               = btkGetAnalogs(Trial(k).btk);
-            if strcmp(Trial(k).task,'CALIBRATION5') || strcmp(Trial(k).task,'CALIBRATION6')
-                calibration      = Trial(4).Fsensor.calibration; % from CALIBRATION4
-            else
-                calibration      = [];
-            end
-            Trial(k)             = InitialiseForceSignals(c3dFiles(i),Trial(k),Analog,Event,mass,calibration);
-            % Import EMG signals
-            Trial(k).Emg         = [];
-            if strcmp(Trial(k).task,'CALIBRATION3')                
-                Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),[],Analog);
-            else                
-                Trial(k)         = InitialiseEmgSignals(emgSet,Trial(k),Trial(1),Analog); % Load Trial(1) as reference baseline container
-            end
             % Manage kinematics
             Trial(k).Segment     = [];
             Trial(k).Joint       = [];
@@ -150,50 +133,46 @@ for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14]
                 Trial(k)         = DefineSegments(c3dFiles(i),Session,Trial(k));   
                 % Compute inverse kinematics
                 Trial(k)         = ComputeKinematics(c3dFiles(i),Trial(k));
-                % Define and cut movement cycles
-                % Based on humerothoracic kinematics
-                figure;       
-                btype            = 2; % Manual baseline selection
-                Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
+                % Compute Thorax
+                Trial(k)         = ComputeThoraxPosture(Trial(k));
+                % Movement cycles (based on .mat)   
+                Trial(k)         = CutCycles(c3dFiles(i), Trial(k), Folder.data);
                 % Compute SHR
-                Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k),Trial(k)); % Last input is the reference position used for SHR computation
+                Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k),Trial(k));
                 close all;
             end
-            % Update C3D files
-            UpdateC3DFile(Trial(k),c3dFiles(i),0);
             % Increment trial index
             k                    = k+1;
         end
     end
 end
 
-%% -------------------------------------------------------------------------
-% GENERATE REPORT
 % -------------------------------------------------------------------------
-disp('Génération du rapport');
-cd(Folder.data);
-mkdir('Report');
-cd('Report');
+% PLOT AND COMPARAISON
+% -------------------------------------------------------------------------
 close all;
-if isempty(dir('*.docx'))
-    copyfile([Folder.toolbox,'Report\KLAB - Analyse quantifiée du membre supérieur - Rapport - Template.docx'],[Folder.data,'\Report\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-Rapport.docx']);
-    copyfile([Folder.toolbox,'Report\Skeleton_left_shoulder.png'],[Folder.data,'\Report\Skeleton_left_shoulder.png']);
-    copyfile([Folder.toolbox,'Report\Skeleton_right_shoulder.png'],[Folder.data,'\Report\Skeleton_right_shoulder.png']);
-    copyfile([Folder.toolbox,'Report\Skeleton_top.png'],[Folder.data,'\Report\Skeleton_top.png']);
+
+PlotKinematics(Trial, Pathology); % HT, GH, ST, SHR for analytics
+for k_plot = 1:length(Trial)
+    if contains(Trial(k_plot).task, 'ANALYTIC') % Thorax/Patient-ICS and Cobb posture for analytics
+        PlotThoraxPosture(Trial(k_plot), Trial(k_plot).task);
+        PlotCobbPosture(Trial(k_plot), Trial(k_plot).task, '')
+    end
 end
-Report = GenerateReportData(Trial);
-Normal = LoadNormativeData(Folder,Session,Patient);
-GenerateReportPlots(Folder,Session,Report,Normal);
+PlotComparison(Trial, Folder.data, Pathology); % Comparaison with .mat from original K-LAB toolbox
+% 3rd argument : 'C:\...\auteur_data.xlsx' (for future comparaison with other study)
 
 % -------------------------------------------------------------------------
-% STORE RESULTS
+% Export
 % -------------------------------------------------------------------------
-clearvars -except Folder Patient Session Pathology Processing Trial Report Normal;
-save([Folder.data,'\',num2str(Patient.ID),'-',Session.ID,'-',datestr(Session.date,'YYYYmmDD'),'-',datestr(datetime('today'),'YYYYmmDD'),'.mat']);
+ExportPostureSummary(Trial, Patient, Session);
 
 % -------------------------------------------------------------------------
-% STOP ALL PROCESSES
+% Validation
 % -------------------------------------------------------------------------
-close all;
-cd([Folder.data,'\']);
-toc
+TestICS(Trial);
+
+% -------------------------------------------------------------------------
+% END
+% -------------------------------------------------------------------------
+cd(Folder.toolbox);
