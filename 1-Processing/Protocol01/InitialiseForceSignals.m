@@ -8,6 +8,12 @@
 % Reference    : To be defined
 % Date         : July 2022
 % -------------------------------------------------------------------------
+% Modified     : Hugo Francalanci 
+%                Biomechanics and Translational Research in Surgery (B-LAB)
+%                University of Geneva
+%                https://www.unige.ch/medecine/chiru/en/research-groups/nicolas-holzer-et-florent-moissenet
+% Date         : June 2026
+% -------------------------------------------------------------------------
 % Description  : To be defined
 % Inputs       : To be defined
 % Outputs      : To be defined
@@ -40,11 +46,36 @@ if contains(Trial.file,'CALIBRATION4')
     end
 elseif contains(c3dFiles.name,'CALIBRATION5') || contains(c3dFiles.name,'CALIBRATION6') % Isometric tasks only
     disp('  - Calibrage des données du capteur de force');
-    figure;
+
+    % Automatic baseline computed from the last 5,000 frames (resting signal after muscle relaxation)
+    nBase = min(5000, length(Analog.FORCE));
+    baseline = [length(Analog.FORCE)-nBase+1, length(Analog.FORCE)];
+
+    fig = figure;
+    hold on;
     plot(Analog.FORCE);
-    title('Sélectionner le début et la fin de la ligne de base');
-    baseline = ginput(2);
-    close gcf;
+    ymin = min(Analog.FORCE); ymax = max(Analog.FORCE);
+    hBaseline = patch([baseline(1) baseline(2) baseline(2) baseline(1)], [ymin ymin ymax ymax], ...
+          [1 0.6 0], 'FaceAlpha',0.2, 'EdgeColor','none');
+    title('Baseline (5000 dernières frames) - Entrée=OK  m+Entrée=manuel');
+    drawnow;
+
+    resp = input('  - Entrée = OK, m + Entrée = manuel : ','s');
+    if strcmpi(strtrim(resp), 'm')
+        title('Sélectionner le début et la fin de la ligne de base');
+        drawnow;
+        baseline = ginput(2);
+        baseline = baseline(:,1);
+
+        delete(hBaseline);
+        patch([baseline(1) baseline(2) baseline(2) baseline(1)], [ymin ymin ymax ymax], ...
+              [1 0.6 0], 'FaceAlpha',0.2, 'EdgeColor','none');
+        title('Baseline redéfinie manuellement');
+        drawnow;
+        input('  - Appuyez sur Entrée pour continuer : ','s');
+    end
+    close(fig);
+
     Trial.Fsensor.label = 'Force sensor';
     Trial.Fsensor.calibration = calibration;
     Trial.Fsensor.Force.value = permute((Analog.FORCE-mean(Analog.FORCE(baseline(1):baseline(2))))*calibration,[2,3,1]); % N
