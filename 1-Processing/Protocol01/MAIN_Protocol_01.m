@@ -23,6 +23,7 @@ tic
 clearvars;
 close all;
 warning off;
+opengl software; % << being tested to avoid plot issues
 clc;
 disp('------------------------------------------------------------------');
 disp('KLAB_UpperLimb_toolbox');
@@ -74,7 +75,7 @@ disp('Pré-traitement des données');
 addpath(Folder.toolbox);
 cd(Folder.toolbox);
 
-% -------------------------------------------------------------------------
+%% ------------------------------------------------------------------------
 % PROCESS DATA
 % -------------------------------------------------------------------------
 % Get user commands
