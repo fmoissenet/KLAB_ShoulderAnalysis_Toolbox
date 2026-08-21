@@ -154,7 +154,7 @@ for i = [7,5,6,8,9,10,1,2,3,4,11,12,13,14] %[7,5,6,8,9,10,1,2,3,4,11,12,13,14]
                 % Define and cut movement cycles
                 % Based on humerothoracic kinematics
                 figure;       
-                btype            = 2; % Manual baseline selection
+                btype            = 4; % Automatic baseline selection (Hugo version)
                 Trial(k)         = CutCycles(c3dFiles(i),Trial(k),btype);
                 % Compute SHR
                 Trial(k)         = ComputeSHR(c3dFiles(i),Trial(k),Trial(k)); % Last input is the reference position used for SHR computation

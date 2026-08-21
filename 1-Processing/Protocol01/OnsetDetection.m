@@ -51,7 +51,9 @@ while iemg <= size(Trial.Emg,2) % All EMG (right and left)
 
         % 0- Signal preprocessing
         % https://doi.org/10.1371/journal.pone.0237727
-        [B,A]  = butter(1,[10 500]./(Trial.fanalog/2),'bandpass');
+        nyquist = Trial.fanalog/2;
+        highCut = min(500,0.99*nyquist); % Plafonné seulement si fanalog est trop basse (anciennes acquisitions) pour rester < Nyquist
+        [B,A]  = butter(1,[10 highCut]./nyquist,'bandpass');
         signal = filtfilt(B,A,signal0);
         signal = abs(signal);
         envelop = interpft(rms2(signal,0.02*Trial.fanalog,0.01*Trial.fanalog,1),length(signal)); % Used to compute SNR
@@ -270,29 +272,42 @@ while iemg <= size(Trial.Emg,2) % All EMG (right and left)
                     % Baseline - Enter=OK or m=manual (2 clicks)
                     respB = input('  - Baseline : Entrée = OK, m + Entrée = manuel : ','s');
                     if strcmpi(strtrim(respB), 'm')
-                        fprintf('  Cliquez le début et la fin de la nouvelle fenêtre de baseline sur la figure :\n');
-                        [xb,~] = ginput(2);
-                        gStart = max(1, round(min(xb)));
-                        gEnd   = min(length(signal), round(max(xb)));
-                        baseline    = signal(gStart:gEnd);
-                        fframe      = gStart;
-                        baselineLen = gEnd - gStart;
+                        fprintf('  Cliquez le début puis la fin de la fenêtre de baseline (aperçu en direct, re-cliquez pour ajuster, Entrée = valider) :\n');
+                        xb = [];
+                        while true
+                            [xclk,~,btn] = ginput(1);
+                            if isempty(btn)
+                                break; % Entrée = valider le dernier aperçu affiché
+                            end
+                            xb(end+1) = xclk; %#ok<AGROW>
+                            if numel(xb) >= 2
+                                pts    = xb(end-1:end);
+                                gStart = max(1, round(min(pts)));
+                                gEnd   = min(length(signal), round(max(pts)));
+                                baseline    = signal(gStart:gEnd);
+                                fframe      = gStart;
+                                baselineLen = gEnd - gStart;
 
-                        % Recompute onset/SNR/amplitude with the new baseline
-                        [onset,SNR,meansignal] = localComputeOnset(signal,envelop,baseline,Trial.fanalog);
+                                % Recompute onset/SNR/amplitude with the new baseline
+                                [onset,SNR,meansignal] = localComputeOnset(signal,envelop,baseline,Trial.fanalog);
+
+                                % Redraw baseline zone, threshold and onset (live preview)
+                                if ~isempty(hBaseline) && ishandle(hBaseline); delete(hBaseline); end
+                                hBaseline = patch([fframe fframe+baselineLen fframe+baselineLen fframe], ...
+                                      [-ylimit -ylimit ylimit ylimit], ...
+                                      [1 0.6 0], 'FaceAlpha',0.2, 'EdgeColor','none', 'HandleVisibility','off');
+                                if ishandle(hThresh); delete(hThresh); end
+                                hThresh = line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
+                                if ishandle(ponset); delete(ponset); end
+                                ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
+                                title([Trial.Emg(iemg).label,' (',sideLabel,') - SNR : ',num2str(SNR),' dB, Moyenne : ',num2str(meansignal),' uv (aperçu baseline - Entrée pour valider)']);
+                                drawnow;
+                                xb = []; % prêt pour une nouvelle paire de clics si l'utilisateur veut ajuster
+                            end
+                        end
                         Trial.Emg(iemg).SNR        = SNR;
                         Trial.Emg(iemg).signalMean = meansignal;
                         Trial.Emg(iemg).Signal.onset(:,:,:) = permute(onset,[2,3,1]);
-
-                        % Redraw baseline zone, threshold and onset
-                        if ~isempty(hBaseline) && ishandle(hBaseline); delete(hBaseline); end
-                        hBaseline = patch([fframe fframe+baselineLen fframe+baselineLen fframe], ...
-                              [-ylimit -ylimit ylimit ylimit], ...
-                              [1 0.6 0], 'FaceAlpha',0.2, 'EdgeColor','none', 'HandleVisibility','off');
-                        delete(hThresh);
-                        hThresh = line([1 size(signal,1)],[mean(baseline)+nsd*std(baseline) mean(baseline)+nsd*std(baseline)],'Color','red','Linestyle','-');
-                        delete(ponset);
-                        ponset = plot(onset*ylimit/2,'Color','black','Linewidth',2);
                         title([Trial.Emg(iemg).label,' (',sideLabel,') - SNR : ',num2str(SNR),' dB, Moyenne : ',num2str(meansignal),' uv (baseline redéfinie)']);
                         drawnow;
                     end
